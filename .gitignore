@@ -4,3 +4,4 @@ Vagrantfile
 *.lo
 pcre2*
 test_text_cleanser
+test_sastrawi

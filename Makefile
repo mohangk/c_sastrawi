@@ -26,7 +26,7 @@ LFLAGS = -L/usr/local/lib
 LIBS = -lpcre2-8
 
 # define the C source files
-SRCS = test_sastrawi.c sastrawi.c regex/preg.c
+SRCS = tests/test_sastrawi.c sastrawi.c regex/preg.c
 
 # define the C object files 
 #
