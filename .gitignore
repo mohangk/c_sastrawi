@@ -1,0 +1,6 @@
+.vagrant/
+Vagrantfile
+*.o
+*.lo
+pcre2*
+test_text_cleanser
