@@ -99,9 +99,9 @@ int preg_match(char *pattern, char *subject, char **matches[]) {
 
 
   if (rc > 1) {
+    *matches = malloc(rc * sizeof(char*));
     ovector = pcre2_get_ovector_pointer(match_data);
 
-    *matches = malloc(rc * sizeof(char*));
     check_mem(matches);
 
     for (int i = 0; i < rc; i++)

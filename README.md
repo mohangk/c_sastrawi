@@ -11,3 +11,8 @@ This is an attempt at porting the high quality [PHP based Bahasa Indonesian stem
 - Because it will allow for a more direct integration with PostgreSQL via its full text search dictionary support.
 - We would be able to write bindings for most languages that provide ways to wrap C libraries
 - Because we can :)
+
+
+## Run tests
+
+
