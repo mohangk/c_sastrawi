@@ -18,10 +18,38 @@ error:
 
 }
 
+
+char *test_plural_parts() {
+  char **parts = NULL;
+  int rc;
+
+  rc = plural_parts("beli", &parts);
+  check(rc == 1, "beli has 1 part");
+  check(strcmp("beli", parts[0]) == 0, "beli is returned in the parts");
+
+  rc = plural_parts("beli-beli", &parts);
+  debug("matches %d", rc);
+  check(rc == 2, "beli-beli has 2 parts");
+  check(strcmp("beli", parts[0]) == 0, "beli-beli has 2 parts");
+  check(strcmp("beli", parts[1]) == 0, "beli-beli has 2 parts");
+
+  rc = plural_parts("beli-beli-ku", &parts);
+  check(rc == 2, "beli-beli-ku has 2 parts");
+  debug("parts %s, %s,", parts[0], parts[1]);
+  check(strcmp("beli", parts[0]) == 0, "For beli-beli-ku, first part should be beli");
+  check(strcmp("beli-ku", parts[1]) == 0, "For beli-beli-ku, second part should be beli-ku");
+
+  return NULL;
+error:
+  return 0;
+
+}
+
 char *all_tests()
 {
   mu_suite_start();
   mu_run_test(test_is_plural);
+  mu_run_test(test_plural_parts);
   
   return NULL;
 }

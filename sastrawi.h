@@ -5,3 +5,5 @@
 
 //Sastrawi\Stemmer::isPlural
 int is_plural(char *word);
+
+int plural_parts(char *word, char **parts[]);
