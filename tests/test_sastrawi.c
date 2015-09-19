@@ -28,14 +28,12 @@ char *test_plural_parts() {
   check(strcmp("beli", parts[0]) == 0, "beli is returned in the parts");
 
   rc = plural_parts("beli-beli", &parts);
-  debug("matches %d", rc);
   check(rc == 2, "beli-beli has 2 parts");
   check(strcmp("beli", parts[0]) == 0, "beli-beli has 2 parts");
   check(strcmp("beli", parts[1]) == 0, "beli-beli has 2 parts");
 
   rc = plural_parts("beli-beli-ku", &parts);
   check(rc == 2, "beli-beli-ku has 2 parts");
-  debug("parts %s, %s,", parts[0], parts[1]);
   check(strcmp("beli", parts[0]) == 0, "For beli-beli-ku, first part should be beli");
   check(strcmp("beli-ku", parts[1]) == 0, "For beli-beli-ku, second part should be beli-ku");
 
