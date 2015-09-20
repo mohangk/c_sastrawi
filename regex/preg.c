@@ -166,3 +166,14 @@ char *preg_replace(char *re, char *replacement, char *subject) {
 
   return strndup((char *)output, output_length);
 }
+
+void free_matches(int matches_count, char **matches[])
+{
+  for (int i = 0; i < matches_count; i++)
+  {
+    free((*matches)[i]);
+  }
+  free(*matches);
+}
+
+
