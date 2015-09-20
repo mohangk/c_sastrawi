@@ -19,6 +19,16 @@ error:
 }
 
 
+void free_parts(int parts_count, char **parts[])
+{
+  for (int i = 0; i < parts_count; i++)
+  {
+    free((*parts)[i]);
+  }
+  free(*parts);
+}
+
+
 char *test_plural_parts() {
   char **parts = NULL;
   int rc;
@@ -27,15 +37,21 @@ char *test_plural_parts() {
   check(rc == 1, "beli has 1 part");
   check(strcmp("beli", parts[0]) == 0, "beli is returned in the parts");
 
+  free_parts(rc, &parts);
+
   rc = plural_parts("beli-beli", &parts);
   check(rc == 2, "beli-beli has 2 parts");
   check(strcmp("beli", parts[0]) == 0, "beli-beli has 2 parts");
   check(strcmp("beli", parts[1]) == 0, "beli-beli has 2 parts");
 
+  free_parts(rc, &parts);
+
   rc = plural_parts("beli-beli-ku", &parts);
   check(rc == 2, "beli-beli-ku has 2 parts");
   check(strcmp("beli", parts[0]) == 0, "For beli-beli-ku, first part should be beli");
   check(strcmp("beli-ku", parts[1]) == 0, "For beli-beli-ku, second part should be beli-ku");
+
+  free_parts(rc, &parts);
 
   return NULL;
 error:

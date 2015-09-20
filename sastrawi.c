@@ -14,31 +14,39 @@ int is_plural(char *word)
 {
   char **matches;
 
-  int count = preg_match("^(.*)-(ku|mu|nya)$", word, &matches);
+  int matches_count, dash_count;
+    
+  matches_count = preg_match("^(.*)-(ku|mu|nya)$", word, &matches);
 
-  if(count > 0) {
-    return strchr(matches[1], '-') != NULL;
+  if(matches_count > 0) {
+    dash_count = strchr(matches[1], '-') != NULL;
+    free_matches(matches_count, &matches);
+  } else {
+    dash_count = strchr(word, '-') != NULL;
   }
 
-  return strchr(word, '-') != NULL;
+  return dash_count;
+
 }
 
 int plural_parts(char *word, char **parts[])
 {
   char **matches;
+  int matches_count, parts_count, rc;
 
-  int count = preg_match("^(.*)-(.*)-(ku|mu|nya)$", word, &matches);
+  matches_count = preg_match("^(.*)-(.*)-(ku|mu|nya)$", word, &matches);
 
-  if(count < 0) {
-    count = preg_match("^(.*)-(.*)$", word, &matches);
+  if(matches_count < 0) {
+    matches_count = preg_match("^(.*)-(.*)$", word, &matches);
   }
 
-  if(count>0) {
+  if(matches_count>0) {
 
     char *second_part;
 
-    if(count == 4) {
-      asprintf(&second_part, "%s-%s",matches[2], matches[3]);
+    if(matches_count == 4) {
+      rc = asprintf(&second_part, "%s-%s",matches[2], matches[3]);
+      check_debug(rc != -1, "Cannot allocate memory");
     } else {
       second_part = strndup(matches[2], strlen(matches[2]));
     }
@@ -47,16 +55,19 @@ int plural_parts(char *word, char **parts[])
     (*parts)[0] = strndup(matches[1], strlen(matches[1]));
     (*parts)[1] = second_part;
 
-    return 2;
+    parts_count = 2;
 
+    free_matches(matches_count, &matches);
   } else {
-    //Allocate the parts array with the original string
     *parts = malloc(1 * sizeof(char*));
     (*parts)[0] = strndup(word, strlen(word));
-    return 1;
+    parts_count = 1;
   }
 
-  //must free matches
+
+  return parts_count;
+error:
+  exit(1);
 }
 
 
