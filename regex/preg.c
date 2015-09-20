@@ -7,7 +7,9 @@
 #include "../uthash/uthash.h"
 #include "preg.h"
 #include "../dbg.h"
-
+#ifdef __linux
+  #include "../deps/strndup/strndup.h"
+#endif
 /**
  * TODO: 
  * - Do we need memory management for the cached regex
