@@ -9,7 +9,7 @@
 CC = gcc
 
 # define any compile-time flags
-CFLAGS = -O3 -Wall -g
+CFLAGS = -O3 -Wall -g -std=c99
 
 # define any directories containing header files other than /usr/include
 #
