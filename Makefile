@@ -63,7 +63,7 @@ $(MAIN): $(OBJS)
 				$(CC) $(CFLAGS) $(INCLUDES) -c $<  -o $@
 
 clean:
-				$(RM) *.o *~ $(MAIN)
+				$(RM) *.o *~ regex/*.o tests/*.o $(MAIN)
 
 depend: $(SRCS)
 				makedepend $(INCLUDES) $^
