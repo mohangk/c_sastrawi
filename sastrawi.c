@@ -2,11 +2,9 @@
   #define _GNU_SOURCE 
 #endif
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
 #include <string.h>
 #include "sastrawi.h"
-#include "regex/preg.h"
 #include "dbg.h"
 
 
@@ -70,7 +68,5 @@ error:
   exit(1);
 }
 
-
-//Add function to clear a preg_match set
 
 

@@ -26,7 +26,7 @@ LFLAGS = -L/usr/local/lib
 LIBS = -lpcre2-8
 
 # define the C source files
-SRCS = tests/test_sastrawi.c sastrawi.c regex/preg.c
+SRCS = tests/test_sastrawi.c sastrawi.c sastrawi/dictionary.c regex/preg.c
 
 # define the C object files 
 #
@@ -63,7 +63,7 @@ $(MAIN): $(OBJS)
 				$(CC) $(CFLAGS) $(INCLUDES) -c $<  -o $@
 
 clean:
-				$(RM) *.o *~ regex/*.o tests/*.o $(MAIN)
+				$(RM) *.o *~ regex/*.o tests/*.o sastrawi/*.o $(MAIN)
 
 depend: $(SRCS)
 				makedepend $(INCLUDES) $^
