@@ -84,11 +84,20 @@ char *test_dictionary_load()
 char *test_dictionary_add() 
 {
   dictionary_add("bola");
+
   mu_assert(dictionary_contains("bola"), "dict should contain bola");
   mu_assert(!dictionary_contains("bela"), "dict should not contain bela");
+
+  int count = dictionary_count();
+  dictionary_add("bola");
+  int new_count = dictionary_count();
+  mu_assert(count == new_count, "dictionary_add ensures that entries are unique");
+
+  return NULL;
 }
 
-char *test_dictionary_contains() {
+char *test_dictionary_contains() 
+{
 
   dictionary_load(dict_fullpath("tests/test_dict.txt"));
   mu_assert(dictionary_contains("aba"), "test dict contains aba");

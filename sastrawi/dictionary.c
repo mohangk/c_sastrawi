@@ -50,17 +50,24 @@ error:
 
 int dictionary_add(char *word)
 {
-  struct dict_entry *dict_word = NULL;
-  dict_word = malloc(sizeof(struct dict_entry));
-  check_mem(dict_word);
+  if(!dictionary_contains(word)) {
+    struct dict_entry *dict_word = NULL;
+    dict_word = malloc(sizeof(struct dict_entry));
+    check_mem(dict_word);
 
-  dict_word->word = strndup(word, strlen(word));
-  HASH_ADD_KEYPTR(hh, dict, dict_word->word, strlen(dict_word->word), dict_word);
+    dict_word->word = strndup(word, strlen(word));
+    HASH_ADD_KEYPTR(hh, dict, dict_word->word, strlen(dict_word->word), dict_word);
+  }
   return 1;
 
 error:
   log_err("Failed to  allocate memory for dictionary entry");
   exit(1);
+}
+
+int dictionary_count() 
+{
+  return HASH_COUNT(dict);
 }
 
 int dictionary_contains(char *word)
