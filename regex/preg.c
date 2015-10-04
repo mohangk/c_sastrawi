@@ -10,11 +10,10 @@
 #ifdef __linux
   #include "../deps/strndup/strndup.h"
 #endif
+
 /**
  * TODO: 
- * - Do we need memory management for the cached regex
- * - free_matches(**char) that will be used by the client 
- *   code to clean up results from preg_match
+ * - Do we need memory management for the cached regex ?
  */
 
 struct re_cache {
