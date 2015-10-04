@@ -18,6 +18,19 @@ void free_parts(int parts_count, char **parts[])
   free(*parts);
 }
 
+char *dict_fullpath(char *relative_path) 
+{
+  char *cwd = NULL;
+  char *full_path = NULL;
+
+  int rc = asprintf(&full_path, "%s/%s", getcwd(cwd,0), relative_path);
+  check(rc != -1, "Cannot allocate memory");
+
+  return full_path;
+error:
+  exit(1);
+}
+
 char *test_is_plural()
 {
 
@@ -53,20 +66,6 @@ char *test_plural_parts() {
   free_parts(rc, &parts);
 
   return NULL;
-}
-
-
-char *dict_fullpath(char *relative_path) 
-{
-  char *cwd = NULL;
-  char *full_path = NULL;
-
-  int rc = asprintf(&full_path, "%s/%s", getcwd(cwd,0), relative_path);
-  check(rc != -1, "Cannot allocate memory");
-
-  return full_path;
-error:
-  exit(1);
 }
 
 char *test_dictionary_load() 
