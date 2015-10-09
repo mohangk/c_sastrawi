@@ -69,4 +69,17 @@ error:
 }
 
 
+int stem_plural_word(char *word, char **stemmed_word)
+{
+  char **word_parts = NULL;
+  int rc = plural_parts(word, &word_parts);
+
+  (*stemmed_word) = strndup(word_parts[0], strlen(word_parts[0]));
+
+  free_matches(rc, &word_parts);
+
+  return 1;
+}
+
+
 

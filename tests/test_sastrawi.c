@@ -68,6 +68,19 @@ char *test_plural_parts() {
   return NULL;
 }
 
+char *test_stem_plural_word() 
+{
+  char *word = "malaikat-malaikat";
+  char *stemmed_word = NULL;
+  int rc = stem_plural_word(word, &stemmed_word);
+  /* mu_assert(rc == 1, "it should successfully stem it to malaikat"); */
+  debug("stemmed >> !!%s!! -- diff %d", stemmed_word, strcmp("malaikat", stemmed_word));
+  mu_assert(strcmp("malaikat", stemmed_word) == 0, "it should successfully stem it to malaikat");
+  free(stemmed_word);
+
+  return NULL;
+}
+
 char *test_dictionary_load() 
 {
   int rc;
@@ -109,11 +122,12 @@ char *test_dictionary_contains()
 char *all_tests()
 {
   mu_suite_start();
-  mu_run_test(test_is_plural);
-  mu_run_test(test_plural_parts);
-  mu_run_test(test_dictionary_load);
-  mu_run_test(test_dictionary_add);
-  mu_run_test(test_dictionary_contains);
+  /* mu_run_test(test_is_plural); */
+  /* mu_run_test(test_plural_parts); */
+  mu_run_test(test_stem_plural_word);
+  /* mu_run_test(test_dictionary_load); */
+  /* mu_run_test(test_dictionary_add); */
+  /* mu_run_test(test_dictionary_contains); */
   
   return NULL;
 }

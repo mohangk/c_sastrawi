@@ -8,7 +8,6 @@
 #include "dictionary.h"
 #include "../dbg.h"
 
-
 struct dict_entry {
   char *word;
   UT_hash_handle hh;
