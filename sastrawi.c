@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "sastrawi.h"
+#include "sastrawi/dictionary.h"
 #include "dbg.h"
 
 
@@ -66,6 +67,26 @@ int plural_parts(char *word, char **parts[])
   return parts_count;
 error:
   exit(1);
+}
+
+
+int stem_plural_word(char *word, char **stemmed_word)
+{
+  dictionary_load(dictionary_fullpath("data/kata-dasar.txt"));
+
+  char **word_parts = NULL;
+  int rc = plural_parts(word, &word_parts);
+
+  debug("word parts %s, %s", word_parts[0], word_parts[1]);
+  if(dictionary_contains(word_parts[0])) {
+    (*stemmed_word) = strndup(word_parts[0], strlen(word_parts[0]));
+  } else {
+    (*stemmed_word) = strndup(word, strlen(word));
+  }
+
+  free_matches(rc, &word_parts);
+
+  return 1;
 }
 
 

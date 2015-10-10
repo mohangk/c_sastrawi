@@ -4,10 +4,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 #include "../uthash/uthash.h"
 #include "dictionary.h"
 #include "../dbg.h"
-
 
 struct dict_entry {
   char *word;
@@ -20,6 +20,19 @@ void remove_newline(char **word, int length) {
   if((*word)[length-1] == '\n') {
     (*word)[length-1] = '\0';
   }
+}
+
+char *dictionary_fullpath(char *relative_path) 
+{
+  char *cwd = NULL;
+  char *full_path = NULL;
+
+  int rc = asprintf(&full_path, "%s/%s", getcwd(cwd,0), relative_path);
+  check(rc != -1, "Cannot allocate memory");
+
+  return full_path;
+error:
+  exit(1);
 }
 
 int dictionary_load(char *dict_path)
