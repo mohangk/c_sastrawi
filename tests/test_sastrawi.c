@@ -63,12 +63,19 @@ char *test_stem_plural_word()
   mu_assert(strcmp("malaikat", stemmed_word) == 0, "it stems to malaikat");
   free(stemmed_word);
 
-  char *word2 = "berlari-lari";
+  char *word2 = "malaikat-malaikat-nya";
   char *stemmed_word2 = NULL;
   rc = stem_plural_word(word2, &stemmed_word2);
-  debug("stem %s => %s, expected %s", word2, stemmed_word2, "lari");
-  mu_assert(strcmp("lari", stemmed_word2) == 0, "it stems to lari");
+  debug("stem %s => %s, expected %s", word2, stemmed_word2, "malaikat");
+  mu_assert(strcmp("malaikat", stemmed_word2) == 0, "it stems to malaikat");
   free(stemmed_word2);
+
+  /* char *word3 = "berlari-lari"; */
+  /* char *stemmed_word3 = NULL; */
+  /* rc = stem_plural_word(word3, &stemmed_word3); */
+  /* debug("stem %s => %s, expected %s", word3, stemmed_word3, "lari"); */
+  /* mu_assert(strcmp("lari", stemmed_word3) == 0, "it stems to lari"); */
+  /* free(stemmed_word3); */
 
   return NULL;
 }
@@ -111,15 +118,27 @@ char *test_dictionary_contains()
   return NULL;
 }
 
+char *test_stem_singular_word() 
+{
+  char *word = "bola";
+  char *stemmed_word = NULL;
+  int rc = stem_singular_word(word, &stemmed_word);
+  mu_assert(strcmp("bola", stemmed_word) == 0, "if the word exists in the dictionary, just return it");
+  free(stemmed_word);
+  return NULL;
+
+}
+
 char *all_tests()
 {
   mu_suite_start();
-  /* mu_run_test(test_is_plural); */
-  /* mu_run_test(test_plural_parts); */
+  mu_run_test(test_is_plural);
+  mu_run_test(test_plural_parts);
   mu_run_test(test_stem_plural_word);
-  /* mu_run_test(test_dictionary_load); */
-  /* mu_run_test(test_dictionary_add); */
-  /* mu_run_test(test_dictionary_contains); */
+  mu_run_test(test_stem_singular_word);
+  mu_run_test(test_dictionary_load);
+  mu_run_test(test_dictionary_add);
+  mu_run_test(test_dictionary_contains);
   
   return NULL;
 }
