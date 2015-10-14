@@ -63,12 +63,7 @@ char *test_stem_plural_word()
   mu_assert(strcmp("malaikat", stemmed_word) == 0, "it stems to malaikat");
   free(stemmed_word);
 
-  char *word2 = "malaikat-malaikat-nya";
-  char *stemmed_word2 = NULL;
-  rc = stem_plural_word(word2, &stemmed_word2);
-  debug("stem %s => %s, expected %s", word2, stemmed_word2, "malaikat");
-  mu_assert(strcmp("malaikat", stemmed_word2) == 0, "it stems to malaikat");
-  free(stemmed_word2);
+
 
   /* char *word3 = "berlari-lari"; */
   /* char *stemmed_word3 = NULL; */
@@ -93,12 +88,21 @@ char *test_dictionary_load()
   return NULL;
 }
 
+char *test_dictionary_contains() 
+{
+  dictionary_load(dictionary_fullpath("tests/test_dict.txt"));
+  mu_assert(dictionary_contains("aba"), "test dict contains aba");
+  mu_assert(!dictionary_contains("non-existent"), "test dict does not contain non-existent");
+
+  return NULL;
+}
+
 char *test_dictionary_add() 
 {
-  dictionary_add("bola");
+  dictionary_add("nonexistent");
 
-  mu_assert(dictionary_contains("bola"), "dict should contain bola");
-  mu_assert(!dictionary_contains("bela"), "dict should not contain bela");
+  mu_assert(dictionary_contains("nonexistent"), "dict should contain nonexistent");
+  mu_assert(!dictionary_contains("nonexistent2"), "dict should not contain nonexistent2");
 
   int count = dictionary_count();
   dictionary_add("bola");
@@ -108,34 +112,116 @@ char *test_dictionary_add()
   return NULL;
 }
 
-char *test_dictionary_contains() 
-{
-
-  dictionary_load(dictionary_fullpath("tests/test_dict.txt"));
-  mu_assert(dictionary_contains("aba"), "test dict contains aba");
-  mu_assert(!dictionary_contains("bela"), "test dict does not contain bela");
-
-  return NULL;
-}
-
 char *test_stem_singular_word() 
 {
   char *word = "bola";
   char *stemmed_word = NULL;
   int rc = stem_singular_word(word, &stemmed_word);
+  mu_assert(rc == 1, "sucessfully stemmed");
   mu_assert(strcmp("bola", stemmed_word) == 0, "if the word exists in the dictionary, just return it");
   free(stemmed_word);
   return NULL;
+}
 
+/* char *test_stem_singular_word_removes_inflectional_particle()  */
+/* { */
+/*   char *word = "penting-kah"; */
+/*   char *stemmed_word = NULL; */
+/*   int rc = stem_singular_word(word, &stemmed_word); */
+/*   mu_assert(rc == 1, "sucessfully stemmed"); */
+/*   debug("stem word: %s, expected: penting, actual: %s", word, stemmed_word); */
+/*   mu_assert(strcmp("penting", stemmed_word) == 0, "it stems to penting"); */
+/*   free(stemmed_word); */
+/*  */
+/*   return NULL; */
+/* } */
+
+char *test_remove_inflectional_particle_with_dash() 
+{
+  char *stemmed_word = NULL; 
+  char *removed_part = NULL;
+
+  int rc = remove_inflectional_particle("penting-kah", &stemmed_word, &removed_part);
+  mu_assert(rc, "successfully stems");
+  mu_assert(strcmp("penting", stemmed_word) == 0, "we expect 'penting' as the stemmed word");
+  mu_assert(strcmp("kah", removed_part) == 0, "we expect 'kah' as the removed part");
+
+  return NULL;
+}
+
+
+
+char *test_remove_inflectional_particle_without_dash() 
+{
+  char *stemmed_word = NULL; 
+  char *removed_part = NULL;
+
+  int rc = remove_inflectional_particle("pentingkah", &stemmed_word, &removed_part);
+  mu_assert(rc, "successfully stems");
+  mu_assert(strcmp("penting", stemmed_word) == 0, "we expect 'penting' as the stemmed word");
+  mu_assert(strcmp("kah", removed_part) == 0, "we expect 'kah' as the removed part");
+
+  return NULL;
+}
+
+char *test_remove_inflectional_particle_no_match() 
+{
+  char *stemmed_word = NULL; 
+  char *removed_part = NULL;
+
+  int rc = remove_inflectional_particle("penting", &stemmed_word, &removed_part);
+  mu_assert(!rc, "fails stem");
+  mu_assert(strcmp("penting", stemmed_word) == 0, "we expect no change in the word passed in");
+  mu_assert(strcmp("", removed_part) == 0, "we expect empty string in the removed_part");
+
+  return NULL;
+}
+
+char *test_remove_possessive_pronoun_with_dash() 
+{
+  char *stemmed_word = NULL; 
+  char *removed_part = NULL;
+
+  int rc = remove_possessive_pronoun("cinta-ku", &stemmed_word, &removed_part);
+
+  mu_assert(rc, "successfully stems");
+  mu_assert(strcmp("cinta", stemmed_word) == 0, "we expect 'cinta' as the stemmed word");
+  mu_assert(strcmp("ku", removed_part) == 0, "we expect 'ku' as the removed part");
+
+  return NULL;
+}
+
+char *test_remove_possessive_pronoun_without_dash() 
+{
+  char *stemmed_word = NULL; 
+  char *removed_part = NULL;
+
+  int rc = remove_possessive_pronoun("cintaku", &stemmed_word, &removed_part);
+  mu_assert(rc, "successfully stems");
+  mu_assert(strcmp("cinta", stemmed_word) == 0, "we expect 'cinta' as the stemmed word");
+  mu_assert(strcmp("ku", removed_part) == 0, "we expect 'ku' as the removed part");
+
+  return NULL;
 }
 
 char *all_tests()
 {
   mu_suite_start();
+
   mu_run_test(test_is_plural);
   mu_run_test(test_plural_parts);
   mu_run_test(test_stem_plural_word);
+
   mu_run_test(test_stem_singular_word);
+  //mu_run_test(test_stem_singular_word_removes_inflectional_particle);
+
+  mu_run_test(test_remove_inflectional_particle_with_dash);
+  mu_run_test(test_remove_inflectional_particle_without_dash);
+  mu_run_test(test_remove_inflectional_particle_no_match);
+
+  mu_run_test(test_remove_possessive_pronoun_with_dash);
+  mu_run_test(test_remove_possessive_pronoun_without_dash);
+
   mu_run_test(test_dictionary_load);
   mu_run_test(test_dictionary_add);
   mu_run_test(test_dictionary_contains);
