@@ -55,7 +55,7 @@ char *test_plural_parts() {
   return NULL;
 }
 
-char *test_stem_plural_word() 
+char *test_stem_plural_word_when_both_words_are_root_words_and_the_same() 
 {
   char *word = "malaikat-malaikat";
   char *stemmed_word = NULL;
@@ -75,42 +75,18 @@ char *test_stem_plural_word()
   return NULL;
 }
 
-char *test_dictionary_load() 
+char *test_stem_plural_word_when_one_word_has_suffixes() 
 {
-  int rc;
-
-  rc = dictionary_load(dictionary_fullpath("tests/test_dict.txt"));
-  mu_assert(rc, "when test_dict exists return truthy");
-
-  rc = dictionary_load(dictionary_fullpath("tests/test_not_exists.txt"));
-  mu_assert(!rc, "when the dict file does not exist it should return falsy");
+  char *word = "malaikat-malaikatnya";
+  char *stemmed_word = NULL;
+  int rc = stem_plural_word(word, &stemmed_word);
+  mu_assert(strcmp("malaikat", stemmed_word) == 0, "it stems to malaikat");
+  free(stemmed_word);
 
   return NULL;
 }
 
-char *test_dictionary_contains() 
-{
-  dictionary_load(dictionary_fullpath("tests/test_dict.txt"));
-  mu_assert(dictionary_contains("aba"), "test dict contains aba");
-  mu_assert(!dictionary_contains("non-existent"), "test dict does not contain non-existent");
 
-  return NULL;
-}
-
-char *test_dictionary_add() 
-{
-  dictionary_add("nonexistent");
-
-  mu_assert(dictionary_contains("nonexistent"), "dict should contain nonexistent");
-  mu_assert(!dictionary_contains("nonexistent2"), "dict should not contain nonexistent2");
-
-  int count = dictionary_count();
-  dictionary_add("bola");
-  int new_count = dictionary_count();
-  mu_assert(count == new_count, "dictionary_add ensures that entries are unique");
-
-  return NULL;
-}
 
 char *test_stem_singular_word() 
 {
@@ -123,18 +99,6 @@ char *test_stem_singular_word()
   return NULL;
 }
 
-/* char *test_stem_singular_word_removes_inflectional_particle()  */
-/* { */
-/*   char *word = "penting-kah"; */
-/*   char *stemmed_word = NULL; */
-/*   int rc = stem_singular_word(word, &stemmed_word); */
-/*   mu_assert(rc == 1, "sucessfully stemmed"); */
-/*   debug("stem word: %s, expected: penting, actual: %s", word, stemmed_word); */
-/*   mu_assert(strcmp("penting", stemmed_word) == 0, "it stems to penting"); */
-/*   free(stemmed_word); */
-/*  */
-/*   return NULL; */
-/* } */
 
 char *test_remove_inflectional_particle_with_dash() 
 {
@@ -204,16 +168,117 @@ char *test_remove_possessive_pronoun_without_dash()
   return NULL;
 }
 
+char *test_remove_derivational_suffix_with_dash() 
+{
+  char *stemmed_word = NULL; 
+  char *removed_part = NULL;
+
+  int rc = remove_derivational_suffix("cinta-kan", &stemmed_word, &removed_part);
+
+  mu_assert(rc, "successfully stems");
+  mu_assert(strcmp("cinta", stemmed_word) == 0, "we expect 'cinta' as the stemmed word");
+  mu_assert(strcmp("kan", removed_part) == 0, "we expect 'kan' as the removed part");
+
+  return NULL;
+}
+
+char *test_remove_derivational_suffix_without_dash() 
+{
+  char *stemmed_word = NULL; 
+  char *removed_part = NULL;
+
+  int rc = remove_derivational_suffix("cintakan", &stemmed_word, &removed_part);
+  mu_assert(rc, "successfully stems");
+  mu_assert(strcmp("cinta", stemmed_word) == 0, "we expect 'cinta' as the stemmed word");
+  mu_assert(strcmp("kan", removed_part) == 0, "we expect 'kan' as the removed part");
+
+  return NULL;
+}
+
+char *test_remove_plain_prefix() 
+{
+  char *stemmed_word = NULL; 
+  char *removed_part = NULL;
+
+  int rc = remove_derivational_suffix("cinta-kan", &stemmed_word, &removed_part);
+
+  mu_assert(rc, "successfully stems");
+  mu_assert(strcmp("cinta", stemmed_word) == 0, "we expect 'cinta' as the stemmed word");
+  mu_assert(strcmp("kan", removed_part) == 0, "we expect 'kan' as the removed part");
+
+  return NULL;
+}
+
+char *test_remove_suffixes() 
+{
+  char *word = "bajumukah";
+  char *stemmed_word = NULL;
+  remove_suffixes(word, &stemmed_word);
+  debug("stem word: %s, expected: baju, actual: %s", word, stemmed_word);
+  mu_assert(strcmp("baju", stemmed_word) == 0, "it stems to baju");
+  free(stemmed_word);
+
+  return NULL;
+}
+
+char *test_stem_singular_word_removes_suffixes() 
+{
+  char *word = "bajumukah";
+  char *stemmed_word = NULL;
+  int rc = stem_singular_word(word, &stemmed_word);
+  debug("stem word: %s, expected: baju, actual: %s", word, stemmed_word);
+  mu_assert(rc == 1, "sucessfully stemmed");
+  mu_assert(strcmp("baju", stemmed_word) == 0, "it stems to baju");
+  free(stemmed_word);
+
+  return NULL;
+}
+
+char *test_dictionary_load() 
+{
+  int rc;
+
+  rc = dictionary_load(dictionary_fullpath("tests/test_dict.txt"));
+  mu_assert(rc, "when test_dict exists return truthy");
+
+  rc = dictionary_load(dictionary_fullpath("tests/test_not_exists.txt"));
+  mu_assert(!rc, "when the dict file does not exist it should return falsy");
+
+  return NULL;
+}
+
+char *test_dictionary_contains() 
+{
+  dictionary_load(dictionary_fullpath("tests/test_dict.txt"));
+  mu_assert(dictionary_contains("aba"), "test dict contains aba");
+  mu_assert(!dictionary_contains("non-existent"), "test dict does not contain non-existent");
+
+  return NULL;
+}
+
+char *test_dictionary_add() 
+{
+  dictionary_add("nonexistent");
+
+  mu_assert(dictionary_contains("nonexistent"), "dict should contain nonexistent");
+  mu_assert(!dictionary_contains("nonexistent2"), "dict should not contain nonexistent2");
+
+  int count = dictionary_count();
+  dictionary_add("bola");
+  int new_count = dictionary_count();
+  mu_assert(count == new_count, "dictionary_add ensures that entries are unique");
+
+  return NULL;
+}
+
 char *all_tests()
 {
   mu_suite_start();
 
   mu_run_test(test_is_plural);
   mu_run_test(test_plural_parts);
-  mu_run_test(test_stem_plural_word);
-
-  mu_run_test(test_stem_singular_word);
-  //mu_run_test(test_stem_singular_word_removes_inflectional_particle);
+  mu_run_test(test_stem_plural_word_when_both_words_are_root_words_and_the_same);
+  mu_run_test(test_stem_plural_word_when_one_word_has_suffixes);
 
   mu_run_test(test_remove_inflectional_particle_with_dash);
   mu_run_test(test_remove_inflectional_particle_without_dash);
@@ -221,6 +286,14 @@ char *all_tests()
 
   mu_run_test(test_remove_possessive_pronoun_with_dash);
   mu_run_test(test_remove_possessive_pronoun_without_dash);
+
+  mu_run_test(test_remove_derivational_suffix_with_dash);
+  mu_run_test(test_remove_derivational_suffix_without_dash);
+
+  mu_run_test(test_remove_suffixes);
+
+  mu_run_test(test_stem_singular_word);
+  mu_run_test(test_stem_singular_word_removes_suffixes);
 
   mu_run_test(test_dictionary_load);
   mu_run_test(test_dictionary_add);

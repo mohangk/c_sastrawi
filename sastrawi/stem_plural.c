@@ -83,7 +83,7 @@ int stem_plural_word(char *word, char **stemmed_word)
   stem_singular_word(word_parts[1], &root_word1);
 
 
-  debug("word parts %s, %s", word_parts[0], word_parts[1]);
+  debug("word parts %s => %s, %s => %s", word_parts[0], root_word0, word_parts[1], root_word1);
 
   if(strcmp(root_word0, root_word1) == 0) {
     (*stemmed_word) = strndup(word_parts[0], strlen(word_parts[0]));
