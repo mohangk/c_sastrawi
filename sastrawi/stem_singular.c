@@ -1,5 +1,5 @@
 #ifdef __linux
-  #define _GNU_SOURCE 
+  #define _GNU_SOURCE
 #endif
 #include <stdio.h>
 #include <stdlib.h>
@@ -11,8 +11,6 @@
 
 int stem_singular_word(char *word, char **stemmed_word)
 {
-
-  dictionary_load(dictionary_fullpath("data/kata-dasar.txt"));
 
   //step 1: word already in dictionary
   if(dictionary_contains(word)) {
@@ -38,7 +36,7 @@ int stem_singular_word(char *word, char **stemmed_word)
   return 0;
 }
 
-void remove_prefixes(char *word, char **stemmed_word) 
+void remove_prefixes(char *word, char **stemmed_word)
 {
 
   char *removed_parts = NULL;
@@ -50,7 +48,7 @@ void remove_prefixes(char *word, char **stemmed_word)
 }
 
 
-void remove_suffixes(char *word, char **stemmed_word) 
+void remove_suffixes(char *word, char **stemmed_word)
 {
 
   char *removed_parts = NULL;
@@ -95,6 +93,64 @@ int remove_plain_prefix(char *word, char **stemmed_word, char **removed_part)
   return remove_prefix("di|ke|se", word, stemmed_word, removed_part);
 }
 
+int remove_complex_prefix_rule1(char *word, char **stemmed_word, char **removed_part)
+{
+  int rc = 0;
+
+  rc = split_word("(^ber)([aiueo].*)$", word, removed_part, stemmed_word);
+
+
+  //1a
+  if(rc == 1) {
+    if(dictionary_contains(*stemmed_word)) {
+      return 1;
+    } else {
+  //1b
+      char *rule1b_word;
+      asprintf(&rule1b_word, "r%s", *stemmed_word);
+
+      if(dictionary_contains(rule1b_word)) {
+        free(*removed_part);
+        *removed_part = strndup("be",2);
+
+        free(*stemmed_word);
+        *stemmed_word = strndup(rule1b_word, strlen(rule1b_word));
+        return 1;
+      } 
+    }
+  } else {
+
+    (*stemmed_word) = strndup(word, strlen(word));
+    (*removed_part) = strndup("", 0);
+
+  }
+
+  return 0;
+}
+
+
+int split_word(char *pattern, char *word, char **first_part, char **second_part)
+{
+  char **matches = NULL;
+  int rc = 0;
+
+  int match_count = preg_match(pattern, word, &matches);
+
+  if((*first_part) != NULL) {
+    debug("freeing first_part");
+    free((*first_part));
+  }
+
+  if(match_count == 3) {
+    (*first_part) = strndup(matches[1], strlen(matches[1]));
+    (*second_part) = strndup(matches[2], strlen(matches[2]));
+    rc = 1;
+    free_matches(match_count, &matches);
+  } 
+
+  return rc;
+}
+
 int remove_prefix(char *suffixes, char *word, char **stemmed_word, char **removed_part)
 {
   char **matches = NULL;
@@ -103,29 +159,14 @@ int remove_prefix(char *suffixes, char *word, char **stemmed_word, char **remove
 
   int pattern_rc = asprintf(&pattern, "^(%s)(\\w+)$", suffixes);
 
-  int match_count = preg_match(pattern, word, &matches);
+  rc = split_word(pattern, word, removed_part, stemmed_word);
 
-  if((*stemmed_word) != NULL) {
-    debug("freeing stemmed_word");
-    free((*stemmed_word));
-  }
-
-  if(match_count == 3) {
-    (*removed_part) = strndup(matches[1], strlen(matches[1]));
-    (*stemmed_word) = strndup(matches[2], strlen(matches[2]));
-    rc = 1;
-    free_matches(match_count, &matches);
-
-  } else {
-
+  if(rc != 1) {
     (*stemmed_word) = strndup(word, strlen(word));
     (*removed_part) = strndup("", 0);
-    rc = 0;
-
   }
+
   free(pattern);
-
-
   return rc;
 }
 
@@ -137,33 +178,13 @@ int remove_suffix(char *suffixes, char *word, char **stemmed_word, char **remove
 
   int pattern_rc = asprintf(&pattern, "(\\w+?)-?(%s)$", suffixes);
 
-  int match_count = preg_match(pattern, word, &matches);
+  rc = split_word(pattern, word, stemmed_word, removed_part);
 
-  if((*stemmed_word) != NULL) {
-    debug("freeing stemmed_word");
-    free((*stemmed_word));
-  }
-
-  /* if((*removed_part) != NULL) { */
-  /*   free((*removed_part)); */
-  /* } */
-
-  if(match_count == 3) {
-    //debug("REMOVE_SUFFIX >> word: %s, matches: %d, matches: 0, %s, 1, %s, 2, %s", word, match_count, matches[0], matches[1], matches[2]);
-    (*stemmed_word) = strndup(matches[1], strlen(matches[1]));
-    (*removed_part) = strndup(matches[2], strlen(matches[2]));
-    rc = 1;
-    free_matches(match_count, &matches);
-
-  } else {
-
+  if(rc != 1) {
     (*stemmed_word) = strndup(word, strlen(word));
     (*removed_part) = strndup("", 0);
-    rc = 0;
-
   }
+
   free(pattern);
-
-
   return rc;
 }

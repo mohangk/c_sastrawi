@@ -209,9 +209,56 @@ char *test_stem_singular_word_removes_plain_prefixes()
   return NULL;
 }
 
+char *test_remove_complex_prefix_rule1_a() 
+{
+  char *stemmed_word = NULL;
+  char *removed_part = NULL;
+
+  int rc = remove_complex_prefix_rule1("beria", &stemmed_word, &removed_part);
+  debug("stem word: beria, expected: ia, actual: %s", stemmed_word);
+  mu_assert(rc == 1, "sucessfully stemmed");
+  mu_assert(strcmp("ia", stemmed_word) == 0, "it stems to ia");
+  mu_assert(strcmp("ber", removed_part) == 0, "remove part should be ber");
+  free(stemmed_word);
+  free(removed_part);
+
+  return NULL;
+}
+
+char *test_remove_complex_prefix_rule1_b() 
+{
+  char *stemmed_word = NULL;
+  char *removed_part = NULL;
+
+  int rc = remove_complex_prefix_rule1("berakit", &stemmed_word, &removed_part);
+  debug("stem word: berakit, expected: rakit, actual: %s", stemmed_word);
+  mu_assert(rc == 1, "sucessfully stemmed");
+  mu_assert(strcmp("rakit", stemmed_word) == 0, "it stems to rakit");
+  mu_assert(strcmp("be", removed_part) == 0, "remove part should be be");
+  free(stemmed_word);
+  free(removed_part);
+
+  return NULL;
+}
+
+char *test_stem_singular_word_removes_complex_prefixes_1a() 
+{
+  char *word = "beria";
+  char *stemmed_word = NULL;
+  int rc = stem_singular_word(word, &stemmed_word);
+  debug("stem word: %s, expected: ia, actual: %s", word, stemmed_word);
+  mu_assert(rc == 1, "sucessfully stemmed");
+  mu_assert(strcmp("ia", stemmed_word) == 0, "it stems to ia");
+  free(stemmed_word);
+
+  return NULL;
+}
+
 char *all_tests()
 {
   mu_suite_start();
+
+  dictionary_load(dictionary_fullpath("data/kata-dasar.txt"));
 
   mu_run_test(test_is_plural);
   mu_run_test(test_plural_parts);
@@ -237,6 +284,9 @@ char *all_tests()
   mu_run_test(test_stem_singular_word);
   mu_run_test(test_stem_singular_word_removes_suffixes);
   mu_run_test(test_stem_singular_word_removes_plain_prefixes);
+  /* mu_run_test(test_stem_singular_word_removes_complex_prefixes_1a); */
+  mu_run_test(test_remove_complex_prefix_rule1_a);
+  mu_run_test(test_remove_complex_prefix_rule1_b);
 
   mu_run_test(test_dictionary_load);
   mu_run_test(test_dictionary_add);
