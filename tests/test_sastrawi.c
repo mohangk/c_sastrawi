@@ -7,6 +7,8 @@
 #include <string.h>
 #include "../sastrawi.h"
 #include "../dbg.h"
+#include "test_dictionary.h"
+#include "test_stem_plural.h"
 
 void free_parts(int parts_count, char **parts[])
 {
@@ -16,76 +18,6 @@ void free_parts(int parts_count, char **parts[])
   }
   free(*parts);
 }
-
-
-char *test_is_plural()
-{
-
-  mu_assert(!is_plural("hati-ku"), "hati-ku is not plural");
-  mu_assert(!is_plural("test2"), "test2 is not plural");
-  mu_assert(is_plural("hati-hati"), "hati-hati is plural");
-
-  return NULL;
-}
-
-char *test_plural_parts() {
-  char **parts = NULL;
-  int rc;
-
-  rc = plural_parts("beli", &parts);
-  mu_assert(rc == 1, "beli has 1 part");
-  mu_assert(strcmp("beli", parts[0]) == 0, "beli is returned in the parts");
-
-  free_parts(rc, &parts);
-
-  rc = plural_parts("beli-beli", &parts);
-  mu_assert(rc == 2, "beli-beli has 2 parts");
-  mu_assert(strcmp("beli", parts[0]) == 0, "beli-beli has 2 parts");
-  mu_assert(strcmp("beli", parts[1]) == 0, "beli-beli has 2 parts");
-
-  free_parts(rc, &parts);
-
-  rc = plural_parts("beli-beli-ku", &parts);
-  mu_assert(rc == 2, "beli-beli-ku has 2 parts");
-  mu_assert(strcmp("beli", parts[0]) == 0, "For beli-beli-ku, first part should be beli");
-  mu_assert(strcmp("beli-ku", parts[1]) == 0, "For beli-beli-ku, second part should be beli-ku");
-
-  free_parts(rc, &parts);
-
-  return NULL;
-}
-
-char *test_stem_plural_word_when_both_words_are_root_words_and_the_same() 
-{
-  char *word = "malaikat-malaikat";
-  char *stemmed_word = NULL;
-  int rc = stem_plural_word(word, &stemmed_word);
-  mu_assert(strcmp("malaikat", stemmed_word) == 0, "it stems to malaikat");
-  free(stemmed_word);
-
-
-
-  /* char *word3 = "berlari-lari"; */
-  /* char *stemmed_word3 = NULL; */
-  /* rc = stem_plural_word(word3, &stemmed_word3); */
-  /* debug("stem %s => %s, expected %s", word3, stemmed_word3, "lari"); */
-  /* mu_assert(strcmp("lari", stemmed_word3) == 0, "it stems to lari"); */
-  /* free(stemmed_word3); */
-
-  return NULL;
-}
-
-char *test_stem_plural_word_when_one_word_has_suffixes() 
-{
-  char *word = "malaikat-malaikatnya";
-  char *stemmed_word = NULL;
-  int rc = stem_plural_word(word, &stemmed_word);
-  mu_assert(strcmp("malaikat", stemmed_word) == 0, "it stems to malaikat");
-  free(stemmed_word);
-
-  return NULL;
-}
-
 
 
 char *test_stem_singular_word() 
@@ -273,43 +205,6 @@ char *test_stem_singular_word_removes_plain_prefixes()
   mu_assert(rc == 1, "sucessfully stemmed");
   mu_assert(strcmp("rajin", stemmed_word) == 0, "it stems to rajin");
   free(stemmed_word);
-
-  return NULL;
-}
-
-char *test_dictionary_load() 
-{
-  int rc;
-
-  rc = dictionary_load(dictionary_fullpath("tests/test_dict.txt"));
-  mu_assert(rc, "when test_dict exists return truthy");
-
-  rc = dictionary_load(dictionary_fullpath("tests/test_not_exists.txt"));
-  mu_assert(!rc, "when the dict file does not exist it should return falsy");
-
-  return NULL;
-}
-
-char *test_dictionary_contains() 
-{
-  dictionary_load(dictionary_fullpath("tests/test_dict.txt"));
-  mu_assert(dictionary_contains("aba"), "test dict contains aba");
-  mu_assert(!dictionary_contains("non-existent"), "test dict does not contain non-existent");
-
-  return NULL;
-}
-
-char *test_dictionary_add() 
-{
-  dictionary_add("nonexistent");
-
-  mu_assert(dictionary_contains("nonexistent"), "dict should contain nonexistent");
-  mu_assert(!dictionary_contains("nonexistent2"), "dict should not contain nonexistent2");
-
-  int count = dictionary_count();
-  dictionary_add("bola");
-  int new_count = dictionary_count();
-  mu_assert(count == new_count, "dictionary_add ensures that entries are unique");
 
   return NULL;
 }
