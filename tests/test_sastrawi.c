@@ -195,19 +195,7 @@ char *test_remove_derivational_suffix_without_dash()
   return NULL;
 }
 
-char *test_remove_plain_prefix() 
-{
-  char *stemmed_word = NULL; 
-  char *removed_part = NULL;
 
-  int rc = remove_derivational_suffix("cinta-kan", &stemmed_word, &removed_part);
-
-  mu_assert(rc, "successfully stems");
-  mu_assert(strcmp("cinta", stemmed_word) == 0, "we expect 'cinta' as the stemmed word");
-  mu_assert(strcmp("kan", removed_part) == 0, "we expect 'kan' as the removed part");
-
-  return NULL;
-}
 
 char *test_remove_suffixes() 
 {
@@ -221,6 +209,48 @@ char *test_remove_suffixes()
   return NULL;
 }
 
+char *test_remove_plain_prefix_di() 
+{
+  char *stemmed_word = NULL; 
+  char *removed_part = NULL;
+
+  int rc = remove_plain_prefix("dicinta", &stemmed_word, &removed_part);
+
+  mu_assert(rc, "successfully stems");
+  mu_assert(strcmp("cinta", stemmed_word) == 0, "we expect 'cinta' as the stemmed word");
+  mu_assert(strcmp("di", removed_part) == 0, "we expect 'di' as the removed part");
+
+  return NULL;
+}
+
+char *test_remove_plain_prefix_ke() 
+{
+  char *stemmed_word = NULL; 
+  char *removed_part = NULL;
+
+  int rc = remove_plain_prefix("kesana", &stemmed_word, &removed_part);
+
+  mu_assert(rc, "successfully stems");
+  mu_assert(strcmp("sana", stemmed_word) == 0, "we expect 'sana' as the stemmed word");
+  mu_assert(strcmp("ke", removed_part) == 0, "we expect 'ke' as the removed part");
+
+  return NULL;
+}
+
+char *test_remove_plain_prefix_se() 
+{
+  char *stemmed_word = NULL; 
+  char *removed_part = NULL;
+
+  int rc = remove_plain_prefix("sejenis", &stemmed_word, &removed_part);
+
+  mu_assert(rc, "successfully stems");
+  mu_assert(strcmp("jenis", stemmed_word) == 0, "we expect 'jenis' as the stemmed word");
+  mu_assert(strcmp("se", removed_part) == 0, "we expect 'se' as the removed part");
+
+  return NULL;
+}
+
 char *test_stem_singular_word_removes_suffixes() 
 {
   char *word = "bajumukah";
@@ -229,6 +259,19 @@ char *test_stem_singular_word_removes_suffixes()
   debug("stem word: %s, expected: baju, actual: %s", word, stemmed_word);
   mu_assert(rc == 1, "sucessfully stemmed");
   mu_assert(strcmp("baju", stemmed_word) == 0, "it stems to baju");
+  free(stemmed_word);
+
+  return NULL;
+}
+
+char *test_stem_singular_word_removes_plain_prefixes() 
+{
+  char *word = "kerajinannya";
+  char *stemmed_word = NULL;
+  int rc = stem_singular_word(word, &stemmed_word);
+  debug("stem word: %s, expected: rajin, actual: %s", word, stemmed_word);
+  mu_assert(rc == 1, "sucessfully stemmed");
+  mu_assert(strcmp("rajin", stemmed_word) == 0, "it stems to rajin");
   free(stemmed_word);
 
   return NULL;
@@ -292,8 +335,13 @@ char *all_tests()
 
   mu_run_test(test_remove_suffixes);
 
+  mu_run_test(test_remove_plain_prefix_di);
+  mu_run_test(test_remove_plain_prefix_ke);
+  mu_run_test(test_remove_plain_prefix_se);
+
   mu_run_test(test_stem_singular_word);
   mu_run_test(test_stem_singular_word_removes_suffixes);
+  mu_run_test(test_stem_singular_word_removes_plain_prefixes);
 
   mu_run_test(test_dictionary_load);
   mu_run_test(test_dictionary_add);
