@@ -29,16 +29,24 @@ int stem_singular_word(char *word, char **stemmed_word)
   char *post_suffix_removal_word = strndup(*stemmed_word, strlen(*stemmed_word));
   free(*stemmed_word);
   *stemmed_word = NULL;
-  char *removed_parts = NULL;
 
-  //step 4
-  remove_plain_prefix(post_suffix_removal_word, stemmed_word, &removed_parts);
+  remove_prefixes(post_suffix_removal_word, stemmed_word);
   if(dictionary_contains(*stemmed_word)) {
     return 1;
   }
-  free(removed_parts);
 
   return 0;
+}
+
+void remove_prefixes(char *word, char **stemmed_word) 
+{
+
+  char *removed_parts = NULL;
+
+  //step 4
+  remove_plain_prefix(word, stemmed_word, &removed_parts);
+
+  free(removed_parts);
 }
 
 
