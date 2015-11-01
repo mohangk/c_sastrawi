@@ -241,7 +241,7 @@ char *test_remove_complex_prefix_rule1_b()
   return NULL;
 }
 
-char *test_stem_singular_word_removes_complex_prefixes_1a() 
+char *test_stem_singular_word_removes_complex_prefixes_1() 
 {
   char *word = "beria";
   char *stemmed_word = NULL;
@@ -284,7 +284,8 @@ char *all_tests()
   mu_run_test(test_stem_singular_word);
   mu_run_test(test_stem_singular_word_removes_suffixes);
   mu_run_test(test_stem_singular_word_removes_plain_prefixes);
-  /* mu_run_test(test_stem_singular_word_removes_complex_prefixes_1a); */
+  mu_run_test(test_stem_singular_word_removes_complex_prefixes_1);
+
   mu_run_test(test_remove_complex_prefix_rule1_a);
   mu_run_test(test_remove_complex_prefix_rule1_b);
 
