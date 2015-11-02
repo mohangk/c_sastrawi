@@ -33,20 +33,35 @@ int stem_singular_word(char *word, char **stemmed_word)
 
 int remove_prefixes(char *word, char **stemmed_word)
 {
-
   char *removed_parts = NULL;
-  char *prefix_remove1 = NULL;
+  char *post_remove_plain = NULL;
 
   //step 4
-  remove_plain_prefix(word, &prefix_remove1, &removed_parts);
+  remove_plain_prefix(word, &post_remove_plain, &removed_parts);
   free(removed_parts);
 
-  if(dictionary_contains(prefix_remove1)) {
-    *stemmed_word = strndup(prefix_remove1, strlen(prefix_remove1));
+  if(dictionary_contains(post_remove_plain)) {
+    *stemmed_word = strndup(post_remove_plain, strlen(post_remove_plain));
     return 1;
   } 
 
-  return remove_complex_prefix_rule1(prefix_remove1, stemmed_word, &removed_parts);
+  char *post_remove_rule1 = NULL;
+  int rc_rule1 = remove_complex_prefix_rule1(post_remove_plain, &post_remove_rule1, &removed_parts);
+  free(removed_parts);
+  if(rc_rule1) {
+    *stemmed_word = strndup(post_remove_rule1, strlen(post_remove_rule1));
+    return 1;
+  }
+
+  char *post_remove_rule2 = NULL;
+  int rc_rule2 = remove_complex_prefix_rule2(post_remove_rule1, &post_remove_rule2, &removed_parts);
+  free(removed_parts);
+  *stemmed_word = strndup(post_remove_rule2, strlen(post_remove_rule2));
+  if(rc_rule2) {
+    return 1;
+  }
+
+  return 0;
 }
 
 
@@ -130,6 +145,27 @@ int remove_complex_prefix_rule1(char *word, char **stemmed_word, char **removed_
   return 0;
 }
 
+int remove_complex_prefix_rule2(char *word, char **stemmed_word, char **removed_part)
+{
+  int rc = 0;
+  char *partial_stemmed_word;
+
+  int split_rc = split_word3("(^ber)([^aeiou][a-z](\\w*))", word, removed_part, stemmed_word, &partial_stemmed_word);
+
+
+  if(split_rc == 1 && (strstr(partial_stemmed_word, "er") == NULL)) {
+    if(dictionary_contains(*stemmed_word)) {
+      rc = 1;
+    } 
+  } else {
+
+    (*stemmed_word) = strndup(word, strlen(word));
+    (*removed_part) = strndup("", 0);
+
+  }
+
+  return rc;
+}
 
 int split_word(char *pattern, char *word, char **first_part, char **second_part)
 {
@@ -138,14 +174,28 @@ int split_word(char *pattern, char *word, char **first_part, char **second_part)
 
   int match_count = preg_match(pattern, word, &matches);
 
-  if((*first_part) != NULL) {
-    debug("freeing first_part");
-    free((*first_part));
-  }
-
   if(match_count == 3) {
     (*first_part) = strndup(matches[1], strlen(matches[1]));
     (*second_part) = strndup(matches[2], strlen(matches[2]));
+    rc = 1;
+    free_matches(match_count, &matches);
+  } 
+
+  return rc;
+}
+
+int split_word3(char *pattern, char *word, char **first_part, char **second_part, char **third_part)
+{
+  char **matches = NULL;
+  int rc = 0;
+
+  int match_count = preg_match(pattern, word, &matches);
+
+  if(match_count == 4) {
+    (*first_part) = strndup(matches[1], strlen(matches[1]));
+    (*second_part) = strndup(matches[2], strlen(matches[2]));
+    (*third_part) = strndup(matches[3], strlen(matches[3]));
+
     rc = 1;
     free_matches(match_count, &matches);
   } 
