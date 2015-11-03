@@ -274,6 +274,29 @@ char *test_remove_complex_prefix_rule2_excludes_er()
   return NULL;
 }
 
+char *test_remove_complex_prefix_rule3_only_includes_er() 
+{
+  char *stemable_word = "berdaerah";
+  char *nonstemable_word = "bertabur";
+  char *stemmed_word = NULL;
+  char *removed_part = NULL;
+
+  int rc = remove_complex_prefix_rule3(stemable_word, &stemmed_word, &removed_part);
+  debug("stem word: %s, expected: daerah, actual: %s", stemable_word, stemmed_word);
+  mu_assert(rc == 1, "sucessfully stemmed");
+  mu_assert(strcmp("daerah", stemmed_word) == 0, "it stems to daerah");
+  mu_assert(strcmp("ber", removed_part) == 0, "remove part should be ber");
+  free(stemmed_word);
+  free(removed_part);
+ 
+  rc = remove_complex_prefix_rule3(nonstemable_word, &stemmed_word, &removed_part);
+  mu_assert(rc == 0, "cannot stem");
+  free(stemmed_word);
+  free(removed_part);
+
+  return NULL;
+}
+
 char *test_stem_singular_word_removes_complex_prefixes_1() 
 {
   char *word = "beria";
@@ -288,7 +311,6 @@ char *test_stem_singular_word_removes_complex_prefixes_1()
 }
 
 
-//TODO - create a test with berlarikah, to test return suffix
 char *test_stem_singular_word_removes_complex_prefixes_2() 
 {
   char *word = "bertabur";
@@ -301,6 +323,20 @@ char *test_stem_singular_word_removes_complex_prefixes_2()
 
   return NULL;
 }
+
+char *test_stem_singular_word_removes_complex_prefixes_3() 
+{
+  char *word = "berdaerah";
+  char *stemmed_word = NULL;
+  int rc = stem_singular_word(word, &stemmed_word);
+  debug("stem word: %s, expected: daerah, actual: %s", word, stemmed_word);
+  mu_assert(rc == 1, "sucessfully stemmed");
+  mu_assert(strcmp("daerah", stemmed_word) == 0, "it stems to daerah");
+  free(stemmed_word);
+
+  return NULL;
+}
+//TODO - create a test with berlarikah, to test return suffix
 
 char *all_tests()
 {
@@ -336,10 +372,12 @@ char *all_tests()
   mu_run_test(test_remove_complex_prefix_rule1_b);
   mu_run_test(test_remove_complex_prefix_rule2);
   mu_run_test(test_remove_complex_prefix_rule2_excludes_er);
+  mu_run_test(test_remove_complex_prefix_rule3_only_includes_er);
 
   mu_run_test(test_stem_singular_word_removes_plain_prefixes);
   mu_run_test(test_stem_singular_word_removes_complex_prefixes_1);
   mu_run_test(test_stem_singular_word_removes_complex_prefixes_2);
+  mu_run_test(test_stem_singular_word_removes_complex_prefixes_3);
   mu_run_test(test_dictionary_load);
   mu_run_test(test_dictionary_add);
   mu_run_test(test_dictionary_contains);

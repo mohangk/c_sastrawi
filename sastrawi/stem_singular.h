@@ -15,3 +15,4 @@ int split_word(char *pattern, char *word, char **first_part, char **second_part)
 int split_word3(char *pattern, char *word, char **first_part, char **second_part, char **third_part);
 int remove_complex_prefix_rule1(char *word, char **stemmed_word, char **removed_part);
 int remove_complex_prefix_rule2(char *word, char **stemmed_word, char **removed_part);
+int remove_complex_prefix_rule3(char *word, char **stemmed_word, char **removed_part);
