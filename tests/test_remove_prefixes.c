@@ -8,6 +8,21 @@
 #include "../sastrawi/remove_prefixes.h"
 #include "../dbg.h"
 
+
+char *test_remove_plain_prefix_returns_0_if_word_notin_dictionary() 
+{
+  char *stemmed_word = NULL; 
+  char *removed_part = NULL;
+
+  int rc = remove_plain_prefix("dipertikai", &stemmed_word, &removed_part);
+
+  mu_assert(rc == 0, "successfully stems but not in dictionary");
+  mu_assert(strcmp("pertikai", stemmed_word) == 0, "we expect 'pertikai' as the stemmed word");
+  mu_assert(strcmp("di", removed_part) == 0, "we expect 'di' as the removed part");
+
+  return NULL;
+}
+
 char *test_remove_plain_prefix_di() 
 {
   char *stemmed_word = NULL; 
@@ -15,9 +30,9 @@ char *test_remove_plain_prefix_di()
 
   int rc = remove_plain_prefix("dicinta", &stemmed_word, &removed_part);
 
-  mu_assert(rc, "successfully stems");
-  mu_assert(strcmp("cinta", stemmed_word) == 0, "we expect 'cinta' as the stemmed word");
-  mu_assert(strcmp("di", removed_part) == 0, "we expect 'di' as the removed part");
+  mu_assert(rc == 1, "successfully stems");
+  mu_assert(strcmp("cinta", stemmed_word) == 0, "we expect 'sana' as the stemmed word");
+  mu_assert(strcmp("di", removed_part) == 0, "we expect 'ke' as the removed part");
 
   return NULL;
 }
@@ -29,7 +44,7 @@ char *test_remove_plain_prefix_ke()
 
   int rc = remove_plain_prefix("kesana", &stemmed_word, &removed_part);
 
-  mu_assert(rc, "successfully stems");
+  mu_assert(rc == 1, "successfully stems");
   mu_assert(strcmp("sana", stemmed_word) == 0, "we expect 'sana' as the stemmed word");
   mu_assert(strcmp("ke", removed_part) == 0, "we expect 'ke' as the removed part");
 
@@ -43,7 +58,7 @@ char *test_remove_plain_prefix_se()
 
   int rc = remove_plain_prefix("sejenis", &stemmed_word, &removed_part);
 
-  mu_assert(rc, "successfully stems");
+  mu_assert(rc == 1, "successfully stems");
   mu_assert(strcmp("jenis", stemmed_word) == 0, "we expect 'jenis' as the stemmed word");
   mu_assert(strcmp("se", removed_part) == 0, "we expect 'se' as the removed part");
 

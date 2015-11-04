@@ -16,3 +16,4 @@ char *test_remove_complex_prefix_rule1_b();
 char *test_remove_complex_prefix_rule2();
 char *test_remove_complex_prefix_rule2_excludes_er();
 char *test_remove_complex_prefix_rule3_only_includes_er();
+char *test_remove_plain_prefix_returns_0_if_word_notin_dictionary();

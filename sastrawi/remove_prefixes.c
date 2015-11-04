@@ -15,10 +15,9 @@ int remove_prefixes(char *word, char **stemmed_word)
   char *post_remove_plain = NULL;
 
   //step 4
-  remove_plain_prefix(word, &post_remove_plain, &removed_parts);
+  int rc_plain = remove_plain_prefix(word, &post_remove_plain, &removed_parts);
   free(removed_parts);
-
-  if(dictionary_contains(post_remove_plain)) {
+  if(rc_plain) {
     *stemmed_word = strndup(post_remove_plain, strlen(post_remove_plain));
     return 1;
   } 
@@ -53,7 +52,37 @@ int remove_prefixes(char *word, char **stemmed_word)
 int remove_plain_prefix(char *word, char **stemmed_word, char **removed_part)
 {
 
-  return remove_prefix("di|ke|se", word, stemmed_word, removed_part);
+  int split_rc =  remove_prefix("di|ke|se", word, stemmed_word, removed_part);
+
+  if(split_rc) {
+
+    if(dictionary_contains(*stemmed_word)) {
+      return 1;
+    } else {
+      return 0;
+    }
+  } else {
+    return split_rc;
+  }
+}
+
+int remove_prefix(char *suffixes, char *word, char **stemmed_word, char **removed_part)
+{
+  char **matches = NULL;
+  int rc;
+  char *pattern = NULL;
+
+  int pattern_rc = asprintf(&pattern, "^(%s)(\\w+)$", suffixes);
+
+  rc = split_word(pattern, word, removed_part, stemmed_word);
+
+  if(rc != 1) {
+    (*stemmed_word) = strndup(word, strlen(word));
+    (*removed_part) = strndup("", 0);
+  }
+
+  free(pattern);
+  return rc;
 }
 
 int remove_complex_prefix_rule1(char *word, char **stemmed_word, char **removed_part)
@@ -136,23 +165,5 @@ int remove_complex_prefix_rule3(char *word, char **stemmed_word, char **removed_
 }
 
 
-int remove_prefix(char *suffixes, char *word, char **stemmed_word, char **removed_part)
-{
-  char **matches = NULL;
-  int rc;
-  char *pattern = NULL;
-
-  int pattern_rc = asprintf(&pattern, "^(%s)(\\w+)$", suffixes);
-
-  rc = split_word(pattern, word, removed_part, stemmed_word);
-
-  if(rc != 1) {
-    (*stemmed_word) = strndup(word, strlen(word));
-    (*removed_part) = strndup("", 0);
-  }
-
-  free(pattern);
-  return rc;
-}
 
 

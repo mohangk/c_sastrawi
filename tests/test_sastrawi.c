@@ -47,6 +47,7 @@ char *all_tests()
 
   mu_run_test(test_remove_suffixes);
 
+  mu_run_test(test_remove_plain_prefix_returns_0_if_word_notin_dictionary)
   mu_run_test(test_remove_plain_prefix_di);
   mu_run_test(test_remove_plain_prefix_ke);
   mu_run_test(test_remove_plain_prefix_se);
