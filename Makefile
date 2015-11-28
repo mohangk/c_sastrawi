@@ -1,5 +1,5 @@
 CFLAGS=-Wall -g -O2 -Wextra -Isrc -I/usr/local/include -DNDEBUG $(OPTFLAGS)
-LDFLAGS=$(OPTLIBS)
+LDFLAGS=-lpcre2-8  -L/usr/local/lib $(OPTLIBS)
 PREFIX?=/usr/local
 
 SOURCES=$(wildcard src/**/*.c src/*.c)
