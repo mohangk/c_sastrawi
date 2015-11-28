@@ -5,8 +5,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../sastrawi/remove_prefixes.h"
-#include "../dbg.h"
+#include "libsastrawi.h"
+#include "dbg.h"
 
 
 char *test_remove_plain_prefix_returns_0_if_word_notin_dictionary() 
@@ -155,3 +155,23 @@ char *test_remove_complex_prefix_rule3_only_includes_er()
   return NULL;
 }
 
+char *all_tests()
+{
+  mu_suite_start();
+
+  dictionary_load(dictionary_fullpath("data/kata-dasar.txt"));
+
+  mu_run_test(test_remove_plain_prefix_returns_0_if_word_notin_dictionary)
+  mu_run_test(test_remove_plain_prefix_di);
+  mu_run_test(test_remove_plain_prefix_ke);
+  mu_run_test(test_remove_plain_prefix_se);
+  mu_run_test(test_remove_complex_prefix_rule1_a);
+  mu_run_test(test_remove_complex_prefix_rule1_b);
+  mu_run_test(test_remove_complex_prefix_rule2);
+  mu_run_test(test_remove_complex_prefix_rule2_excludes_er);
+  mu_run_test(test_remove_complex_prefix_rule3_only_includes_er);
+
+  return NULL;
+}
+
+RUN_TESTS(all_tests);
