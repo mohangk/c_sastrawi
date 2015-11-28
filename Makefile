@@ -1,72 +1,55 @@
+CFLAGS=-Wall -g -O2 -Wextra -Isrc -I/usr/local/include -DNDEBUG $(OPTFLAGS)
+LDFLAGS=$(OPTLIBS)
+PREFIX?=/usr/local
+
+SOURCES=$(wildcard src/**/*.c src/*.c)
+OBJECTS=$(patsubst %.c,%.o,$(SOURCES))
+
+TEST_SRC=$(wildcard tests/*_tests.c)
+TESTS=$(patsubst %.c,%,$(TEST_SRC))
+
+TARGET=build/libsastrawi.a
+SO_TARGET=$(patsubst %.a,%.so,$(TARGET))
+
+all: $(TARGET)  tests
+
+dev: CFLAGS=-Wall -g -Isrc -Wall -Wextra $(OPTFLAGS)
+dev: all
+
+$(TARGET): CFLAGS += -fPIC
+$(TARGET): build $(OBJECTS)
+	ar rcs $@ $(OBJECTS)
+	ranlib $@
+
+# $(SO_TARGET): $(TARGET) $(OBJECTS)
+# 	$(CC) -shared -o $@ $(OBJECTS)
 #
-# 'make depend' uses makedepend to automatically generate dependencies 
-#               (dependencies are added to end of Makefile)
-# 'make'        build executable file 'mycc'
-# 'make clean'  removes all .o and executable files
-#
+build:
+	@mkdir -p build
+	@mkdir -p bin
 
-# define the C compiler to use
-CC = gcc
+.PHONY: tests
+tests: LDLIBS += $(TARGET)
+tests: $(TESTS)
+	sh ./tests/runtests.sh
 
-# define any compile-time flags
-CFLAGS = -O3 -Wall -g -std=c99
-
-# define any directories containing header files other than /usr/include
-#
-INCLUDES = -I/usr/local/include
-
-# define library paths in addition to /usr/lib
-#   if I wanted to include libraries not in /usr/lib I'd specify
-#   their path using -Lpath, something like:
-LFLAGS = -L/usr/local/lib
-
-# define any libraries to link into executable:
-#   if I want to link in libraries (libx.so or libx.a) I use the -llibname 
-#   option, something like (this will link in libmylib.so and libm.so:
-LIBS = -lpcre2-8
-
-# define the C source files
-SRCS = tests/test_sastrawi.c tests/test_dictionary.c tests/test_stem_singular.c tests/test_stem_plural.c tests/test_remove_prefixes.c tests/test_remove_suffixes.c sastrawi.c sastrawi/stem_plural.c sastrawi/stem_singular.c sastrawi/remove_prefixes.c sastrawi/remove_suffixes.c sastrawi/text_util.c sastrawi/dictionary.c regex/preg.c
-
-# define the C object files 
-#
-# This uses Suffix Replacement within a macro:
-#   $(name:string1=string2)
-#         For each word in 'name' replace 'string1' with 'string2'
-# Below we are replacing the suffix .c of all words in the macro SRCS
-# with the .o suffix
-#
-OBJS = $(SRCS:.c=.o)
-
-# define the executable file 
-MAIN = test_sastrawi
-
-#
-# The following part of the makefile is generic; it can be used to 
-# build any executable just by changing the definitions above and by
-# deleting dependencies appended to the file from 'make depend'
-#
-
-.PHONY: depend clean
-
-all:    $(MAIN)
-				@echo test_sastrawi compiled!
-
-$(MAIN): $(OBJS) 
-				 $(CC) $(CFLAGS) $(INCLUDES) -o $(MAIN) $(OBJS) $(LFLAGS) $(LIBS)
-
-# this is a suffix replacement rule for building .o's from .c's
-# it uses automatic variables $<: the name of the prerequisite of
-# the rule(a .c file) and $@: the name of the target of the rule (a .o file) 
-# (see the gnu make manual section about automatic variables)
-.c.o:
-				$(CC) $(CFLAGS) $(INCLUDES) -c $<  -o $@
+valgrind: all
+	VALGRIND="valgrind --log-file=/tmp/valgrind-%p.log"
 
 clean:
-				$(RM) *.o *~ regex/*.o tests/*.o sastrawi/*.o $(MAIN)
+	rm -rf build $(OBJECTS) $(TESTS)
+	rm -f tests/tests.log
+	find . -name "*.gc*" -exec rm {} \;
+	rm -rf `find . -name "*.dSYM" -print`
 
-depend: $(SRCS)
-				makedepend $(INCLUDES) $^
+install: all
+	install -d $(DESTDIR)/$(PREFIX)/lib/
+	install $(TARGET) $(DESTDIR)/$(PREFIX)/lib/
 
-# DO NOT DELETE THIS LINE -- make depend needs it
+BADFUNCS='[^_.>a-zA-Z0-9](str(n?cpy|n?cat|xfrm|n?dup|str|prrk|tok|_)stpm?cpy|a?sn?printf|byte_)'
+check:
+	@echo Files with potentially dangerous functions.
+	@egrep $(BADFUNCS) $(SOURCES) || true
 
+list:
+	sh -c "$(MAKE) -p no_targets__ | awk -F':' '/^[a-zA-Z0-9][^\$$#\/\\t=]*:([^=]|$$)/ {split(\$$1,A,/ /);for(i in A)print A[i]}' | grep -v '__\$$' | sort"

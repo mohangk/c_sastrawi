@@ -1,0 +1,27 @@
+CC = gcc
+CFLAGS = -O3 -Wall -g -std=c99
+INCLUDES = -I/usr/local/include
+LFLAGS = -L/usr/local/lib
+LIBS = -lpcre2-8
+SRCS = tests/test_sastrawi.c tests/test_dictionary.c tests/test_stem_singular.c tests/test_stem_plural.c tests/test_remove_prefixes.c tests/test_remove_suffixes.c sastrawi.c sastrawi/stem_plural.c sastrawi/stem_singular.c sastrawi/remove_prefixes.c sastrawi/remove_suffixes.c sastrawi/text_util.c sastrawi/dictionary.c regex/preg.c
+OBJS = $(SRCS:.c=.o)
+MAIN = test_sastrawi
+
+.PHONY: depend clean
+
+all:    $(MAIN)
+				@echo test_sastrawi compiled!
+
+$(MAIN): $(OBJS) 
+				 $(CC) $(CFLAGS) $(INCLUDES) -o $(MAIN) $(OBJS) $(LFLAGS) $(LIBS)
+.c.o:
+				$(CC) $(CFLAGS) $(INCLUDES) -c $<  -o $@
+
+clean:
+				$(RM) *.o *~ regex/*.o tests/*.o sastrawi/*.o $(MAIN)
+
+depend: $(SRCS)
+				makedepend $(INCLUDES) $^
+
+# DO NOT DELETE THIS LINE -- make depend needs it
+

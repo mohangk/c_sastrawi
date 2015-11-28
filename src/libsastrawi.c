@@ -4,6 +4,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "sastrawi.h"
+#include "libsastrawi.h"
 #include "sastrawi/stem_plural.h"
 #include "sastrawi/stem_singular.h"
+
+void print_my_name() 
+{
+  printf("mohan");
+}
