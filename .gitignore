@@ -7,3 +7,6 @@ test_text_cleanser
 test_sastrawi
 tags
 *.dSYM
+build/*
+*.log
+tests/*_tests

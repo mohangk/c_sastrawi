@@ -5,9 +5,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../sastrawi.h"
-#include "../dbg.h"
-#include "test_dictionary.h"
+#include "libsastrawi.h"
+#include "dbg.h"
+#include "dictionary_tests.h"
 
 char *test_dictionary_load() 
 {
@@ -45,3 +45,18 @@ char *test_dictionary_add()
 
   return NULL;
 }
+
+char *all_tests()
+{
+  mu_suite_start();
+
+  dictionary_load(dictionary_fullpath("data/kata-dasar.txt"));
+
+  mu_run_test(test_dictionary_load);
+  mu_run_test(test_dictionary_add);
+  mu_run_test(test_dictionary_contains);
+
+  return NULL;
+}
+
+RUN_TESTS(all_tests);
