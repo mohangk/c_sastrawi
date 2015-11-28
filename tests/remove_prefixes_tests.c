@@ -32,7 +32,7 @@ char *test_remove_plain_prefix_di()
 
   mu_assert(rc == 1, "successfully stems");
   mu_assert(strcmp("cinta", stemmed_word) == 0, "we expect 'sana' as the stemmed word");
-  mu_assert(strcmp("di", removed_part) == 0, "we expect 'ke' as the removed part");
+  mu_assert(strcmp("di", removed_part) == 0, "we expect 'di' as the removed part");
 
   return NULL;
 }
