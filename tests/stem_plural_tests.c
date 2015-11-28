@@ -8,15 +8,8 @@
 #include "libsastrawi.h"
 #include "dbg.h"
 #include "stem_plural_tests.h"
+#include "test_helper.h"
 
-void free_parts(int parts_count, char **parts[])
-{
-  for (int i = 0; i < parts_count; i++)
-  {
-    free((*parts)[i]);
-  }
-  free(*parts);
-}
 
 char *test_is_plural()
 {

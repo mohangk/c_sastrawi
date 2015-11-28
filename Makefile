@@ -2,7 +2,7 @@ CFLAGS=-Wall -g -O2 -Wextra -Isrc -I/usr/local/include -DNDEBUG $(OPTFLAGS)
 LDFLAGS=-lpcre2-8  -L/usr/local/lib $(OPTLIBS)
 PREFIX?=/usr/local
 
-SOURCES=$(wildcard src/**/*.c src/*.c)
+SOURCES=$(wildcard src/**/*.c src/*.c tests/test_helper.c)
 OBJECTS=$(patsubst %.c,%.o,$(SOURCES))
 
 TEST_SRC=$(wildcard tests/*_tests.c)
@@ -29,8 +29,9 @@ build:
 	@mkdir -p bin
 
 .PHONY: tests
-tests: LDLIBS += $(TARGET)
+tests: LDLIBS += $(TARGET) tests/test_helper.o
 tests: $(TESTS)
+	$(TESTS)
 	sh ./tests/runtests.sh
 
 valgrind: all
