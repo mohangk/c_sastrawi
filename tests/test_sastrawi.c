@@ -30,10 +30,10 @@ char *all_tests()
 
   dictionary_load(dictionary_fullpath("data/kata-dasar.txt"));
 
-  mu_run_test(test_is_plural);
-  mu_run_test(test_plural_parts);
-  mu_run_test(test_stem_plural_word_when_both_words_are_root_words_and_the_same);
-  mu_run_test(test_stem_plural_word_when_one_word_has_suffixes);
+  /* mu_run_test(test_is_plural); */
+  /* mu_run_test(test_plural_parts); */
+  /* mu_run_test(test_stem_plural_word_when_both_words_are_root_words_and_the_same); */
+  /* mu_run_test(test_stem_plural_word_when_one_word_has_suffixes); */
 
   mu_run_test(test_remove_inflectional_particle_with_dash);
   mu_run_test(test_remove_inflectional_particle_without_dash);
@@ -52,8 +52,8 @@ char *all_tests()
   mu_run_test(test_remove_plain_prefix_ke);
   mu_run_test(test_remove_plain_prefix_se);
 
-  mu_run_test(test_stem_singular_word);
-  mu_run_test(test_stem_singular_word_removes_suffixes);
+  /* mu_run_test(test_stem_singular_word); */
+  /* mu_run_test(test_stem_singular_word_removes_suffixes); */
 
   mu_run_test(test_remove_complex_prefix_rule1_a);
   mu_run_test(test_remove_complex_prefix_rule1_b);
@@ -61,13 +61,13 @@ char *all_tests()
   mu_run_test(test_remove_complex_prefix_rule2_excludes_er);
   mu_run_test(test_remove_complex_prefix_rule3_only_includes_er);
 
-  mu_run_test(test_stem_singular_word_removes_plain_prefixes);
-  mu_run_test(test_stem_singular_word_removes_complex_prefixes_1);
-  mu_run_test(test_stem_singular_word_removes_complex_prefixes_2);
-  mu_run_test(test_stem_singular_word_removes_complex_prefixes_3);
-  mu_run_test(test_dictionary_load);
-  mu_run_test(test_dictionary_add);
-  mu_run_test(test_dictionary_contains);
+  /* mu_run_test(test_stem_singular_word_removes_plain_prefixes); */
+  /* mu_run_test(test_stem_singular_word_removes_complex_prefixes_1); */
+  /* mu_run_test(test_stem_singular_word_removes_complex_prefixes_2); */
+  /* mu_run_test(test_stem_singular_word_removes_complex_prefixes_3); */
+  /* mu_run_test(test_dictionary_load); */
+  /* mu_run_test(test_dictionary_add); */
+  /* mu_run_test(test_dictionary_contains); */
 
   return NULL;
 }

@@ -5,8 +5,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../sastrawi.h"
-#include "../dbg.h"
+#include "libsastrawi.h"
+#include "dbg.h"
+
+void free_parts(int parts_count, char **parts[])
+{
+  for (int i = 0; i < parts_count; i++)
+  {
+    free((*parts)[i]);
+  }
+  free(*parts);
+}
 
 char *test_stem_singular_word() 
 {
@@ -84,3 +93,22 @@ char *test_stem_singular_word_removes_complex_prefixes_3()
 
   return NULL;
 }
+
+char *all_tests()
+{
+  mu_suite_start();
+
+  dictionary_load(dictionary_fullpath("data/kata-dasar.txt"));
+
+  mu_run_test(test_stem_singular_word);
+  mu_run_test(test_stem_singular_word_removes_suffixes);
+
+  mu_run_test(test_stem_singular_word_removes_plain_prefixes);
+  mu_run_test(test_stem_singular_word_removes_complex_prefixes_1);
+  mu_run_test(test_stem_singular_word_removes_complex_prefixes_2);
+  mu_run_test(test_stem_singular_word_removes_complex_prefixes_3);
+
+  return NULL;
+}
+
+RUN_TESTS(all_tests);
