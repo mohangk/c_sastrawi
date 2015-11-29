@@ -5,9 +5,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../sastrawi.h"
-#include "../dbg.h"
-#include "test_stem_plural.h"
+#include "libsastrawi.h"
+#include "dbg.h"
+#include "stem_plural_tests.h"
+#include "test_helper.h"
+
 
 char *test_is_plural()
 {
@@ -78,3 +80,19 @@ char *test_stem_plural_word_when_one_word_has_suffixes()
 }
 
 
+//TODO - create a test with berlarikah, to test return suffix
+char *all_tests()
+{
+  mu_suite_start();
+
+  dictionary_load(dictionary_fullpath("data/kata-dasar.txt"));
+
+  mu_run_test(test_is_plural);
+  mu_run_test(test_plural_parts);
+  mu_run_test(test_stem_plural_word_when_both_words_are_root_words_and_the_same);
+  mu_run_test(test_stem_plural_word_when_one_word_has_suffixes);
+
+  return NULL;
+}
+
+RUN_TESTS(all_tests);

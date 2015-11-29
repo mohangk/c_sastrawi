@@ -5,8 +5,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../sastrawi/remove_suffixes.h"
-#include "../dbg.h"
+#include "libsastrawi.h"
+#include "dbg.h"
 
 char *test_remove_inflectional_particle_with_dash() 
 {
@@ -117,3 +117,25 @@ char *test_remove_suffixes()
   return NULL;
 }
 
+char *all_tests()
+{
+  mu_suite_start();
+
+  dictionary_load(dictionary_fullpath("data/kata-dasar.txt"));
+
+  mu_run_test(test_remove_inflectional_particle_with_dash);
+  mu_run_test(test_remove_inflectional_particle_without_dash);
+  mu_run_test(test_remove_inflectional_particle_no_match);
+
+  mu_run_test(test_remove_possessive_pronoun_with_dash);
+  mu_run_test(test_remove_possessive_pronoun_without_dash);
+
+  mu_run_test(test_remove_derivational_suffix_with_dash);
+  mu_run_test(test_remove_derivational_suffix_without_dash);
+
+  mu_run_test(test_remove_suffixes);
+
+  return NULL;
+}
+
+RUN_TESTS(all_tests);
