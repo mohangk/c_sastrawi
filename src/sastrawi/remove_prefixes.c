@@ -9,52 +9,43 @@
 #include "remove_prefixes.h"
 #include "../dbg.h"
 
-int remove_prefixes(char *word, char **stemmed_word)
+const int prefix_remover_count = 5;
+typedef int (*prefix_remover)(char *word, char **stemmed_word, char **removed_part);
+const prefix_remover prefix_removers[prefix_remover_count] = {
+  remove_plain_prefix, 
+  remove_complex_prefix_rule1,
+  remove_complex_prefix_rule2,
+  remove_complex_prefix_rule3,
+  remove_complex_prefix_rule4
+};
+
+
+int remove_prefixes(char *original_word, char **stemmed_word)
 {
+  int rc = 0;
   char *removed_parts = NULL;
-  char *post_remove_plain = NULL;
 
-  //step 4
-  int rc_plain = remove_plain_prefix(word, &post_remove_plain, &removed_parts);
-  free(removed_parts);
-  if(rc_plain) {
-    *stemmed_word = strndup(post_remove_plain, strlen(post_remove_plain));
-    return 1;
-  } 
+  char *word = strndup(original_word, strlen(original_word));
 
-  char *post_remove_rule1 = NULL;
-  int rc_rule1 = remove_complex_prefix_rule1(post_remove_plain, &post_remove_rule1, &removed_parts);
-  free(removed_parts);
-  if(rc_rule1) {
-    *stemmed_word = strndup(post_remove_rule1, strlen(post_remove_rule1));
-    return 1;
+  for(int i =0; i < prefix_remover_count; i++) {
+
+    char *post_remove = NULL;
+    rc = (*prefix_removers[i])(word, &post_remove, &removed_parts);
+
+    if(rc) {
+      *stemmed_word = strndup(post_remove, strlen(post_remove));
+      break;
+    } else {
+      free(word);
+      word = strndup(post_remove, strlen(post_remove));
+    }
+    //cleanup
+    free(post_remove);
+    free(removed_parts);
+
   }
 
-  char *post_remove_rule2 = NULL;
-  int rc_rule2 = remove_complex_prefix_rule2(post_remove_rule1, &post_remove_rule2, &removed_parts);
-  free(removed_parts);
-  if(rc_rule2) {
-    *stemmed_word = strndup(post_remove_rule2, strlen(post_remove_rule2));
-    return 1;
-  }
-
-  char *post_remove_rule3 = NULL;
-  int rc_rule3 = remove_complex_prefix_rule3(post_remove_rule2, &post_remove_rule3, &removed_parts);
-  free(removed_parts);
-  if(rc_rule3) {
-    *stemmed_word = strndup(post_remove_rule3, strlen(post_remove_rule3));
-    return 1;
-  }
-
-  char *post_remove_rule4 = NULL;
-  int rc_rule4 = remove_complex_prefix_rule4(post_remove_rule3, &post_remove_rule4, &removed_parts);
-  free(removed_parts);
-  *stemmed_word = strndup(post_remove_rule4, strlen(post_remove_rule4));
-  if(rc_rule4) {
-    return 1;
-  }
-
-  return 0;
+  return rc;
 }
 
 int remove_plain_prefix(char *word, char **stemmed_word, char **removed_part)
@@ -175,9 +166,6 @@ int remove_complex_prefix_rule3(char *word, char **stemmed_word, char **removed_
 int remove_complex_prefix_rule4(char *word, char **stemmed_word, char **removed_part)
 {
   int rc = 0;
-  char *partial_stemmed_word;
-
-
 
   if(strcmp(word, "belajar") == 0) {
     rc = 1;
