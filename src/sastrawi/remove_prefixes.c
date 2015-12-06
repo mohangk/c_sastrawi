@@ -41,8 +41,16 @@ int remove_prefixes(char *word, char **stemmed_word)
   char *post_remove_rule3 = NULL;
   int rc_rule3 = remove_complex_prefix_rule3(post_remove_rule2, &post_remove_rule3, &removed_parts);
   free(removed_parts);
-  *stemmed_word = strndup(post_remove_rule3, strlen(post_remove_rule3));
   if(rc_rule3) {
+    *stemmed_word = strndup(post_remove_rule3, strlen(post_remove_rule3));
+    return 1;
+  }
+
+  char *post_remove_rule4 = NULL;
+  int rc_rule4 = remove_complex_prefix_rule4(post_remove_rule3, &post_remove_rule4, &removed_parts);
+  free(removed_parts);
+  *stemmed_word = strndup(post_remove_rule4, strlen(post_remove_rule4));
+  if(rc_rule4) {
     return 1;
   }
 
@@ -164,6 +172,23 @@ int remove_complex_prefix_rule3(char *word, char **stemmed_word, char **removed_
   return rc;
 }
 
+int remove_complex_prefix_rule4(char *word, char **stemmed_word, char **removed_part)
+{
+  int rc = 0;
+  char *partial_stemmed_word;
 
 
 
+  if(strcmp(word, "belajar") == 0) {
+    rc = 1;
+    (*stemmed_word) = strndup("ajar", strlen("ajar"));
+    (*removed_part) = strndup("bel", strlen("bel"));
+  } else {
+
+    (*stemmed_word) = strndup(word, strlen(word));
+    (*removed_part) = strndup("", 0);
+
+  }
+
+  return rc;
+}

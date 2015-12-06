@@ -85,6 +85,19 @@ char *test_stem_singular_word_removes_complex_prefixes_3()
   return NULL;
 }
 
+char *test_stem_singular_word_removes_complex_prefixes_4() 
+{
+  char *word = "belajar";
+  char *stemmed_word = NULL;
+  int rc = stem_singular_word(word, &stemmed_word);
+  debug("stem word: %s, expected: ajar, actual: %s", word, stemmed_word);
+  mu_assert(rc == 1, "sucessfully stemmed");
+  mu_assert(strcmp("ajar", stemmed_word) == 0, "it stems to ajar");
+  free(stemmed_word);
+
+  return NULL;
+}
+
 char *all_tests()
 {
   mu_suite_start();
@@ -98,6 +111,7 @@ char *all_tests()
   mu_run_test(test_stem_singular_word_removes_complex_prefixes_1);
   mu_run_test(test_stem_singular_word_removes_complex_prefixes_2);
   mu_run_test(test_stem_singular_word_removes_complex_prefixes_3);
+  mu_run_test(test_stem_singular_word_removes_complex_prefixes_4);
 
   return NULL;
 }
