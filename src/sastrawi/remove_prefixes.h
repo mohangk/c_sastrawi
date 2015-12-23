@@ -7,3 +7,4 @@ int remove_complex_prefix_rule3(char *word, char **stemmed_word, char **removed_
 int remove_complex_prefix_rule4(char *word, char **stemmed_word, char **removed_part);
 int remove_complex_prefix_rule5(char *word, char **stemmed_word, char **removed_part);
 int remove_complex_prefix_rule6(char *word, char **stemmed_word, char **removed_part);
+int remove_complex_prefix_rule7(char *word, char **stemmed_word, char **removed_part);

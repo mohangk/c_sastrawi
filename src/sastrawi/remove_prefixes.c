@@ -9,7 +9,7 @@
 #include "remove_prefixes.h"
 #include "../dbg.h"
 
-const int prefix_remover_count = 7;
+const int prefix_remover_count = 8;
 typedef int (*prefix_remover)(char *word, char **stemmed_word, char **removed_part);
 
 const prefix_remover prefix_removers[prefix_remover_count] = {
@@ -19,7 +19,8 @@ const prefix_remover prefix_removers[prefix_remover_count] = {
   remove_complex_prefix_rule3,
   remove_complex_prefix_rule4,
   remove_complex_prefix_rule5,
-  remove_complex_prefix_rule6
+  remove_complex_prefix_rule6,
+  remove_complex_prefix_rule7
 };
 
 
@@ -147,7 +148,6 @@ int remove_complex_prefix_rule2(char *word, char **stemmed_word, char **removed_
 int remove_complex_prefix_rule3(char *word, char **stemmed_word, char **removed_part)
 {
   int rc = 0;
-  char *partial_stemmed_word;
 
   int split_rc = split_word("(^ber)([^aeiou][a-z]er\\w*)", word, removed_part, stemmed_word);
 
@@ -238,4 +238,25 @@ int remove_complex_prefix_rule6(char *word, char **stemmed_word, char **removed_
   }
 
   return 0;
+}
+
+int remove_complex_prefix_rule7(char *word, char **stemmed_word, char **removed_part)
+{
+  int rc = 0;
+
+  int split_rc = split_word("(^ter)([^aeiour]er[aeiou]\\w*)", word, removed_part, stemmed_word);
+
+
+  if(split_rc == 1) {
+    if(dictionary_contains(*stemmed_word)) {
+      rc = 1;
+    } 
+  } else {
+
+    (*stemmed_word) = strndup(word, strlen(word));
+    (*removed_part) = strndup("", 0);
+
+  }
+
+  return rc;
 }
