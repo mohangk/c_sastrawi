@@ -201,6 +201,52 @@ char *test_remove_complex_prefix_rule5()
   return NULL;
 }
 
+char *test_remove_complex_prefix_rule6a() 
+{
+  char *stemable_word = "terancam";
+  char *nonstemable_word = "terbalik";
+  char *stemmed_word = NULL;
+  char *removed_part = NULL;
+
+  int rc = remove_complex_prefix_rule6(stemable_word, &stemmed_word, &removed_part);
+  debug("stem word: %s, expected: ancam, actual: %s", stemable_word, stemmed_word);
+  mu_assert(rc == 1, "sucessfully stemmed");
+  mu_assert(strcmp("ancam", stemmed_word) == 0, "it stems to ancam");
+  mu_assert(strcmp("ter", removed_part) == 0, "remove part should be be");
+  free(stemmed_word);
+  free(removed_part);
+ 
+  rc = remove_complex_prefix_rule6(nonstemable_word, &stemmed_word, &removed_part);
+  mu_assert(rc == 0, "cannot stem");
+  free(stemmed_word);
+  free(removed_part);
+
+  return NULL;
+}
+
+char *test_remove_complex_prefix_rule6b() 
+{
+  char *stemable_word = "teracun";
+  char *nonstemable_word = "terbalik";
+  char *stemmed_word = NULL;
+  char *removed_part = NULL;
+
+  int rc = remove_complex_prefix_rule6(stemable_word, &stemmed_word, &removed_part);
+  debug("stem word: %s, expected: racun, actual: %s", stemable_word, stemmed_word);
+  mu_assert(rc == 1, "sucessfully stemmed");
+  mu_assert(strcmp("racun", stemmed_word) == 0, "it stems to racun");
+  mu_assert(strcmp("te", removed_part) == 0, "remove part should be te");
+  free(stemmed_word);
+  free(removed_part);
+ 
+  rc = remove_complex_prefix_rule6(nonstemable_word, &stemmed_word, &removed_part);
+  mu_assert(rc == 0, "cannot stem");
+  free(stemmed_word);
+  free(removed_part);
+
+  return NULL;
+}
+
 char *all_tests()
 {
   mu_suite_start();
@@ -218,6 +264,8 @@ char *all_tests()
   mu_run_test(test_remove_complex_prefix_rule3_only_includes_er);
   mu_run_test(test_remove_complex_prefix_rule4);
   mu_run_test(test_remove_complex_prefix_rule5);
+  mu_run_test(test_remove_complex_prefix_rule6a);
+  mu_run_test(test_remove_complex_prefix_rule6b);
 
   return NULL;
 }
