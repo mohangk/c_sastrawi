@@ -170,6 +170,34 @@ char *test_remove_complex_prefix_rule4()
   free(stemmed_word);
   free(removed_part);
  
+  rc = remove_complex_prefix_rule4(nonstemable_word, &stemmed_word, &removed_part);
+  mu_assert(rc == 0, "cannot stem");
+  free(stemmed_word);
+  free(removed_part);
+
+  return NULL;
+}
+
+char *test_remove_complex_prefix_rule5() 
+{
+  char *stemable_word = "bekerja";
+  char *nonstemable_word = "berlari";
+  char *stemmed_word = NULL;
+  char *removed_part = NULL;
+
+  int rc = remove_complex_prefix_rule5(stemable_word, &stemmed_word, &removed_part);
+  debug("stem word: %s, expected: kerja, actual: %s", stemable_word, stemmed_word);
+  mu_assert(rc == 1, "sucessfully stemmed");
+  mu_assert(strcmp("kerja", stemmed_word) == 0, "it stems to kerja");
+  mu_assert(strcmp("be", removed_part) == 0, "remove part should be be");
+  free(stemmed_word);
+  free(removed_part);
+ 
+  rc = remove_complex_prefix_rule5(nonstemable_word, &stemmed_word, &removed_part);
+  mu_assert(rc == 0, "cannot stem");
+  free(stemmed_word);
+  free(removed_part);
+
   return NULL;
 }
 
@@ -189,6 +217,7 @@ char *all_tests()
   mu_run_test(test_remove_complex_prefix_rule2_excludes_er);
   mu_run_test(test_remove_complex_prefix_rule3_only_includes_er);
   mu_run_test(test_remove_complex_prefix_rule4);
+  mu_run_test(test_remove_complex_prefix_rule5);
 
   return NULL;
 }
