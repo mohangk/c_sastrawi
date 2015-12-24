@@ -263,21 +263,21 @@ char *test_remove_complex_prefix_rule7()
   return NULL;
 }
 
-/* char *test_remove_complex_prefix_rule8()  */
-/* { */
-/*   char *stemable_word = "tertangkap"; */
-/*   char *stemmed_word = NULL; */
-/*   char *removed_part = NULL; */
-/*  */
-/*   int rc = remove_complex_prefix_rule8(stemable_word, &stemmed_word, &removed_part); */
-/*   debug("stem word: %s, expected: tangkap, actual: %s", stemable_word, stemmed_word); */
-/*   mu_assert(rc == 1, "sucessfully stemmed"); */
-/*   mu_assert(strcmp("tangkap", stemmed_word) == 0, "it stems to tangkap"); */
-/*   mu_assert(strcmp("ter", removed_part) == 0, "remove part should be ter"); */
-/*   free(stemmed_word); */
-/*   free(removed_part); */
-/*   return NULL; */
-/* } */
+char *test_remove_complex_prefix_rule8() 
+{
+  char *stemable_word = "tertangkap";
+  char *stemmed_word = NULL;
+  char *removed_part = NULL;
+
+  int rc = remove_complex_prefix_rule8(stemable_word, &stemmed_word, &removed_part);
+  debug("stem word: %s, expected: tangkap, actual: %s", stemable_word, stemmed_word);
+  mu_assert(rc == 1, "sucessfully stemmed");
+  mu_assert(strcmp("tangkap", stemmed_word) == 0, "it stems to tangkap");
+  mu_assert(strcmp("ter", removed_part) == 0, "remove part should be ter");
+  free(stemmed_word);
+  free(removed_part);
+  return NULL;
+}
 
 char *all_tests()
 {
@@ -299,7 +299,7 @@ char *all_tests()
   mu_run_test(test_remove_complex_prefix_rule6a);
   mu_run_test(test_remove_complex_prefix_rule6b);
   mu_run_test(test_remove_complex_prefix_rule7);
-  //mu_run_test(test_remove_complex_prefix_rule8);
+  mu_run_test(test_remove_complex_prefix_rule8);
 
   return NULL;
 }

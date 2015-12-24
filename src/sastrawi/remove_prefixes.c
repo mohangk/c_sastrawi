@@ -9,7 +9,7 @@
 #include "remove_prefixes.h"
 #include "../dbg.h"
 
-const int prefix_remover_count = 8;
+const int prefix_remover_count = 9;
 typedef int (*prefix_remover)(char *word, char **stemmed_word, char **removed_part);
 
 const prefix_remover prefix_removers[prefix_remover_count] = {
@@ -20,7 +20,8 @@ const prefix_remover prefix_removers[prefix_remover_count] = {
   remove_complex_prefix_rule4,
   remove_complex_prefix_rule5,
   remove_complex_prefix_rule6,
-  remove_complex_prefix_rule7
+  remove_complex_prefix_rule7,
+  remove_complex_prefix_rule8
 };
 
 
@@ -248,6 +249,27 @@ int remove_complex_prefix_rule7(char *word, char **stemmed_word, char **removed_
 
 
   if(split_rc == 1) {
+    if(dictionary_contains(*stemmed_word)) {
+      rc = 1;
+    } 
+  } else {
+
+    (*stemmed_word) = strndup(word, strlen(word));
+    (*removed_part) = strndup("", 0);
+
+  }
+
+  return rc;
+}
+
+int remove_complex_prefix_rule8(char *word, char **stemmed_word, char **removed_part)
+{
+  int rc = 0;
+  char *partial_stemmed_word;
+
+  int split_rc = split_word3("(^ter)([^aeiour](\\w*))", word, removed_part, stemmed_word, &partial_stemmed_word);
+
+  if(split_rc == 1 && (strstr(partial_stemmed_word, "er") == NULL)) {
     if(dictionary_contains(*stemmed_word)) {
       rc = 1;
     } 
