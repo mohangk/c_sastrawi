@@ -279,6 +279,22 @@ char *test_remove_complex_prefix_rule8()
   return NULL;
 }
 
+char *test_remove_complex_prefix_rule9() 
+{
+  char *stemable_word = "teterbang";
+  char *stemmed_word = NULL;
+  char *removed_part = NULL;
+
+  int rc = remove_complex_prefix_rule9(stemable_word, &stemmed_word, &removed_part);
+  debug("stem word: %s, expected: terbang, actual: %s", stemable_word, stemmed_word);
+  mu_assert(rc == 1, "sucessfully stemmed");
+  mu_assert(strcmp("terbang", stemmed_word) == 0, "it stems to terbang");
+  mu_assert(strcmp("te", removed_part) == 0, "remove part should be te");
+  free(stemmed_word);
+  free(removed_part);
+  return NULL;
+}
+
 char *all_tests()
 {
   mu_suite_start();
@@ -300,6 +316,7 @@ char *all_tests()
   mu_run_test(test_remove_complex_prefix_rule6b);
   mu_run_test(test_remove_complex_prefix_rule7);
   mu_run_test(test_remove_complex_prefix_rule8);
+  mu_run_test(test_remove_complex_prefix_rule9);
 
   return NULL;
 }

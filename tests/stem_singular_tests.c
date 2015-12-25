@@ -150,6 +150,19 @@ char *test_stem_singular_word_removes_complex_prefixes_8()
   return NULL;
 }
 
+char *test_stem_singular_word_removes_complex_prefixes_9() 
+{
+  char *word = "teterbang";
+  char *stemmed_word = NULL;
+  int rc = stem_singular_word(word, &stemmed_word);
+  debug("stem word: %s, expected: terbang, actual: %s", word, stemmed_word);
+  mu_assert(rc == 1, "sucessfully stemmed");
+  mu_assert(strcmp("terbang", stemmed_word) == 0, "it stems to terbang");
+  free(stemmed_word);
+
+  return NULL;
+}
+
 char *all_tests()
 {
   mu_suite_start();
@@ -168,6 +181,7 @@ char *all_tests()
   mu_run_test(test_stem_singular_word_removes_complex_prefixes_6);
   mu_run_test(test_stem_singular_word_removes_complex_prefixes_7);
   mu_run_test(test_stem_singular_word_removes_complex_prefixes_8);
+  mu_run_test(test_stem_singular_word_removes_complex_prefixes_9);
 
   return NULL;
 }
