@@ -10,9 +10,8 @@
 #include "../dbg.h"
 
 const int prefix_remover_count = 10;
-typedef int (*prefix_remover)(char *word, char **stemmed_word, char **removed_part);
 
-const prefix_remover prefix_removers[prefix_remover_count] = {
+const PREFIX_REMOVER prefix_removers[prefix_remover_count] = {
   remove_plain_prefix, 
   remove_complex_prefix_rule1,
   remove_complex_prefix_rule2,

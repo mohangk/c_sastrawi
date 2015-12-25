@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "libsastrawi.h"
+#include "sastrawi/remove_prefixes.h"
 #include "dbg.h"
 
 
@@ -279,20 +280,24 @@ char *test_remove_complex_prefix_rule8()
   return NULL;
 }
 
-char *test_remove_complex_prefix_rule9() 
-{
-  char *stemable_word = "teterbang";
+char *test_remove_complex_prefix(char *stemable_word, char *expected_stemmed_word, char *expected_removed_part, PREFIX_REMOVER fn)
+{  
   char *stemmed_word = NULL;
   char *removed_part = NULL;
 
-  int rc = remove_complex_prefix_rule9(stemable_word, &stemmed_word, &removed_part);
-  debug("stem word: %s, expected: terbang, actual: %s", stemable_word, stemmed_word);
-  mu_assert(rc == 1, "sucessfully stemmed");
-  mu_assert(strcmp("terbang", stemmed_word) == 0, "it stems to terbang");
-  mu_assert(strcmp("te", removed_part) == 0, "remove part should be te");
+  int rc = fn(stemable_word, &stemmed_word, &removed_part);
+  debug("word: %s, expected stemmed word: %s, actual stemmed word: %s, expected removed part: %s, actual removed part: %s", stemable_word, expected_stemmed_word, stemmed_word, expected_removed_part, removed_part);
+  mu_assert(rc == 1, "failed to stem");
+  mu_assert(strcmp(expected_stemmed_word, stemmed_word) == 0, "failed while asserting stemmed word");
+  mu_assert(strcmp(expected_removed_part, removed_part) == 0, "failed while asserting removed part");
   free(stemmed_word);
   free(removed_part);
   return NULL;
+}
+
+char *test_remove_complex_prefix_rule9() 
+{
+  return test_remove_complex_prefix("teterbang", "terbang", "te",  remove_complex_prefix_rule9);
 }
 
 char *all_tests()
