@@ -190,7 +190,6 @@ int remove_complex_prefix_rule4(char *word, char **stemmed_word, char **removed_
 int remove_complex_prefix_rule5(char *word, char **stemmed_word, char **removed_part)
 {
   int rc = 0;
-  char *partial_stemmed_word;
 
   int split_rc = split_word("(^be)([^aeiour]er[^aeiou]\\w*)", word, removed_part, stemmed_word);
 
@@ -309,7 +308,6 @@ int remove_complex_prefix_rule9(char *word, char **stemmed_word, char **removed_
 int remove_complex_prefix_rule10(char *word, char **stemmed_word, char **removed_part)
 {
   int rc = 0;
-  char *partial_stemmed_word;
 
   int split_rc = split_word("(^me)([lrwy][aeiou]\\w*)", word, removed_part, stemmed_word);
 
@@ -330,7 +328,6 @@ int remove_complex_prefix_rule10(char *word, char **stemmed_word, char **removed
 int remove_complex_prefix_rule11(char *word, char **stemmed_word, char **removed_part)
 {
   int rc = 0;
-  char *partial_stemmed_word;
 
   int split_rc = split_word("(^mem)([fbv]\\w*)", word, removed_part, stemmed_word);
 
