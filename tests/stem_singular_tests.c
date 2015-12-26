@@ -8,188 +8,87 @@
 #include "libsastrawi.h"
 #include "dbg.h"
 
-char *test_stem_singular_word() 
+char *test_stem_singular_word_for(char *word, char *expected_stem_word) 
 {
-  char *word = "bola";
   char *stemmed_word = NULL;
   int rc = stem_singular_word(word, &stemmed_word);
-  mu_assert(rc == 1, "sucessfully stemmed");
-  mu_assert(strcmp("bola", stemmed_word) == 0, "if the word exists in the dictionary, just return it");
+  debug("stem word: %s, expected: %s, actual: %s", word, expected_stem_word, stemmed_word);
+  mu_assert(rc == 1, "failed to stem");
+  mu_assert(strcmp(expected_stem_word, stemmed_word) == 0, "failed to stem correctly");
   free(stemmed_word);
+
   return NULL;
+}
+
+char *test_stem_singular_word_does_not_need_stemming() 
+{
+  return test_stem_singular_word_for("bola", "bola");
 }
 
 char *test_stem_singular_word_removes_plain_prefixes() 
 {
-  char *word = "kerajinannya";
-  char *stemmed_word = NULL;
-  int rc = stem_singular_word(word, &stemmed_word);
-  debug("stem word: %s, expected: rajin, actual: %s", word, stemmed_word);
-  mu_assert(rc == 1, "sucessfully stemmed");
-  mu_assert(strcmp("rajin", stemmed_word) == 0, "it stems to rajin");
-  free(stemmed_word);
-
-  return NULL;
+  return test_stem_singular_word_for("kerajinannya", "rajin");
 }
 
 char *test_stem_singular_word_removes_suffixes() 
 {
-  char *word = "bajumukah";
-  char *stemmed_word = NULL;
-  int rc = stem_singular_word(word, &stemmed_word);
-  debug("stem word: %s, expected: baju, actual: %s", word, stemmed_word);
-  mu_assert(rc == 1, "sucessfully stemmed");
-  mu_assert(strcmp("baju", stemmed_word) == 0, "it stems to baju");
-  free(stemmed_word);
-
-  return NULL;
+  return test_stem_singular_word_for("bajumukah", "baju");
 }
 
 char *test_stem_singular_word_removes_complex_prefixes_1() 
 {
-  char *word = "beria";
-  char *stemmed_word = NULL;
-  int rc = stem_singular_word(word, &stemmed_word);
-  debug("stem word: %s, expected: ia, actual: %s", word, stemmed_word);
-  mu_assert(rc == 1, "sucessfully stemmed");
-  mu_assert(strcmp("ia", stemmed_word) == 0, "it stems to ia");
-  free(stemmed_word);
-
-  return NULL;
+  return test_stem_singular_word_for("beria", "ia");
 }
-
 
 char *test_stem_singular_word_removes_complex_prefixes_2() 
 {
-  char *word = "bertabur";
-  char *stemmed_word = NULL;
-  int rc = stem_singular_word(word, &stemmed_word);
-  debug("stem word: %s, expected: tabur, actual: %s", word, stemmed_word);
-  mu_assert(rc == 1, "sucessfully stemmed");
-  mu_assert(strcmp("tabur", stemmed_word) == 0, "it stems to tabur");
-  free(stemmed_word);
-
-  return NULL;
+  return test_stem_singular_word_for("bertabur", "tabur");
 }
 
 char *test_stem_singular_word_removes_complex_prefixes_3() 
 {
-  char *word = "berdaerah";
-  char *stemmed_word = NULL;
-  int rc = stem_singular_word(word, &stemmed_word);
-  debug("stem word: %s, expected: daerah, actual: %s", word, stemmed_word);
-  mu_assert(rc == 1, "sucessfully stemmed");
-  mu_assert(strcmp("daerah", stemmed_word) == 0, "it stems to daerah");
-  free(stemmed_word);
-
-  return NULL;
+  return test_stem_singular_word_for("berdaerah", "daerah");
 }
 
 char *test_stem_singular_word_removes_complex_prefixes_4() 
 {
-  char *word = "belajar";
-  char *stemmed_word = NULL;
-  int rc = stem_singular_word(word, &stemmed_word);
-  debug("stem word: %s, expected: ajar, actual: %s", word, stemmed_word);
-  mu_assert(rc == 1, "sucessfully stemmed");
-  mu_assert(strcmp("ajar", stemmed_word) == 0, "it stems to ajar");
-  free(stemmed_word);
-
-  return NULL;
+  return test_stem_singular_word_for("belajar", "ajar");
 }
 
 char *test_stem_singular_word_removes_complex_prefixes_5() 
 {
-  char *word = "bekerja";
-  char *stemmed_word = NULL;
-  int rc = stem_singular_word(word, &stemmed_word);
-  debug("stem word: %s, expected: kerja, actual: %s", word, stemmed_word);
-  mu_assert(rc == 1, "sucessfully stemmed");
-  mu_assert(strcmp("kerja", stemmed_word) == 0, "it stems to kerja");
-  free(stemmed_word);
-
-  return NULL;
+  return test_stem_singular_word_for("bekerja", "kerja");
 }
 
 char *test_stem_singular_word_removes_complex_prefixes_6() 
 {
-  char *word = "teracun";
-  char *stemmed_word = NULL;
-  int rc = stem_singular_word(word, &stemmed_word);
-  debug("stem word: %s, expected: racun, actual: %s", word, stemmed_word);
-  mu_assert(rc == 1, "sucessfully stemmed");
-  mu_assert(strcmp("racun", stemmed_word) == 0, "it stems to kerja");
-  free(stemmed_word);
-
-  return NULL;
+  return test_stem_singular_word_for("teracun", "racun");
 }
 
 char *test_stem_singular_word_removes_complex_prefixes_7() 
 {
-  char *word = "terperuk";
-  char *stemmed_word = NULL;
-  int rc = stem_singular_word(word, &stemmed_word);
-  debug("stem word: %s, expected: peruk, actual: %s", word, stemmed_word);
-  mu_assert(rc == 1, "sucessfully stemmed");
-  mu_assert(strcmp("peruk", stemmed_word) == 0, "it stems to peruk");
-  free(stemmed_word);
-
-  return NULL;
+  return test_stem_singular_word_for("terperuk", "peruk");
 }
 
 char *test_stem_singular_word_removes_complex_prefixes_8() 
 {
-  char *word = "tertangkap";
-  char *stemmed_word = NULL;
-  int rc = stem_singular_word(word, &stemmed_word);
-  debug("stem word: %s, expected: tangkap, actual: %s", word, stemmed_word);
-  mu_assert(rc == 1, "sucessfully stemmed");
-  mu_assert(strcmp("tangkap", stemmed_word) == 0, "it stems to tangkap");
-  free(stemmed_word);
-
-  return NULL;
+  return test_stem_singular_word_for("tertangkap", "tangkap");
 }
 
 char *test_stem_singular_word_removes_complex_prefixes_9() 
 {
-  char *word = "teterbang";
-  char *stemmed_word = NULL;
-  int rc = stem_singular_word(word, &stemmed_word);
-  debug("stem word: %s, expected: terbang, actual: %s", word, stemmed_word);
-  mu_assert(rc == 1, "sucessfully stemmed");
-  mu_assert(strcmp("terbang", stemmed_word) == 0, "it stems to terbang");
-  free(stemmed_word);
-
-  return NULL;
+  return test_stem_singular_word_for("teterbang", "terbang");
 }
 
 char *test_stem_singular_word_removes_complex_prefixes_10() 
 {
-  char *word = "mewarnai";
-  char *stemmed_word = NULL;
-  int rc = stem_singular_word(word, &stemmed_word);
-  debug("stem word: %s, expected: warna, actual: %s", word, stemmed_word);
-  mu_assert(rc == 1, "sucessfully stemmed");
-  mu_assert(strcmp("warna", stemmed_word) == 0, "it stems to warna");
-  free(stemmed_word);
-
-  return NULL;
+  return test_stem_singular_word_for("mewarnai", "warna");
 }
 
 char *test_stem_singular_word_removes_complex_prefixes_11() 
 {
-  char *word = "memfasilitasi";
-  char *stemmed_word = NULL;
-  int rc = stem_singular_word(word, &stemmed_word);
-  debug("stem word: %s, expected: fasilitas, actual: %s", word, stemmed_word);
-  mu_assert(rc == 1, "sucessfully stemmed");
-  mu_assert(strcmp("fasilitas", stemmed_word) == 0, "it stems to warna");
-  free(stemmed_word);
-
-  return NULL;
+  return test_stem_singular_word_for("memfasilitasi", "fasilitas");
 }
-
-
 
 char *all_tests()
 {
@@ -197,7 +96,7 @@ char *all_tests()
 
   dictionary_load(dictionary_fullpath("data/kata-dasar.txt"));
 
-  mu_run_test(test_stem_singular_word);
+  mu_run_test(test_stem_singular_word_does_not_need_stemming);
   mu_run_test(test_stem_singular_word_removes_suffixes);
 
   mu_run_test(test_stem_singular_word_removes_plain_prefixes);
