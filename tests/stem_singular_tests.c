@@ -90,6 +90,11 @@ char *test_stem_singular_word_removes_complex_prefixes_11()
   return test_stem_singular_word_for("memfasilitasi", "fasilitas");
 }
 
+char *test_stem_singular_word_removes_complex_prefixes_12() 
+{
+  return test_stem_singular_word_for("mempengaruhi", "pengaruh");
+}
+
 char *all_tests()
 {
   mu_suite_start();
@@ -111,6 +116,7 @@ char *all_tests()
   mu_run_test(test_stem_singular_word_removes_complex_prefixes_9);
   mu_run_test(test_stem_singular_word_removes_complex_prefixes_10);
   mu_run_test(test_stem_singular_word_removes_complex_prefixes_11);
+  mu_run_test(test_stem_singular_word_removes_complex_prefixes_12);
 
   return NULL;
 }

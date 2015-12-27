@@ -356,6 +356,11 @@ char *test_remove_complex_prefix_rule11_unstemmable()
   return NULL;
 }
 
+char *test_remove_complex_prefix_rule12() 
+{
+  return test_remove_complex_prefix("mempengaruh", "pengaruh", "mem",  remove_complex_prefix_rule12);
+}
+
 char *all_tests()
 {
   mu_suite_start();
@@ -386,6 +391,7 @@ char *all_tests()
   mu_run_test(test_remove_complex_prefix_rule11_b);
   mu_run_test(test_remove_complex_prefix_rule11_v);
   mu_run_test(test_remove_complex_prefix_rule11_unstemmable);
+  mu_run_test(test_remove_complex_prefix_rule12);
 
   return NULL;
 }
