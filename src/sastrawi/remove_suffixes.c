@@ -53,12 +53,7 @@ int remove_suffix(char *suffixes, char *word, char **stemmed_word, char **remove
 
   int pattern_rc = asprintf(&pattern, "(\\w+?)-?(%s)$", suffixes);
 
-  rc = split_word(pattern, word, stemmed_word, removed_part);
-
-  if(rc != 1) {
-    (*stemmed_word) = strndup(word, strlen(word));
-    (*removed_part) = strndup("", 0);
-  }
+  rc = suffix_split_word(pattern, word, stemmed_word, removed_part);
 
   free(pattern);
   return rc;

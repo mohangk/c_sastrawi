@@ -335,6 +335,27 @@ char *test_remove_complex_prefix_rule11_v()
   return test_remove_complex_prefix("memvonis", "vonis", "mem",  remove_complex_prefix_rule11);
 }
 
+char *test_remove_complex_prefix_rule11_unstemmable() 
+{
+  char *word = "terbalik";
+  char *stemmed_word = NULL;
+  char *removed_part = NULL;
+
+  int rc = remove_complex_prefix_rule11(word, &stemmed_word, &removed_part);
+  debug("word: %s, expected: %s, actual: %s, expected removed: %s, actual removed : %s",
+      word, word, 
+      stemmed_word, "", 
+      removed_part);
+
+  mu_assert(rc == 0, "should not stem");
+  mu_assert(strcmp(word, stemmed_word) == 0, "it returns the original word");
+  mu_assert(strcmp("", removed_part) == 0, "it returns an empty string as the removed part");
+  free(stemmed_word);
+  free(removed_part);
+
+  return NULL;
+}
+
 char *all_tests()
 {
   mu_suite_start();
@@ -364,6 +385,7 @@ char *all_tests()
   mu_run_test(test_remove_complex_prefix_rule11_f);
   mu_run_test(test_remove_complex_prefix_rule11_b);
   mu_run_test(test_remove_complex_prefix_rule11_v);
+  mu_run_test(test_remove_complex_prefix_rule11_unstemmable);
 
   return NULL;
 }
