@@ -100,6 +100,11 @@ char *test_stem_singular_word_removes_complex_prefixes_13()
   return test_stem_singular_word_for("memasuki", "masuk");
 }
 
+char *test_stem_singular_word_removes_complex_prefixes_14() 
+{
+  return test_stem_singular_word_for("mentaati", "taat");
+}
+
 char *all_tests()
 {
   mu_suite_start();
@@ -123,6 +128,7 @@ char *all_tests()
   mu_run_test(test_stem_singular_word_removes_complex_prefixes_11);
   mu_run_test(test_stem_singular_word_removes_complex_prefixes_12);
   mu_run_test(test_stem_singular_word_removes_complex_prefixes_13);
+  mu_run_test(test_stem_singular_word_removes_complex_prefixes_14);
 
   return NULL;
 }
