@@ -401,6 +401,16 @@ char *test_remove_complex_prefix_rule14_z()
   return test_remove_complex_prefix("menziarah", "ziarah", "men",  remove_complex_prefix_rule14);
 }
 
+char *test_remove_complex_prefix_rule15a() 
+{
+  return test_remove_complex_prefix("menikmat", "nikmat", "me",  remove_complex_prefix_rule15);
+}
+
+char *test_remove_complex_prefix_rule15b() 
+{
+  return test_remove_complex_prefix("menulis", "tulis", "me",  remove_complex_prefix_rule15);
+}
+
 char *all_tests()
 {
   mu_suite_start();
@@ -440,6 +450,8 @@ char *all_tests()
   mu_run_test(test_remove_complex_prefix_rule14_s);
   mu_run_test(test_remove_complex_prefix_rule14_t);
   mu_run_test(test_remove_complex_prefix_rule14_z);
+  mu_run_test(test_remove_complex_prefix_rule15a);
+  mu_run_test(test_remove_complex_prefix_rule15b);
 
   return NULL;
 }

@@ -9,7 +9,7 @@
 #include "remove_prefixes.h"
 #include "../dbg.h"
 
-const int prefix_remover_count = 15;
+const int prefix_remover_count = 16;
 
 const PREFIX_REMOVER prefix_removers[prefix_remover_count] = {
   remove_plain_prefix, 
@@ -26,7 +26,8 @@ const PREFIX_REMOVER prefix_removers[prefix_remover_count] = {
   remove_complex_prefix_rule11,
   remove_complex_prefix_rule12,
   remove_complex_prefix_rule13,
-  remove_complex_prefix_rule14
+  remove_complex_prefix_rule14,
+  remove_complex_prefix_rule15
 };
 
 
@@ -305,7 +306,6 @@ int remove_complex_prefix_rule13(char *word, char **stemmed_word, char **removed
 
   if(split_rc == 1 ) {
     if(dictionary_contains(*stemmed_word)) {
-      log_err(" >> split_rc: %d, in dict", split_rc);
       rc = 1;
     } else {
 
@@ -334,6 +334,34 @@ int remove_complex_prefix_rule14(char *word, char **stemmed_word, char **removed
 
   if(split_rc == 1 && dictionary_contains(*stemmed_word)) {
       rc = 1;
+  }
+  return rc;
+}
+
+int remove_complex_prefix_rule15(char *word, char **stemmed_word, char **removed_part)
+{
+  int rc = 0;
+
+  int split_rc = prefix_split_word("(^me)(n[aeiou]\\w*)", word, removed_part, stemmed_word);
+
+  if(split_rc == 1 ) {
+    if(dictionary_contains(*stemmed_word)) {
+      rc = 1;
+    } else {
+
+      char *rule_b_word;
+
+      asprintf(&rule_b_word, "t%s", *stemmed_word+1);
+
+      if(dictionary_contains(rule_b_word)) {
+        free(*removed_part);
+        *removed_part = strndup("me",2);
+
+        free(*stemmed_word);
+        *stemmed_word = strndup(rule_b_word, strlen(rule_b_word));
+        rc = 1;
+      } 
+    }
   }
   return rc;
 }
