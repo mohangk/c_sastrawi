@@ -302,9 +302,25 @@ int remove_complex_prefix_rule13(char *word, char **stemmed_word, char **removed
 
   int split_rc = prefix_split_word("(^me)(m[aeiou]\\w*)", word, removed_part, stemmed_word);
 
-  if(split_rc == 1 && dictionary_contains(*stemmed_word)) {
+  if(split_rc == 1 ) {
+    if(dictionary_contains(*stemmed_word)) {
+      log_err(" >> split_rc: %d, in dict", split_rc);
       rc = 1;
-  } 
+    } else {
 
+      char *rule_b_word;
+
+      asprintf(&rule_b_word, "p%s", *stemmed_word+1);
+
+      if(dictionary_contains(rule_b_word)) {
+        free(*removed_part);
+        *removed_part = strndup("me",2);
+
+        free(*stemmed_word);
+        *stemmed_word = strndup(rule_b_word, strlen(rule_b_word));
+        rc = 1;
+      } 
+    }
+  }
   return rc;
 }

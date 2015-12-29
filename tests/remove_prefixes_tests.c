@@ -366,6 +366,11 @@ char *test_remove_complex_prefix_rule13a()
   return test_remove_complex_prefix("memasuk", "masuk", "me",  remove_complex_prefix_rule13);
 }
 
+char *test_remove_complex_prefix_rule13b() 
+{
+  return test_remove_complex_prefix("memakai", "pakai", "me",  remove_complex_prefix_rule13);
+}
+
 char *all_tests()
 {
   mu_suite_start();
@@ -398,6 +403,7 @@ char *all_tests()
   mu_run_test(test_remove_complex_prefix_rule11_unstemmable);
   mu_run_test(test_remove_complex_prefix_rule12);
   mu_run_test(test_remove_complex_prefix_rule13a);
+  mu_run_test(test_remove_complex_prefix_rule13b);
 
   return NULL;
 }
