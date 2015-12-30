@@ -62,7 +62,7 @@ int remove_prefixes(char *original_word, char **stemmed_word)
 int remove_plain_prefix(char *word, char **stemmed_word, char **removed_part)
 {
 
-  int split_rc =  remove_prefix("di|ke|se", word, stemmed_word, removed_part);
+  int split_rc =  prefix_split_word("^(di|ke|se)(\\w+)$", word, removed_part, stemmed_word);
 
   if(split_rc) {
 
@@ -74,20 +74,6 @@ int remove_plain_prefix(char *word, char **stemmed_word, char **removed_part)
   } else {
     return split_rc;
   }
-}
-
-int remove_prefix(char *suffixes, char *word, char **stemmed_word, char **removed_part)
-{
-  char **matches = NULL;
-  int rc;
-  char *pattern = NULL;
-
-  int pattern_rc = asprintf(&pattern, "^(%s)(\\w+)$", suffixes);
-
-  rc = prefix_split_word(pattern, word, removed_part, stemmed_word);
-
-  free(pattern);
-  return rc;
 }
 
 int remove_complex_prefix_rule1(char *word, char **stemmed_word, char **removed_part)
