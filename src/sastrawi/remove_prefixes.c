@@ -143,16 +143,11 @@ int remove_complex_prefix_rule4(char *word, char **stemmed_word, char **removed_
 {
   int rc = 0;
 
-  if(strcmp(word, "belajar") == 0) {
-    rc = 1;
-    (*stemmed_word) = strndup("ajar", strlen("ajar"));
-    (*removed_part) = strndup("bel", strlen("bel"));
-  } else {
+  int split_rc = prefix_split_word("(^bel)(ajar)", word, removed_part, stemmed_word);
 
-    (*stemmed_word) = strndup(word, strlen(word));
-    (*removed_part) = strndup("", 0);
-
-  }
+  if(split_rc == 1 && dictionary_contains(*stemmed_word)) {
+      rc = 1;
+  }   
 
   return rc;
 }
