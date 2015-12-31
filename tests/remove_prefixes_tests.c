@@ -9,6 +9,20 @@
 #include "sastrawi/remove_prefixes.h"
 #include "dbg.h"
 
+char *test_remove_complex_prefix(char *stemable_word, char *expected_stemmed_word, char *expected_removed_part, PREFIX_REMOVER fn)
+{  
+  char *stemmed_word = NULL;
+  char *removed_part = NULL;
+
+  int rc = fn(stemable_word, &stemmed_word, &removed_part);
+  debug("word: %s, expected stemmed word: %s, actual stemmed word: %s, expected removed part: %s, actual removed part: %s", stemable_word, expected_stemmed_word, stemmed_word, expected_removed_part, removed_part);
+  mu_assert(rc == 1, "failed to stem");
+  mu_assert(strcmp(expected_stemmed_word, stemmed_word) == 0, "failed while asserting stemmed word");
+  mu_assert(strcmp(expected_removed_part, removed_part) == 0, "failed while asserting removed part");
+  free(stemmed_word);
+  free(removed_part);
+  return NULL;
+}
 
 char *test_remove_plain_prefix_returns_0_if_word_notin_dictionary() 
 {
@@ -102,19 +116,7 @@ char *test_remove_complex_prefix_rule1_b()
 
 char *test_remove_complex_prefix_rule2() 
 {
-  char *word = "berkop";
-  char *stemmed_word = NULL;
-  char *removed_part = NULL;
-
-  int rc = remove_complex_prefix_rule2(word, &stemmed_word, &removed_part);
-  debug("stem word: %s, expected: kop, actual: %s", word, stemmed_word);
-  mu_assert(rc == 1, "sucessfully stemmed");
-  mu_assert(strcmp("kop", stemmed_word) == 0, "it stems to kop");
-  mu_assert(strcmp("ber", removed_part) == 0, "remove part should be ber");
-  free(stemmed_word);
-  free(removed_part);
-
-  return NULL;
+  return test_remove_complex_prefix("berkop", "kop", "ber", remove_complex_prefix_rule2);
 }
 
 char *test_remove_complex_prefix_rule2_excludes_er() 
@@ -280,18 +282,19 @@ char *test_remove_complex_prefix_rule8()
   return NULL;
 }
 
-char *test_remove_complex_prefix(char *stemable_word, char *expected_stemmed_word, char *expected_removed_part, PREFIX_REMOVER fn)
-{  
+char *test_remove_complex_prefix_rule8_excludes_er() 
+{
+  char *word = "terterbang";
   char *stemmed_word = NULL;
   char *removed_part = NULL;
 
-  int rc = fn(stemable_word, &stemmed_word, &removed_part);
-  debug("word: %s, expected stemmed word: %s, actual stemmed word: %s, expected removed part: %s, actual removed part: %s", stemable_word, expected_stemmed_word, stemmed_word, expected_removed_part, removed_part);
-  mu_assert(rc == 1, "failed to stem");
-  mu_assert(strcmp(expected_stemmed_word, stemmed_word) == 0, "failed while asserting stemmed word");
-  mu_assert(strcmp(expected_removed_part, removed_part) == 0, "failed while asserting removed part");
+  int rc = remove_complex_prefix_rule8(word, &stemmed_word, &removed_part);
+  debug("stem word: %s, expected: terterbang, actual: %s", word, stemmed_word);
+  mu_assert(rc == 0, "does not stem");
+  mu_assert(strcmp("terterbang", stemmed_word) == 0, "it does not stem it");
   free(stemmed_word);
   free(removed_part);
+
   return NULL;
 }
 
@@ -432,6 +435,7 @@ char *all_tests()
   mu_run_test(test_remove_complex_prefix_rule6b);
   mu_run_test(test_remove_complex_prefix_rule7);
   mu_run_test(test_remove_complex_prefix_rule8);
+  mu_run_test(test_remove_complex_prefix_rule8_excludes_er);
   mu_run_test(test_remove_complex_prefix_rule9);
   mu_run_test(test_remove_complex_prefix_rule10_l);
   mu_run_test(test_remove_complex_prefix_rule10_r);
