@@ -61,46 +61,43 @@ int remove_prefixes(char *original_word, char **stemmed_word)
 
 int remove_plain_prefix(char *word, char **stemmed_word, char **removed_part)
 {
+  int rc = 0;
 
   int split_rc =  prefix_split_word("^(di|ke|se)(\\w+)$", word, removed_part, stemmed_word);
 
-  if(split_rc) {
-
-    if(dictionary_contains(*stemmed_word)) {
-      return 1;
-    } else {
-      return 0;
-    }
-  } else {
-    return split_rc;
-  }
+  if(split_rc == 1 && dictionary_contains(*stemmed_word)) {
+      rc = 1;
+  }   
+  
+  return rc;
 }
 
 int remove_complex_prefix_rule1(char *word, char **stemmed_word, char **removed_part)
 {
   int rc = 0;
 
-  rc = prefix_split_word("(^ber)([aiueo].*)$", word, removed_part, stemmed_word);
-
+  int split_rc = prefix_split_word("(^ber)([aiueo].*)$", word, removed_part, stemmed_word);
 
   //1a
-  if(rc == 1 && dictionary_contains(*stemmed_word)) {
-      return 1;
-  } else {
-  //1b
-    char *rule1b_word;
-    asprintf(&rule1b_word, "r%s", *stemmed_word);
+  if(split_rc == 1) {
+    if(dictionary_contains(*stemmed_word)) {
+      rc = 1;
+    } else {
+      //1b
+      char *rule_b_word;
+      asprintf(&rule_b_word, "r%s", *stemmed_word);
 
-    if(dictionary_contains(rule1b_word)) {
-      free(*removed_part);
-      *removed_part = strndup("be",2);
+      if(dictionary_contains(rule_b_word)) {
+        free(*removed_part);
+        *removed_part = strndup("be",2);
 
-      free(*stemmed_word);
-      *stemmed_word = strndup(rule1b_word, strlen(rule1b_word));
-      return 1;
-    } 
+        free(*stemmed_word);
+        *stemmed_word = strndup(rule_b_word, strlen(rule_b_word));
+        rc = 1;
+      }
+    }
   }
-  return 0;
+  return rc;
 }
 
 int remove_complex_prefix_rule2(char *word, char **stemmed_word, char **removed_part)
@@ -168,13 +165,12 @@ int remove_complex_prefix_rule6(char *word, char **stemmed_word, char **removed_
 {
   int rc = 0;
 
-  rc = prefix_split_word("(^ter)([aiueo].*)$", word, removed_part, stemmed_word);
-
+  int split_rc = prefix_split_word("(^ter)([aiueo].*)$", word, removed_part, stemmed_word);
 
   //6a
-  if(rc == 1) {
+  if(split_rc == 1) {
     if(dictionary_contains(*stemmed_word)) {
-      return 1;
+      rc = 1;
     } else {
   //6b
       char *rule_b_word;
@@ -186,11 +182,11 @@ int remove_complex_prefix_rule6(char *word, char **stemmed_word, char **removed_
 
         free(*stemmed_word);
         *stemmed_word = strndup(rule_b_word, strlen(rule_b_word));
-        return 1;
+        rc = 1;
       } 
     }
   }
-  return 0;
+  return rc;
 }
 
 int remove_complex_prefix_rule7(char *word, char **stemmed_word, char **removed_part)
@@ -331,7 +327,6 @@ int remove_complex_prefix_rule15(char *word, char **stemmed_word, char **removed
     } else {
 
       char *rule_b_word;
-
       asprintf(&rule_b_word, "t%s", *stemmed_word+1);
 
       if(dictionary_contains(rule_b_word)) {
