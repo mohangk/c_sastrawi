@@ -110,6 +110,11 @@ char *test_stem_singular_word_removes_complex_prefixes_15()
   return test_stem_singular_word_for("menikmati", "nikmat");
 }
 
+char *test_stem_singular_word_removes_complex_prefixes_16() 
+{
+  return test_stem_singular_word_for("mengqasar", "qasar");
+}
+
 char *all_tests()
 {
   mu_suite_start();
@@ -135,6 +140,7 @@ char *all_tests()
   mu_run_test(test_stem_singular_word_removes_complex_prefixes_13);
   mu_run_test(test_stem_singular_word_removes_complex_prefixes_14);
   mu_run_test(test_stem_singular_word_removes_complex_prefixes_15);
+  mu_run_test(test_stem_singular_word_removes_complex_prefixes_16);
 
   return NULL;
 }

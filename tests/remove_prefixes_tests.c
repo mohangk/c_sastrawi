@@ -414,6 +414,26 @@ char *test_remove_complex_prefix_rule15b()
   return test_remove_complex_prefix("menulis", "tulis", "me",  remove_complex_prefix_rule15);
 }
 
+char *test_remove_complex_prefix_rule16_g() 
+{
+  return test_remove_complex_prefix("mengguna", "guna", "meng",  remove_complex_prefix_rule16);
+}
+
+char *test_remove_complex_prefix_rule16_h() 
+{
+  return test_remove_complex_prefix("menghambat", "hambat", "meng",  remove_complex_prefix_rule16);
+}
+
+char *test_remove_complex_prefix_rule16_q() 
+{
+  return test_remove_complex_prefix("mengqasar", "qasar", "meng",  remove_complex_prefix_rule16);
+}
+
+char *test_remove_complex_prefix_rule16_k() 
+{
+  return test_remove_complex_prefix("mengkritik", "kritik", "meng",  remove_complex_prefix_rule16);
+}
+
 char *all_tests()
 {
   mu_suite_start();
@@ -456,7 +476,10 @@ char *all_tests()
   mu_run_test(test_remove_complex_prefix_rule14_z);
   mu_run_test(test_remove_complex_prefix_rule15a);
   mu_run_test(test_remove_complex_prefix_rule15b);
-
+  mu_run_test(test_remove_complex_prefix_rule16_g);
+  mu_run_test(test_remove_complex_prefix_rule16_h);
+  mu_run_test(test_remove_complex_prefix_rule16_q);
+  mu_run_test(test_remove_complex_prefix_rule16_k);
   return NULL;
 }
 
