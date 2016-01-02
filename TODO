@@ -1,3 +1,5 @@
 - Add test case for memakai on stem_singular (should get pakai, now we get maka)
+- Add test case for mengira - should get kira, currently ira
+- mengeri => ngeri not keri
 - Check remove_prefixes_rule6 for cases where it stems but its not in the dict
 - When no remove_prefixes match, stem_singular returns an empty string, it should return the original string

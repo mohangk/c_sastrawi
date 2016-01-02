@@ -9,7 +9,7 @@
 #include "remove_prefixes.h"
 #include "../dbg.h"
 
-const int prefix_remover_count = 17;
+const int prefix_remover_count = 18;
 
 const PREFIX_REMOVER prefix_removers[prefix_remover_count] = {
   remove_plain_prefix, 
@@ -28,7 +28,8 @@ const PREFIX_REMOVER prefix_removers[prefix_remover_count] = {
   remove_complex_prefix_rule13,
   remove_complex_prefix_rule14,
   remove_complex_prefix_rule15,
-  remove_complex_prefix_rule16
+  remove_complex_prefix_rule16,
+  remove_complex_prefix_rule17
 };
 
 
@@ -351,6 +352,62 @@ int remove_complex_prefix_rule16(char *word, char **stemmed_word, char **removed
 
   if(split_rc == 1 && dictionary_contains(*stemmed_word)) {
       rc = 1;
+  }
+  return rc;
+}
+
+int remove_complex_prefix_rule17(char *word, char **stemmed_word, char **removed_part)
+{
+  int rc = 0;
+
+  int split_rc = prefix_split_word("(^meng)([aeiou]\\w*)", word, removed_part, stemmed_word);
+
+  if(split_rc == 1 ) {
+    if(dictionary_contains(*stemmed_word)) {
+      rc = 1;
+    } 
+    
+    if(rc == 0) {
+      char *rule_b_word;
+      asprintf(&rule_b_word, "k%s", *stemmed_word);
+
+      if(dictionary_contains(rule_b_word)) {
+        free(*removed_part);
+        *removed_part = strndup("meng",4);
+
+        free(*stemmed_word);
+        *stemmed_word = strndup(rule_b_word, strlen(rule_b_word));
+        rc = 1;
+      } 
+    }
+
+    if(rc == 0) {
+      char *rule_c_word;
+      asprintf(&rule_c_word, "%s", *stemmed_word+1);
+
+      if(dictionary_contains(rule_c_word)) {
+        free(*removed_part);
+        *removed_part = strndup("menge",5);
+
+        free(*stemmed_word);
+        *stemmed_word = strndup(rule_c_word, strlen(rule_c_word));
+        rc = 1;
+      } 
+    }
+
+    if(rc == 0) {
+      char *rule_d_word;
+      asprintf(&rule_d_word, "ng%s", *stemmed_word);
+
+      if(dictionary_contains(rule_d_word)) {
+        free(*removed_part);
+        *removed_part = strndup("me",2);
+
+        free(*stemmed_word);
+        *stemmed_word = strndup(rule_d_word, strlen(rule_d_word));
+        rc = 1;
+      } 
+    }
   }
   return rc;
 }
