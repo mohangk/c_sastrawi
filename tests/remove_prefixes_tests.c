@@ -474,6 +474,16 @@ char *test_remove_complex_prefix_rule19_2()
   return test_remove_complex_prefix("mempatroli", "patroli", "mem",  remove_complex_prefix_rule19);
 }
 
+char *test_remove_complex_prefix_rule20_1() 
+{
+  return test_remove_complex_prefix("pewarna", "warna", "pe",  remove_complex_prefix_rule20);
+}
+
+char *test_remove_complex_prefix_rule20_2() 
+{
+  return test_remove_complex_prefix("peyoga", "yoga", "pe",  remove_complex_prefix_rule20);
+}
+
 char *all_tests()
 {
   mu_suite_start();
@@ -528,6 +538,8 @@ char *all_tests()
   mu_run_test(test_remove_complex_prefix_rule18b);
   mu_run_test(test_remove_complex_prefix_rule19_1);
   mu_run_test(test_remove_complex_prefix_rule19_2);
+  mu_run_test(test_remove_complex_prefix_rule20_1);
+  mu_run_test(test_remove_complex_prefix_rule20_2);
   return NULL;
 }
 
