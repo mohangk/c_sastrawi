@@ -9,7 +9,7 @@
 #include "remove_prefixes.h"
 #include "../dbg.h"
 
-const int prefix_remover_count = 19;
+const int prefix_remover_count = 20;
 
 const PREFIX_REMOVER prefix_removers[prefix_remover_count] = {
   remove_plain_prefix, 
@@ -30,7 +30,8 @@ const PREFIX_REMOVER prefix_removers[prefix_remover_count] = {
   remove_complex_prefix_rule15,
   remove_complex_prefix_rule16,
   remove_complex_prefix_rule17,
-  remove_complex_prefix_rule18
+  remove_complex_prefix_rule18,
+  remove_complex_prefix_rule19
 };
 
 
@@ -364,6 +365,18 @@ int remove_complex_prefix_rule18(char *word, char **stemmed_word, char **removed
       asprintf(&alternative_stemmed_word, "s%s", *stemmed_word+2);
       rc = assign_if_root_word(stemmed_word, alternative_stemmed_word, removed_part, "meny");
     }
+  }
+  return rc;
+}
+
+int remove_complex_prefix_rule19(char *word, char **stemmed_word, char **removed_part)
+{
+  int rc = 0;
+
+  int split_rc = prefix_split_word("(^mem)(p[^e]\\w*)", word, removed_part, stemmed_word);
+
+  if(split_rc == 1 && dictionary_contains(*stemmed_word)) {
+      rc = 1;
   }
   return rc;
 }

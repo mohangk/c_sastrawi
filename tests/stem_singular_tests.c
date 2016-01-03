@@ -125,6 +125,11 @@ char *test_stem_singular_word_removes_complex_prefixes_18()
   return test_stem_singular_word_for("menyapu", "sapu");
 }
 
+char *test_stem_singular_word_removes_complex_prefixes_19() 
+{
+  return test_stem_singular_word_for("memprotes", "protes");
+}
+
 char *all_tests()
 {
   mu_suite_start();
@@ -153,6 +158,7 @@ char *all_tests()
   mu_run_test(test_stem_singular_word_removes_complex_prefixes_16);
   mu_run_test(test_stem_singular_word_removes_complex_prefixes_17);
   mu_run_test(test_stem_singular_word_removes_complex_prefixes_18);
+  mu_run_test(test_stem_singular_word_removes_complex_prefixes_19);
 
   return NULL;
 }
