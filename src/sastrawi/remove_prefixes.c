@@ -9,7 +9,7 @@
 #include "remove_prefixes.h"
 #include "../dbg.h"
 
-const int prefix_remover_count = 18;
+const int prefix_remover_count = 19;
 
 const PREFIX_REMOVER prefix_removers[prefix_remover_count] = {
   remove_plain_prefix, 
@@ -29,7 +29,8 @@ const PREFIX_REMOVER prefix_removers[prefix_remover_count] = {
   remove_complex_prefix_rule14,
   remove_complex_prefix_rule15,
   remove_complex_prefix_rule16,
-  remove_complex_prefix_rule17
+  remove_complex_prefix_rule17,
+  remove_complex_prefix_rule18
 };
 
 
@@ -327,7 +328,7 @@ int remove_complex_prefix_rule17(char *word, char **stemmed_word, char **removed
     if(dictionary_contains(*stemmed_word)) {
       rc = 1;
     } 
-    
+
     if(rc == 0) {
       asprintf(&alternative_stemmed_word, "k%s", *stemmed_word);
       rc = assign_if_root_word(stemmed_word, alternative_stemmed_word, removed_part, "meng");
@@ -344,6 +345,24 @@ int remove_complex_prefix_rule17(char *word, char **stemmed_word, char **removed
       asprintf(&alternative_stemmed_word, "ng%s", *stemmed_word);
       rc = assign_if_root_word(stemmed_word, alternative_stemmed_word, removed_part, "me");
       free(alternative_stemmed_word);
+    }
+  }
+  return rc;
+}
+
+int remove_complex_prefix_rule18(char *word, char **stemmed_word, char **removed_part)
+{
+  int rc = 0;
+
+  int split_rc = prefix_split_word("(^me)(ny\\w*)", word, removed_part, stemmed_word);
+
+  if(split_rc == 1 ) {
+    if(dictionary_contains(*stemmed_word)) {
+      rc = 1;
+    } else {
+      char *alternative_stemmed_word;
+      asprintf(&alternative_stemmed_word, "s%s", *stemmed_word+2);
+      rc = assign_if_root_word(stemmed_word, alternative_stemmed_word, removed_part, "meny");
     }
   }
   return rc;
