@@ -86,17 +86,9 @@ int remove_complex_prefix_rule1(char *word, char **stemmed_word, char **removed_
       rc = 1;
     } else {
       //1b
-      char *rule_b_word;
-      asprintf(&rule_b_word, "r%s", *stemmed_word);
-
-      if(dictionary_contains(rule_b_word)) {
-        free(*removed_part);
-        *removed_part = strndup("be",2);
-
-        free(*stemmed_word);
-        *stemmed_word = strndup(rule_b_word, strlen(rule_b_word));
-        rc = 1;
-      }
+      char *alternative_stemmed_word;
+      asprintf(&alternative_stemmed_word, "r%s", *stemmed_word);
+      rc = assign_if_root_word(stemmed_word, alternative_stemmed_word, removed_part, "be");
     }
   }
   return rc;
@@ -115,10 +107,8 @@ int remove_complex_prefix_rule2(char *word, char **stemmed_word, char **removed_
       rc = 1;
     } 
   } else {
-
     (*stemmed_word) = strndup(word, strlen(word));
     (*removed_part) = strndup("", 0);
-
   }
 
   return rc;
@@ -175,17 +165,9 @@ int remove_complex_prefix_rule6(char *word, char **stemmed_word, char **removed_
       rc = 1;
     } else {
   //6b
-      char *rule_b_word;
-      asprintf(&rule_b_word, "r%s", *stemmed_word);
-
-      if(dictionary_contains(rule_b_word)) {
-        free(*removed_part);
-        *removed_part = strndup("te",2);
-
-        free(*stemmed_word);
-        *stemmed_word = strndup(rule_b_word, strlen(rule_b_word));
-        rc = 1;
-      } 
+      char *alternative_stemmed_word;
+      asprintf(&alternative_stemmed_word, "r%s", *stemmed_word);
+      rc = assign_if_root_word(stemmed_word, alternative_stemmed_word, removed_part, "te");
     }
   }
   return rc;
@@ -196,7 +178,6 @@ int remove_complex_prefix_rule7(char *word, char **stemmed_word, char **removed_
   int rc = 0;
 
   int split_rc = prefix_split_word("(^ter)([^aeiour]er[aeiou]\\w*)", word, removed_part, stemmed_word);
-
 
   if(split_rc == 1 && dictionary_contains(*stemmed_word)) {
       rc = 1;
@@ -217,10 +198,8 @@ int remove_complex_prefix_rule8(char *word, char **stemmed_word, char **removed_
       rc = 1;
     } 
   } else {
-
     (*stemmed_word) = strndup(word, strlen(word));
     (*removed_part) = strndup("", 0);
-
   }
 
   return rc;
@@ -287,19 +266,9 @@ int remove_complex_prefix_rule13(char *word, char **stemmed_word, char **removed
     if(dictionary_contains(*stemmed_word)) {
       rc = 1;
     } else {
-
-      char *rule_b_word;
-
-      asprintf(&rule_b_word, "p%s", *stemmed_word+1);
-
-      if(dictionary_contains(rule_b_word)) {
-        free(*removed_part);
-        *removed_part = strndup("me",2);
-
-        free(*stemmed_word);
-        *stemmed_word = strndup(rule_b_word, strlen(rule_b_word));
-        rc = 1;
-      } 
+      char *alternative_stemmed_word;
+      asprintf(&alternative_stemmed_word, "p%s", *stemmed_word+1);
+      rc = assign_if_root_word(stemmed_word, alternative_stemmed_word, removed_part, "me");
     }
   }
   return rc;
@@ -327,18 +296,9 @@ int remove_complex_prefix_rule15(char *word, char **stemmed_word, char **removed
     if(dictionary_contains(*stemmed_word)) {
       rc = 1;
     } else {
-
-      char *rule_b_word;
-      asprintf(&rule_b_word, "t%s", *stemmed_word+1);
-
-      if(dictionary_contains(rule_b_word)) {
-        free(*removed_part);
-        *removed_part = strndup("me",2);
-
-        free(*stemmed_word);
-        *stemmed_word = strndup(rule_b_word, strlen(rule_b_word));
-        rc = 1;
-      } 
+      char *alternative_stemmed_word;
+      asprintf(&alternative_stemmed_word, "t%s", *stemmed_word+1);
+      rc = assign_if_root_word(stemmed_word, alternative_stemmed_word, removed_part, "me");
     }
   }
   return rc;
@@ -359,55 +319,47 @@ int remove_complex_prefix_rule16(char *word, char **stemmed_word, char **removed
 int remove_complex_prefix_rule17(char *word, char **stemmed_word, char **removed_part)
 {
   int rc = 0;
+  char *alternative_stemmed_word;
 
   int split_rc = prefix_split_word("(^meng)([aeiou]\\w*)", word, removed_part, stemmed_word);
 
-  if(split_rc == 1 ) {
+  if(split_rc == 1) {
     if(dictionary_contains(*stemmed_word)) {
       rc = 1;
     } 
     
     if(rc == 0) {
-      char *rule_b_word;
-      asprintf(&rule_b_word, "k%s", *stemmed_word);
-
-      if(dictionary_contains(rule_b_word)) {
-        free(*removed_part);
-        *removed_part = strndup("meng",4);
-
-        free(*stemmed_word);
-        *stemmed_word = strndup(rule_b_word, strlen(rule_b_word));
-        rc = 1;
-      } 
+      asprintf(&alternative_stemmed_word, "k%s", *stemmed_word);
+      rc = assign_if_root_word(stemmed_word, alternative_stemmed_word, removed_part, "meng");
+      free(alternative_stemmed_word);
     }
 
     if(rc == 0) {
-      char *rule_c_word;
-      asprintf(&rule_c_word, "%s", *stemmed_word+1);
-
-      if(dictionary_contains(rule_c_word)) {
-        free(*removed_part);
-        *removed_part = strndup("menge",5);
-
-        free(*stemmed_word);
-        *stemmed_word = strndup(rule_c_word, strlen(rule_c_word));
-        rc = 1;
-      } 
+      asprintf(&alternative_stemmed_word, "%s", *stemmed_word+1);
+      rc = assign_if_root_word(stemmed_word, alternative_stemmed_word, removed_part, "menge");
+      free(alternative_stemmed_word);
     }
 
     if(rc == 0) {
-      char *rule_d_word;
-      asprintf(&rule_d_word, "ng%s", *stemmed_word);
-
-      if(dictionary_contains(rule_d_word)) {
-        free(*removed_part);
-        *removed_part = strndup("me",2);
-
-        free(*stemmed_word);
-        *stemmed_word = strndup(rule_d_word, strlen(rule_d_word));
-        rc = 1;
-      } 
+      asprintf(&alternative_stemmed_word, "ng%s", *stemmed_word);
+      rc = assign_if_root_word(stemmed_word, alternative_stemmed_word, removed_part, "me");
+      free(alternative_stemmed_word);
     }
   }
+  return rc;
+}
+
+int assign_if_root_word(char **stemmed_word, char *alternative_stemmed_word, char **removed_part, char *alternative_removed_part) {
+  int rc = 0;
+
+  if(dictionary_contains(alternative_stemmed_word)) {
+    free(*removed_part);
+    *removed_part = strndup(alternative_removed_part, strlen(alternative_removed_part));
+
+    free(*stemmed_word);
+    *stemmed_word = strndup(alternative_stemmed_word, strlen(alternative_stemmed_word));
+    rc = 1;
+  }
+
   return rc;
 }
