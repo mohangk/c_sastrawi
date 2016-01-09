@@ -484,6 +484,17 @@ char *test_remove_complex_prefix_rule20_2()
   return test_remove_complex_prefix("peyoga", "yoga", "pe",  remove_complex_prefix_rule20);
 }
 
+char *test_remove_prefixes_when_cannot_stem_to_word_in_dict()
+{
+  char *stemmed_word;
+
+  int rc = remove_prefixes("mewarnai", &stemmed_word);
+  debug("word: mewarnai, expected stemmed word: warnai, actual stemmed word: %s", stemmed_word);
+  mu_assert(rc == 0, "it changes the word, but its not done");
+  mu_assert(strcmp("warnai", stemmed_word) == 0, "failed while asserting stemmed word");
+  return NULL;
+}
+
 char *all_tests()
 {
   mu_suite_start();
@@ -540,6 +551,7 @@ char *all_tests()
   mu_run_test(test_remove_complex_prefix_rule19_2);
   mu_run_test(test_remove_complex_prefix_rule20_1);
   mu_run_test(test_remove_complex_prefix_rule20_2);
+  mu_run_test(test_remove_prefixes_when_cannot_stem_to_word_in_dict);
   return NULL;
 }
 

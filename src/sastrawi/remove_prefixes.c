@@ -42,24 +42,28 @@ int remove_prefixes(char *original_word, char **stemmed_word)
   char *removed_parts = NULL;
 
   char *word = strndup(original_word, strlen(original_word));
+  char *post_remove = NULL;
 
   for(int i =0; i < prefix_remover_count; i++) {
 
-    char *post_remove = NULL;
+    free(post_remove);
+    free(removed_parts);
     rc = (*prefix_removers[i])(word, &post_remove, &removed_parts);
 
     if(rc) {
-      *stemmed_word = strndup(post_remove, strlen(post_remove));
       break;
     } else {
       free(word);
       word = strndup(post_remove, strlen(post_remove));
     }
-    //cleanup
-    free(post_remove);
-    free(removed_parts);
-
   }
+
+  *stemmed_word = strndup(post_remove, strlen(post_remove));
+
+  //cleanup
+  free(post_remove);
+  free(removed_parts);
+  free(word);
 
   return rc;
 }
