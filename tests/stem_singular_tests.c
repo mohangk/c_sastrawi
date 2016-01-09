@@ -135,6 +135,16 @@ char *test_stem_singular_word_removes_complex_prefixes_20()
   return test_stem_singular_word_for("peyoga", "yoga");
 }
 
+char *test_stem_singular_word_uses_precedence_adjustment()
+{
+  return test_stem_singular_word_for("memakai","pakai");
+}
+
+char *test_stem_singular_word_uses_precedence_adjustment_2()
+{
+  return test_stem_singular_word_for("berbadankan","badan");
+}
+
 char *all_tests()
 {
   mu_suite_start();
@@ -165,6 +175,8 @@ char *all_tests()
   mu_run_test(test_stem_singular_word_removes_complex_prefixes_18);
   mu_run_test(test_stem_singular_word_removes_complex_prefixes_19);
   mu_run_test(test_stem_singular_word_removes_complex_prefixes_20);
+  mu_run_test(test_stem_singular_word_uses_precedence_adjustment);
+  mu_run_test(test_stem_singular_word_uses_precedence_adjustment_2);
 
   return NULL;
 }
