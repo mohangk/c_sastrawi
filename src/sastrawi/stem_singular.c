@@ -10,47 +10,57 @@
 #include "stem_singular.h"
 #include "../dbg.h"
 
-int stem_singular_word(char *word, char **stemmed_word)
+
+const AFFIX_REMOVER prefix_suffix_removers[2] = {remove_prefixes, remove_suffixes};
+const AFFIX_REMOVER suffix_prefix_removers[2] = {remove_suffixes, remove_prefixes};
+
+int stem_singular_word(char *original_word, char **stemmed_word)
 {
 
   //step 1: word already in dictionary
-  if(dictionary_contains(word)) {
-    (*stemmed_word) = strndup(word, strlen(word));
+  if(dictionary_contains(original_word)) {
+    (*stemmed_word) = strndup(original_word, strlen(original_word));
     return 1;
   }
 
-  if(is_precedence_adjustment_satisfied(word)) {
+  char *post_remove = NULL;
+  int remover_rc = 0;
 
-    int rc = remove_prefixes(word, stemmed_word);
+  if(is_precedence_adjustment_satisfied(original_word)) {
+    remover_rc = apply_affix_removers(original_word, &post_remove, prefix_suffix_removers);
+  }
 
-    if(rc == 1) {
-      return 1;
-    }
+  if(remover_rc == 0) {
+    remover_rc = apply_affix_removers(original_word, &post_remove, suffix_prefix_removers);
+  }
 
-    char *post_remove = strndup(*stemmed_word, strlen(*stemmed_word));
-    free(*stemmed_word);
-    *stemmed_word = NULL;
+  if(remover_rc == 1) {
+    *stemmed_word = strndup(post_remove, strlen(post_remove));
+    free(post_remove);
+  } else {
+    *stemmed_word = strndup(original_word, strlen(original_word));
+  }
 
-    rc = remove_suffixes(post_remove, stemmed_word);
+  return remover_rc;
+}
 
-    if(rc == 1) {
-      return 1;
+
+int apply_affix_removers(char *original_word, char **stemmed_word, AFFIX_REMOVER affix_removers[]) {
+
+  char *word = strndup(original_word, strlen(original_word));
+  int remover_rc = 0;
+
+  for(int i = 0; i<2; i++) {
+    if((remover_rc = affix_removers[i](word, stemmed_word))) {
+      break;
     } else {
+      free(word);
+      word = strndup(*stemmed_word, strlen(*stemmed_word));
       free(*stemmed_word);
-      *stemmed_word = NULL;
     }
   }
 
+  free(word);
 
-  //step 2 & 3: remove suffixes
-  remove_suffixes(word, stemmed_word);
-  if(dictionary_contains(*stemmed_word)) {
-    return 1;
-  }
-
-  char *post_suffix_removal_word = strndup(*stemmed_word, strlen(*stemmed_word));
-  free(*stemmed_word);
-  *stemmed_word = NULL;
-
-  return remove_prefixes(post_suffix_removal_word, stemmed_word);
+  return remover_rc;
 }
