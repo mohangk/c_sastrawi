@@ -23,8 +23,7 @@ int stem_singular_word(char *word, char **stemmed_word)
 
     int rc = remove_prefixes(word, stemmed_word);
 
-    //in dict and done - return
-    if(rc) {
+    if(rc == 1) {
       return 1;
     }
 
@@ -32,8 +31,9 @@ int stem_singular_word(char *word, char **stemmed_word)
     free(*stemmed_word);
     *stemmed_word = NULL;
 
-    remove_suffixes(post_remove, stemmed_word);
-    if(dictionary_contains(*stemmed_word)) {
+    rc = remove_suffixes(post_remove, stemmed_word);
+
+    if(rc == 1) {
       return 1;
     } else {
       free(*stemmed_word);

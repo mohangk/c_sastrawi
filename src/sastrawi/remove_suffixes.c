@@ -7,8 +7,9 @@
 #include "remove_suffixes.h"
 #include "../dbg.h"
 
-void remove_suffixes(char *word, char **stemmed_word)
+int remove_suffixes(char *word, char **stemmed_word)
 {
+  int rc = 0;
 
   char *removed_parts = NULL;
   char *suffix_remove1 = NULL;
@@ -27,6 +28,12 @@ void remove_suffixes(char *word, char **stemmed_word)
   free(removed_parts);
   free(suffix_remove1);
   free(suffix_remove2);
+
+  if(dictionary_contains(*stemmed_word)) {
+    rc = 1;
+  }
+
+  return rc;
 }
 
 
