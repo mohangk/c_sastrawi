@@ -142,8 +142,9 @@ char *test_stem_singular_word_uses_precedence_adjustment()
 
 char *test_stem_singular_word_uses_precedence_adjustment_2()
 {
-  return test_stem_singular_word_for("berbadankan","badan");
+  return test_stem_singular_word_for("didiamkan","diam");
 }
+
 
 char *all_tests()
 {
