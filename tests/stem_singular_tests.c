@@ -150,7 +150,9 @@ char *all_tests()
 {
   mu_suite_start();
 
-  dictionary_load(dictionary_fullpath("data/kata-dasar.txt"));
+  char *path = dictionary_fullpath("data/kata-dasar.txt");
+  dictionary_load(path);
+  free(path);
 
   mu_run_test(test_stem_singular_word_does_not_need_stemming);
   mu_run_test(test_stem_singular_word_removes_suffixes);

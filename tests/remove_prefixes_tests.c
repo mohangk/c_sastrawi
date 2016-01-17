@@ -35,67 +35,30 @@ char *test_remove_plain_prefix_returns_0_if_word_notin_dictionary()
   mu_assert(strcmp("pertikai", stemmed_word) == 0, "we expect 'pertikai' as the stemmed word");
   mu_assert(strcmp("di", removed_part) == 0, "we expect 'di' as the removed part");
 
+  free(stemmed_word);
+  free(removed_part);
+
   return NULL;
 }
 
 char *test_remove_plain_prefix_di() 
 {
-  char *stemmed_word = NULL; 
-  char *removed_part = NULL;
-
-  int rc = remove_plain_prefix("dicinta", &stemmed_word, &removed_part);
-
-  mu_assert(rc == 1, "successfully stems");
-  mu_assert(strcmp("cinta", stemmed_word) == 0, "we expect 'sana' as the stemmed word");
-  mu_assert(strcmp("di", removed_part) == 0, "we expect 'di' as the removed part");
-
-  return NULL;
+  return test_remove_complex_prefix("dicinta", "cinta", "di",  remove_plain_prefix);
 }
 
 char *test_remove_plain_prefix_ke() 
 {
-  char *stemmed_word = NULL; 
-  char *removed_part = NULL;
-
-  int rc = remove_plain_prefix("kesana", &stemmed_word, &removed_part);
-
-  mu_assert(rc == 1, "successfully stems");
-  mu_assert(strcmp("sana", stemmed_word) == 0, "we expect 'sana' as the stemmed word");
-  mu_assert(strcmp("ke", removed_part) == 0, "we expect 'ke' as the removed part");
-
-  return NULL;
+  return test_remove_complex_prefix("kesana", "sana", "ke",  remove_plain_prefix);
 }
 
 char *test_remove_plain_prefix_se() 
 {
-  char *stemmed_word = NULL; 
-  char *removed_part = NULL;
-
-  int rc = remove_plain_prefix("sejenis", &stemmed_word, &removed_part);
-
-  mu_assert(rc == 1, "successfully stems");
-  mu_assert(strcmp("jenis", stemmed_word) == 0, "we expect 'jenis' as the stemmed word");
-  mu_assert(strcmp("se", removed_part) == 0, "we expect 'se' as the removed part");
-
-  return NULL;
+  return test_remove_complex_prefix("sejenis", "jenis", "se",  remove_plain_prefix);
 }
-
-
 
 char *test_remove_complex_prefix_rule1_a() 
 {
-  char *stemmed_word = NULL;
-  char *removed_part = NULL;
-
-  int rc = remove_complex_prefix_rule1("beria", &stemmed_word, &removed_part);
-  debug("stem word: beria, expected: ia, actual: %s", stemmed_word);
-  mu_assert(rc == 1, "sucessfully stemmed");
-  mu_assert(strcmp("ia", stemmed_word) == 0, "it stems to ia");
-  mu_assert(strcmp("ber", removed_part) == 0, "remove part should be ber");
-  free(stemmed_word);
-  free(removed_part);
-
-  return NULL;
+  return test_remove_complex_prefix("beria", "ia", "ber",  remove_complex_prefix_rule1);
 }
 
 char *test_remove_complex_prefix_rule1_b() 
@@ -492,6 +455,7 @@ char *test_remove_prefixes_when_cannot_stem_to_word_in_dict()
   debug("word: mewarnai, expected stemmed word: warnai, actual stemmed word: %s", stemmed_word);
   mu_assert(rc == 0, "it changes the word, but its not done");
   mu_assert(strcmp("warnai", stemmed_word) == 0, "failed while asserting stemmed word");
+  free(stemmed_word);
   return NULL;
 }
 
@@ -499,7 +463,10 @@ char *all_tests()
 {
   mu_suite_start();
 
-  dictionary_load(dictionary_fullpath("data/kata-dasar.txt"));
+  char *path = dictionary_fullpath("data/kata-dasar.txt");
+  dictionary_load(path);
+  free(path);
+
 
   mu_run_test(test_remove_plain_prefix_returns_0_if_word_notin_dictionary)
   mu_run_test(test_remove_plain_prefix_di);

@@ -96,6 +96,7 @@ int remove_complex_prefix_rule1(char *word, char **stemmed_word, char **removed_
       char *alternative_stemmed_word;
       asprintf(&alternative_stemmed_word, "r%s", *stemmed_word);
       rc = assign_if_root_word(stemmed_word, alternative_stemmed_word, removed_part, "be");
+      free(alternative_stemmed_word);
     }
   }
   return rc;
@@ -106,16 +107,19 @@ int remove_complex_prefix_rule2(char *word, char **stemmed_word, char **removed_
   int rc = 0;
   char *partial_stemmed_word;
 
-  int split_rc = split_word3("(^ber)([^aeiou][a-z](\\w*))", word, removed_part, stemmed_word, &partial_stemmed_word);
+  int split_rc = split_word3("(^ber)([^aeiou][a-z](\\w*))", word, removed_part, stemmed_word, &partial_stemmed_word, "er");
 
 
-  if(split_rc == 1 && (strstr(partial_stemmed_word, "er") == NULL)) {
-    if(dictionary_contains(*stemmed_word)) {
+  if(split_rc == 1 && dictionary_contains(*stemmed_word)) {
       rc = 1;
-    } 
   } else {
     (*stemmed_word) = strndup(word, strlen(word));
     (*removed_part) = strndup("", 0);
+  }
+
+  //cleanup if it was set
+  if(split_rc == 1) {
+    free(partial_stemmed_word);
   }
 
   return rc;
@@ -175,6 +179,7 @@ int remove_complex_prefix_rule6(char *word, char **stemmed_word, char **removed_
       char *alternative_stemmed_word;
       asprintf(&alternative_stemmed_word, "r%s", *stemmed_word);
       rc = assign_if_root_word(stemmed_word, alternative_stemmed_word, removed_part, "te");
+      free(alternative_stemmed_word);
     }
   }
   return rc;
@@ -198,15 +203,18 @@ int remove_complex_prefix_rule8(char *word, char **stemmed_word, char **removed_
   int rc = 0;
   char *partial_stemmed_word;
 
-  int split_rc = split_word3("(^ter)([^aeiour](\\w*))", word, removed_part, stemmed_word, &partial_stemmed_word);
+  int split_rc = split_word3("(^ter)([^aeiour](\\w*))", word, removed_part, stemmed_word, &partial_stemmed_word, "er");
 
-  if(split_rc == 1 && (strstr(partial_stemmed_word, "er") == NULL)) {
-    if(dictionary_contains(*stemmed_word)) {
+  if(split_rc == 1 && dictionary_contains(*stemmed_word)) {
       rc = 1;
-    } 
   } else {
     (*stemmed_word) = strndup(word, strlen(word));
     (*removed_part) = strndup("", 0);
+  }
+
+  //cleanup if it was set
+  if(split_rc == 1) {
+    free(partial_stemmed_word);
   }
 
   return rc;
@@ -276,6 +284,7 @@ int remove_complex_prefix_rule13(char *word, char **stemmed_word, char **removed
       char *alternative_stemmed_word;
       asprintf(&alternative_stemmed_word, "p%s", *stemmed_word+1);
       rc = assign_if_root_word(stemmed_word, alternative_stemmed_word, removed_part, "me");
+      free(alternative_stemmed_word);
     }
   }
   return rc;
@@ -306,6 +315,7 @@ int remove_complex_prefix_rule15(char *word, char **stemmed_word, char **removed
       char *alternative_stemmed_word;
       asprintf(&alternative_stemmed_word, "t%s", *stemmed_word+1);
       rc = assign_if_root_word(stemmed_word, alternative_stemmed_word, removed_part, "me");
+      free(alternative_stemmed_word);
     }
   }
   return rc;
@@ -369,6 +379,7 @@ int remove_complex_prefix_rule18(char *word, char **stemmed_word, char **removed
       char *alternative_stemmed_word;
       asprintf(&alternative_stemmed_word, "s%s", *stemmed_word+2);
       rc = assign_if_root_word(stemmed_word, alternative_stemmed_word, removed_part, "meny");
+      free(alternative_stemmed_word);
     }
   }
   return rc;
