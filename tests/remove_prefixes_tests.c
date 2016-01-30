@@ -31,7 +31,7 @@ char *test_remove_plain_prefix_returns_0_if_word_notin_dictionary()
 
   int rc = remove_plain_prefix("dipertikai", &stemmed_word, &removed_part);
 
-  mu_assert(rc == 0, "successfully stems but not in dictionary");
+  mu_assert(rc == PARIALLY_STEMMED, "stems but not in dictionary");
   mu_assert(strcmp("pertikai", stemmed_word) == 0, "we expect 'pertikai' as the stemmed word");
   mu_assert(strcmp("di", removed_part) == 0, "we expect 'di' as the removed part");
 

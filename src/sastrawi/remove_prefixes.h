@@ -1,3 +1,7 @@
+#define NOT_STEMMED 0
+#define FULLY_STEMMED 1
+#define PARTIALLY_STEMMED 2
+
 typedef int (*PREFIX_REMOVER)(char *word, char **stemmed_word, char **removed_part);
 
 int remove_prefixes(char *word, char **stemmed_word);

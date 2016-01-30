@@ -51,7 +51,7 @@ int remove_prefixes(char *original_word, char **stemmed_word)
       free(removed_part);
       rc = (*prefix_removers[i])(word, &post_remove, &removed_part);
 
-      if(rc) {
+      if(rc == FULLY_STEMMED) {
         break;
       } else {
         free(word);
@@ -59,7 +59,7 @@ int remove_prefixes(char *original_word, char **stemmed_word)
       }
     }
 
-    if(rc) {
+    if(rc == FULLY_STEMMED) {
       break;
     }
   }
@@ -76,12 +76,16 @@ int remove_prefixes(char *original_word, char **stemmed_word)
 
 int remove_plain_prefix(char *word, char **stemmed_word, char **removed_part)
 {
-  int rc = 0;
+  int rc = NOT_STEMMED;
 
   int split_rc =  prefix_split_word("^(di|ke|se)(\\w+)$", word, removed_part, stemmed_word);
 
-  if(split_rc == 1 && dictionary_contains(*stemmed_word)) {
-      rc = 1;
+  if(split_rc == 1) {
+      rc = PARTIALLY_STEMMED;
+
+      if(dictionary_contains(*stemmed_word)) {
+        rc = FULLY_STEMMED;
+      }
   }
 
   return rc;
