@@ -480,18 +480,18 @@ char *test_remove_prefixes_when_cannot_stem_to_word_in_dict()
   return NULL;
 }
 
-/* char *test_remove_prefixes_runs_3_times()  */
-/* { */
-/*   char *stemmed_word; */
-/*  */
-/*   // diberberlari is a fake work, but we need it as a test, can't think of a valid word */
-/*   int rc = remove_prefixes("diberberlari", &stemmed_word); */
-/*   debug("word: diberberlari, expected stemmed word: lari, actual stemmed word: %s", stemmed_word); */
-/*   mu_assert(rc == 1, "it is fully stemmed"); */
-/*   mu_assert(strcmp("lari", stemmed_word) == 0, "failed while asserting stemmed word"); */
-/*   free(stemmed_word); */
-/*   return NULL; */
-/* } */
+char *test_remove_prefixes_runs_3_times() 
+{
+  char *stemmed_word;
+
+  // diberberlari is a fake work, but we need it as a test, can't think of a valid word
+  int rc = remove_prefixes("diberberlari", &stemmed_word);
+  debug("word: diberberlari, expected stemmed word: lari, actual stemmed word: %s", stemmed_word);
+  mu_assert(rc == 1, "it is fully stemmed");
+  mu_assert(strcmp("lari", stemmed_word) == 0, "failed while asserting stemmed word");
+  free(stemmed_word);
+  return NULL;
+}
 
 char *all_tests()
 {
@@ -555,7 +555,7 @@ char *all_tests()
   mu_run_test(test_remove_complex_prefix_rule20_1);
   mu_run_test(test_remove_complex_prefix_rule20_2);
   mu_run_test(test_remove_prefixes_when_cannot_stem_to_word_in_dict);
-//  mu_run_test(test_remove_prefixes_runs_3_times);
+  mu_run_test(test_remove_prefixes_runs_3_times);
   return NULL;
 }
 

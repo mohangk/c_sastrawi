@@ -12,7 +12,7 @@
 const int prefix_remover_count = 21;
 
 const PREFIX_REMOVER prefix_removers[prefix_remover_count] = {
-  remove_plain_prefix, 
+  remove_plain_prefix,
   remove_complex_prefix_rule1,
   remove_complex_prefix_rule2,
   remove_complex_prefix_rule3,
@@ -39,22 +39,28 @@ const PREFIX_REMOVER prefix_removers[prefix_remover_count] = {
 int remove_prefixes(char *original_word, char **stemmed_word)
 {
   int rc = 0;
-  char *removed_parts = NULL;
+  char *removed_part = NULL;
 
   char *word = strndup(original_word, strlen(original_word));
   char *post_remove = NULL;
 
-  for(int i =0; i < prefix_remover_count; i++) {
+  for(int attempts = 0; attempts < 3; attempts++) {
+    for(int i =0; i < prefix_remover_count; i++) {
 
-    free(post_remove);
-    free(removed_parts);
-    rc = (*prefix_removers[i])(word, &post_remove, &removed_parts);
+      free(post_remove);
+      free(removed_part);
+      rc = (*prefix_removers[i])(word, &post_remove, &removed_part);
+
+      if(rc) {
+        break;
+      } else {
+        free(word);
+        word = strndup(post_remove, strlen(post_remove));
+      }
+    }
 
     if(rc) {
       break;
-    } else {
-      free(word);
-      word = strndup(post_remove, strlen(post_remove));
     }
   }
 
@@ -62,7 +68,7 @@ int remove_prefixes(char *original_word, char **stemmed_word)
 
   //cleanup
   free(post_remove);
-  free(removed_parts);
+  free(removed_part);
   free(word);
 
   return rc;
@@ -76,8 +82,8 @@ int remove_plain_prefix(char *word, char **stemmed_word, char **removed_part)
 
   if(split_rc == 1 && dictionary_contains(*stemmed_word)) {
       rc = 1;
-  }   
-  
+  }
+
   return rc;
 }
 
@@ -124,8 +130,8 @@ int remove_complex_prefix_rule3(char *word, char **stemmed_word, char **removed_
 
   if(split_rc == 1 && dictionary_contains(*stemmed_word)) {
       rc = 1;
-  }   
-  
+  }
+
   return rc;
 }
 
@@ -137,7 +143,7 @@ int remove_complex_prefix_rule4(char *word, char **stemmed_word, char **removed_
 
   if(split_rc == 1 && dictionary_contains(*stemmed_word)) {
       rc = 1;
-  }   
+  }
 
   return rc;
 }
@@ -183,8 +189,8 @@ int remove_complex_prefix_rule7(char *word, char **stemmed_word, char **removed_
 
   if(split_rc == 1 && dictionary_contains(*stemmed_word)) {
       rc = 1;
-  } 
-  
+  }
+
   return rc;
 }
 
@@ -210,7 +216,7 @@ int remove_complex_prefix_rule9(char *word, char **stemmed_word, char **removed_
 
   if(split_rc == 1 && dictionary_contains(*stemmed_word)) {
       rc = 1;
-  } 
+  }
   return rc;
 }
 
@@ -234,7 +240,7 @@ int remove_complex_prefix_rule11(char *word, char **stemmed_word, char **removed
 
   if(split_rc == 1 && dictionary_contains(*stemmed_word)) {
       rc = 1;
-  } 
+  }
 
   return rc;
 }
@@ -247,7 +253,7 @@ int remove_complex_prefix_rule12(char *word, char **stemmed_word, char **removed
 
   if(split_rc == 1 && dictionary_contains(*stemmed_word)) {
       rc = 1;
-  } 
+  }
 
   return rc;
 }
@@ -324,7 +330,7 @@ int remove_complex_prefix_rule17(char *word, char **stemmed_word, char **removed
   if(split_rc == 1) {
     if(dictionary_contains(*stemmed_word)) {
       rc = 1;
-    } 
+    }
 
     if(rc == 0) {
       asprintf(&alternative_stemmed_word, "k%s", *stemmed_word);
