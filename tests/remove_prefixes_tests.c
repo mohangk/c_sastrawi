@@ -9,466 +9,314 @@
 #include "sastrawi/remove_prefixes.h"
 #include "dbg.h"
 
-char *test_remove_complex_prefix(char *stemable_word, char *expected_stemmed_word, char *expected_removed_part, PREFIX_REMOVER fn)
+char *test_remove_complex_prefix(char *stemable_word, char *expected_stemmed_word, char *expected_removed_part, int expected_response_code, PREFIX_REMOVER fn)
 {  
   char *stemmed_word = NULL;
   char *removed_part = NULL;
 
   int rc = fn(stemable_word, &stemmed_word, &removed_part);
-  debug("word: %s, expected stemmed word: %s, actual stemmed word: %s, expected removed part: %s, actual removed part: %s", stemable_word, expected_stemmed_word, stemmed_word, expected_removed_part, removed_part);
-  mu_assert(rc == 1, "failed to stem");
+  debug("word: %s, expected_response_code: %d, actual_response_code: %d, expected stemmed word: %s, actual stemmed word: %s, expected removed part: %s, actual removed part: %s", stemable_word, expected_response_code, rc, expected_stemmed_word, stemmed_word, expected_removed_part, removed_part);
+  mu_assert(rc == expected_response_code, "failed while asserting expected_response_code");
   mu_assert(strcmp(expected_stemmed_word, stemmed_word) == 0, "failed while asserting stemmed word");
   mu_assert(strcmp(expected_removed_part, removed_part) == 0, "failed while asserting removed part");
-  free(stemmed_word);
-  free(removed_part);
+
+  if(rc != NOT_STEMMED) {
+    free(stemmed_word);
+    free(removed_part);
+  }
+
   return NULL;
 }
 
 char *test_remove_plain_prefix_returns_0_if_word_notin_dictionary() 
 {
-  char *stemmed_word = NULL; 
-  char *removed_part = NULL;
-
-  int rc = remove_plain_prefix("dipertikai", &stemmed_word, &removed_part);
-
-  mu_assert(rc == PARIALLY_STEMMED, "stems but not in dictionary");
-  mu_assert(strcmp("pertikai", stemmed_word) == 0, "we expect 'pertikai' as the stemmed word");
-  mu_assert(strcmp("di", removed_part) == 0, "we expect 'di' as the removed part");
-
-  free(stemmed_word);
-  free(removed_part);
-
-  return NULL;
+  return test_remove_complex_prefix("dipertikai", "pertikai", "di", PARTIALLY_STEMMED, remove_plain_prefix);
 }
 
 char *test_remove_plain_prefix_di() 
 {
-  return test_remove_complex_prefix("dicinta", "cinta", "di",  remove_plain_prefix);
+  return test_remove_complex_prefix("dicinta", "cinta", "di", FULLY_STEMMED, remove_plain_prefix);
 }
 
 char *test_remove_plain_prefix_ke() 
 {
-  return test_remove_complex_prefix("kesana", "sana", "ke",  remove_plain_prefix);
+  return test_remove_complex_prefix("kesana", "sana", "ke", FULLY_STEMMED, remove_plain_prefix);
 }
 
 char *test_remove_plain_prefix_se() 
 {
-  return test_remove_complex_prefix("sejenis", "jenis", "se",  remove_plain_prefix);
+  return test_remove_complex_prefix("sejenis", "jenis", "se", FULLY_STEMMED, remove_plain_prefix);
 }
 
 char *test_remove_complex_prefix_rule1_a() 
 {
-  return test_remove_complex_prefix("beria", "ia", "ber",  remove_complex_prefix_rule1);
+  return test_remove_complex_prefix("beria", "ia", "ber", FULLY_STEMMED, remove_complex_prefix_rule1);
 }
 
 char *test_remove_complex_prefix_rule1_b() 
 {
-  char *stemmed_word = NULL;
-  char *removed_part = NULL;
 
-  int rc = remove_complex_prefix_rule1("berakit", &stemmed_word, &removed_part);
-  debug("stem word: berakit, expected: rakit, actual: %s", stemmed_word);
-  mu_assert(rc == 1, "sucessfully stemmed");
-  mu_assert(strcmp("rakit", stemmed_word) == 0, "it stems to rakit");
-  mu_assert(strcmp("be", removed_part) == 0, "remove part should be be");
-  free(stemmed_word);
-  free(removed_part);
-
-  return NULL;
+  return test_remove_complex_prefix("berakit", "rakit", "be", FULLY_STEMMED, remove_complex_prefix_rule1);
 }
 
 char *test_remove_complex_prefix_rule2() 
 {
-  return test_remove_complex_prefix("berlari", "lari", "ber", remove_complex_prefix_rule2);
+  return test_remove_complex_prefix("berlari", "lari", "ber", FULLY_STEMMED,remove_complex_prefix_rule2);
 }
 
 char *test_remove_complex_prefix_rule2_excludes_er() 
 {
-  char *word = "berdaerah";
-  char *stemmed_word = NULL;
-  char *removed_part = NULL;
+  return test_remove_complex_prefix("berdaerah", "berdaerah", "", NOT_STEMMED, remove_complex_prefix_rule2);
 
-  int rc = remove_complex_prefix_rule2(word, &stemmed_word, &removed_part);
-  debug("stem word: %s, expected: berdaerah, actual: %s", word, stemmed_word);
-  mu_assert(rc == 0, "does not stem");
-  mu_assert(strcmp("berdaerah", stemmed_word) == 0, "it does not stem it");
-  free(stemmed_word);
-  free(removed_part);
-
-  return NULL;
 }
 
 char *test_remove_complex_prefix_rule2_returns_stemmed_word_although_not_in_dict() 
 {
-  char *word = "berlarian";
-  char *stemmed_word = NULL;
-  char *removed_part = NULL;
-
-  int rc = remove_complex_prefix_rule2(word, &stemmed_word, &removed_part);
-  debug("stem word: %s, expected: larian, actual: %s", word, stemmed_word);
-  mu_assert(rc == 0, "larian not in dictionary");
-  mu_assert(strcmp("larian", stemmed_word) == 0, "the ber is removed");
-  free(stemmed_word);
-  free(removed_part);
-
-  return NULL;
+  return test_remove_complex_prefix("berlarian", "larian", "ber", PARTIALLY_STEMMED, remove_complex_prefix_rule2);
 }
 
 char *test_remove_complex_prefix_rule3_only_includes_er() 
 {
-  char *stemable_word = "berdaerah";
-  char *nonstemable_word = "bertabur";
-  char *stemmed_word = NULL;
-  char *removed_part = NULL;
-
-  int rc = remove_complex_prefix_rule3(stemable_word, &stemmed_word, &removed_part);
-  debug("stem word: %s, expected: daerah, actual: %s", stemable_word, stemmed_word);
-  mu_assert(rc == 1, "sucessfully stemmed");
-  mu_assert(strcmp("daerah", stemmed_word) == 0, "it stems to daerah");
-  mu_assert(strcmp("ber", removed_part) == 0, "remove part should be ber");
-  free(stemmed_word);
-  free(removed_part);
- 
-  rc = remove_complex_prefix_rule3(nonstemable_word, &stemmed_word, &removed_part);
-  mu_assert(rc == 0, "cannot stem");
-  free(stemmed_word);
-  free(removed_part);
-
-  return NULL;
+  return test_remove_complex_prefix("berdaerah", "daerah", "ber", FULLY_STEMMED, remove_complex_prefix_rule3);
 }
+
+char *test_remove_complex_prefix_rule3_only_includes_er_not_stemmed()
+{
+  return test_remove_complex_prefix("bertabur", "bertabur", "", NOT_STEMMED, remove_complex_prefix_rule3);
+}
+
 
 char *test_remove_complex_prefix_rule4() 
 {
-  char *stemable_word = "belajar";
-  char *nonstemable_word = "bertabur";
-  char *stemmed_word = NULL;
-  char *removed_part = NULL;
+  return test_remove_complex_prefix("belajar", "ajar", "bel", FULLY_STEMMED,remove_complex_prefix_rule4);
+}
 
-  int rc = remove_complex_prefix_rule4(stemable_word, &stemmed_word, &removed_part);
-  debug("stem word: %s, expected: ajar, actual: %s", stemable_word, stemmed_word);
-  mu_assert(rc == 1, "sucessfully stemmed");
-  mu_assert(strcmp("ajar", stemmed_word) == 0, "it stems to ajar");
-  mu_assert(strcmp("bel", removed_part) == 0, "remove part should be bel");
-  free(stemmed_word);
-  free(removed_part);
- 
-  rc = remove_complex_prefix_rule4(nonstemable_word, &stemmed_word, &removed_part);
-  mu_assert(rc == 0, "cannot stem");
-  free(stemmed_word);
-  free(removed_part);
-
-  return NULL;
+char *test_remove_complex_prefix_rule4_not_stemmed() 
+{
+  return test_remove_complex_prefix("bertabur", "bertabur", "", NOT_STEMMED, remove_complex_prefix_rule4);
 }
 
 char *test_remove_complex_prefix_rule5() 
 {
-  char *stemable_word = "bekerja";
-  char *nonstemable_word = "berlari";
-  char *stemmed_word = NULL;
-  char *removed_part = NULL;
+  return test_remove_complex_prefix("bekerja", "kerja", "be", FULLY_STEMMED, remove_complex_prefix_rule5);
+}
 
-  int rc = remove_complex_prefix_rule5(stemable_word, &stemmed_word, &removed_part);
-  debug("stem word: %s, expected: kerja, actual: %s", stemable_word, stemmed_word);
-  mu_assert(rc == 1, "sucessfully stemmed");
-  mu_assert(strcmp("kerja", stemmed_word) == 0, "it stems to kerja");
-  mu_assert(strcmp("be", removed_part) == 0, "remove part should be be");
-  free(stemmed_word);
-  free(removed_part);
- 
-  rc = remove_complex_prefix_rule5(nonstemable_word, &stemmed_word, &removed_part);
-  mu_assert(rc == 0, "cannot stem");
-  free(stemmed_word);
-  free(removed_part);
-
-  return NULL;
+char *test_remove_complex_prefix_rule5_not_stemmed() 
+{
+  return test_remove_complex_prefix("berlari", "berlari", "", NOT_STEMMED, remove_complex_prefix_rule5);
 }
 
 char *test_remove_complex_prefix_rule6a() 
 {
-  char *stemable_word = "terancam";
-  char *nonstemable_word = "terbalik";
-  char *stemmed_word = NULL;
-  char *removed_part = NULL;
+  return test_remove_complex_prefix("terancam", "ancam", "ter", FULLY_STEMMED, remove_complex_prefix_rule6);
+}
 
-  int rc = remove_complex_prefix_rule6(stemable_word, &stemmed_word, &removed_part);
-  debug("stem word: %s, expected: ancam, actual: %s", stemable_word, stemmed_word);
-  mu_assert(rc == 1, "sucessfully stemmed");
-  mu_assert(strcmp("ancam", stemmed_word) == 0, "it stems to ancam");
-  mu_assert(strcmp("ter", removed_part) == 0, "remove part should be be");
-  free(stemmed_word);
-  free(removed_part);
- 
-  rc = remove_complex_prefix_rule6(nonstemable_word, &stemmed_word, &removed_part);
-  mu_assert(rc == 0, "cannot stem");
-  free(stemmed_word);
-  free(removed_part);
-
-  return NULL;
+char *test_remove_complex_prefix_rule6a_not_stemmed() 
+{
+  return test_remove_complex_prefix("terbalik", "terbalik", "", NOT_STEMMED, remove_complex_prefix_rule6);
 }
 
 char *test_remove_complex_prefix_rule6b() 
 {
-  char *stemable_word = "teracun";
-  char *nonstemable_word = "terbalik";
-  char *stemmed_word = NULL;
-  char *removed_part = NULL;
+  return test_remove_complex_prefix("teracun", "racun", "te", FULLY_STEMMED, remove_complex_prefix_rule6);
+}
 
-  int rc = remove_complex_prefix_rule6(stemable_word, &stemmed_word, &removed_part);
-  debug("stem word: %s, expected: racun, actual: %s", stemable_word, stemmed_word);
-  mu_assert(rc == 1, "sucessfully stemmed");
-  mu_assert(strcmp("racun", stemmed_word) == 0, "it stems to racun");
-  mu_assert(strcmp("te", removed_part) == 0, "remove part should be te");
-  free(stemmed_word);
-  free(removed_part);
- 
-  rc = remove_complex_prefix_rule6(nonstemable_word, &stemmed_word, &removed_part);
-  mu_assert(rc == 0, "cannot stem");
-  free(stemmed_word);
-  free(removed_part);
-
-  return NULL;
+char *test_remove_complex_prefix_rule6b_not_stemmed() 
+{
+  return test_remove_complex_prefix("terbalik", "terbalik", "", NOT_STEMMED, remove_complex_prefix_rule6);
 }
 
 char *test_remove_complex_prefix_rule7() 
 {
-  char *stemable_word = "terperuk";
-  char *stemmed_word = NULL;
-  char *removed_part = NULL;
-
-  int rc = remove_complex_prefix_rule7(stemable_word, &stemmed_word, &removed_part);
-  debug("stem word: %s, expected: peruk, actual: %s", stemable_word, stemmed_word);
-  mu_assert(rc == 1, "sucessfully stemmed");
-  mu_assert(strcmp("peruk", stemmed_word) == 0, "it stems to peruk");
-  mu_assert(strcmp("ter", removed_part) == 0, "remove part should be ter");
-  free(stemmed_word);
-  free(removed_part);
-  return NULL;
+  return test_remove_complex_prefix("terperuk", "peruk", "ter", FULLY_STEMMED, remove_complex_prefix_rule7);
 }
 
 char *test_remove_complex_prefix_rule8() 
 {
-  return test_remove_complex_prefix("tertangkap", "tangkap", "ter",  remove_complex_prefix_rule8);
+  return test_remove_complex_prefix("tertangkap", "tangkap", "ter", FULLY_STEMMED, remove_complex_prefix_rule8);
 }
 
-char *test_remove_complex_prefix_rule8_still_stems_when_not_in_dict() 
+char *test_remove_complex_prefix_rule8_when_partially_stemmed() 
 {
-  char *stemable_word = "tertangkaplah";
-  char *stemmed_word = NULL;
-  char *removed_part = NULL;
-
-  int rc = remove_complex_prefix_rule8(stemable_word, &stemmed_word, &removed_part);
-  debug("stem word: %s, expected: tangkaplah, actual: %s", stemable_word, stemmed_word);
-  mu_assert(rc == 0, "not in dict");
-  mu_assert(strcmp("tangkaplah", stemmed_word) == 0, "it stems to tangkaplah");
-  mu_assert(strcmp("ter", removed_part) == 0, "remove part should be ter");
-  free(stemmed_word);
-  free(removed_part);
-  return NULL;
+  return test_remove_complex_prefix("tertangkaplah", "tangkaplah", "ter", PARTIALLY_STEMMED, remove_complex_prefix_rule8);
 }
 
 char *test_remove_complex_prefix_rule8_excludes_er() 
 {
-  char *word = "terterbang";
-  char *stemmed_word = NULL;
-  char *removed_part = NULL;
-
-  int rc = remove_complex_prefix_rule8(word, &stemmed_word, &removed_part);
-  debug("stem word: %s, expected: terterbang, actual: %s", word, stemmed_word);
-  mu_assert(rc == 0, "does not stem");
-  mu_assert(strcmp("terterbang", stemmed_word) == 0, "it does not stem it");
-  free(stemmed_word);
-  free(removed_part);
-
-  return NULL;
+  return test_remove_complex_prefix("terterbang", "terterbang", "", NOT_STEMMED, remove_complex_prefix_rule8);
 }
 
 char *test_remove_complex_prefix_rule9() 
 {
-  return test_remove_complex_prefix("teterbang", "terbang", "te",  remove_complex_prefix_rule9);
+  return test_remove_complex_prefix("teterbang", "terbang", "te", FULLY_STEMMED, remove_complex_prefix_rule9);
 }
 
 char *test_remove_complex_prefix_rule10_l() 
 {
-  return test_remove_complex_prefix("melalu", "lalu", "me",  remove_complex_prefix_rule10);
+  return test_remove_complex_prefix("melalu", "lalu", "me", FULLY_STEMMED, remove_complex_prefix_rule10);
 }
 
 char *test_remove_complex_prefix_rule10_r() 
 {
-  return test_remove_complex_prefix("meracun", "racun", "me",  remove_complex_prefix_rule10);
+  return test_remove_complex_prefix("meracun", "racun", "me", FULLY_STEMMED, remove_complex_prefix_rule10);
 }
 
 char *test_remove_complex_prefix_rule10_w() 
 {
-  return test_remove_complex_prefix("mewarna", "warna", "me",  remove_complex_prefix_rule10);
+  return test_remove_complex_prefix("mewarna", "warna", "me", FULLY_STEMMED, remove_complex_prefix_rule10);
 }
 
 char *test_remove_complex_prefix_rule10_y() 
 {
-  return test_remove_complex_prefix("meyakin", "yakin", "me",  remove_complex_prefix_rule10);
+  return test_remove_complex_prefix("meyakin", "yakin", "me", FULLY_STEMMED, remove_complex_prefix_rule10);
 }
 
 char *test_remove_complex_prefix_rule11_f() 
 {
-  return test_remove_complex_prefix("memfasilitas", "fasilitas", "mem",  remove_complex_prefix_rule11);
+  return test_remove_complex_prefix("memfasilitas", "fasilitas", "mem", FULLY_STEMMED, remove_complex_prefix_rule11);
 }
 
 char *test_remove_complex_prefix_rule11_b() 
 {
-  return test_remove_complex_prefix("membantu", "bantu", "mem",  remove_complex_prefix_rule11);
+  return test_remove_complex_prefix("membantu", "bantu", "mem", FULLY_STEMMED, remove_complex_prefix_rule11);
 }
 
 char *test_remove_complex_prefix_rule11_v() 
 {
-  return test_remove_complex_prefix("memvonis", "vonis", "mem",  remove_complex_prefix_rule11);
+  return test_remove_complex_prefix("memvonis", "vonis", "mem", FULLY_STEMMED, remove_complex_prefix_rule11);
 }
 
 char *test_remove_complex_prefix_rule11_unstemmable() 
 {
-  char *word = "terbalik";
-  char *stemmed_word = NULL;
-  char *removed_part = NULL;
-
-  int rc = remove_complex_prefix_rule11(word, &stemmed_word, &removed_part);
-  debug("word: %s, expected: %s, actual: %s, expected removed: %s, actual removed : %s",
-      word, word, 
-      stemmed_word, "", 
-      removed_part);
-
-  mu_assert(rc == 0, "should not stem");
-  mu_assert(strcmp(word, stemmed_word) == 0, "it returns the original word");
-  mu_assert(strcmp("", removed_part) == 0, "it returns an empty string as the removed part");
-  free(stemmed_word);
-  free(removed_part);
-
-  return NULL;
+  return test_remove_complex_prefix("terbalik", "terbalik", "", NOT_STEMMED, remove_complex_prefix_rule11);
 }
 
 char *test_remove_complex_prefix_rule12() 
 {
-  return test_remove_complex_prefix("mempengaruh", "pengaruh", "mem",  remove_complex_prefix_rule12);
+  return test_remove_complex_prefix("mempengaruh", "pengaruh", "mem", FULLY_STEMMED, remove_complex_prefix_rule12);
 }
 
 char *test_remove_complex_prefix_rule13a() 
 {
-  return test_remove_complex_prefix("memasuk", "masuk", "me",  remove_complex_prefix_rule13);
+  return test_remove_complex_prefix("memasuk", "masuk", "me", FULLY_STEMMED, remove_complex_prefix_rule13);
 }
 
 char *test_remove_complex_prefix_rule13b() 
 {
-  return test_remove_complex_prefix("memakai", "pakai", "me",  remove_complex_prefix_rule13);
+  return test_remove_complex_prefix("memakai", "pakai", "me", FULLY_STEMMED, remove_complex_prefix_rule13);
 }
 
 char *test_remove_complex_prefix_rule14_c() 
 {
-  return test_remove_complex_prefix("mencantum", "cantum", "men",  remove_complex_prefix_rule14);
+  return test_remove_complex_prefix("mencantum", "cantum", "men", FULLY_STEMMED, remove_complex_prefix_rule14);
 }
 
 char *test_remove_complex_prefix_rule14_d() 
 {
-  return test_remove_complex_prefix("menduduk", "duduk", "men",  remove_complex_prefix_rule14);
+  return test_remove_complex_prefix("menduduk", "duduk", "men", FULLY_STEMMED, remove_complex_prefix_rule14);
 }
 
 char *test_remove_complex_prefix_rule14_j() 
 {
-  return test_remove_complex_prefix("menjemput", "jemput", "men",  remove_complex_prefix_rule14);
+  return test_remove_complex_prefix("menjemput", "jemput", "men", FULLY_STEMMED, remove_complex_prefix_rule14);
 }
 
 char *test_remove_complex_prefix_rule14_s() 
 {
-  return test_remove_complex_prefix("mensyukur", "syukur", "men",  remove_complex_prefix_rule14);
+  return test_remove_complex_prefix("mensyukur", "syukur", "men", FULLY_STEMMED, remove_complex_prefix_rule14);
 }
 
 char *test_remove_complex_prefix_rule14_t() 
 {
-  return test_remove_complex_prefix("mentaat", "taat", "men",  remove_complex_prefix_rule14);
+  return test_remove_complex_prefix("mentaat", "taat", "men", FULLY_STEMMED, remove_complex_prefix_rule14);
 }
 
 char *test_remove_complex_prefix_rule14_z() 
 {
-  return test_remove_complex_prefix("menziarah", "ziarah", "men",  remove_complex_prefix_rule14);
+  return test_remove_complex_prefix("menziarah", "ziarah", "men", FULLY_STEMMED, remove_complex_prefix_rule14);
 }
 
 char *test_remove_complex_prefix_rule15a() 
 {
-  return test_remove_complex_prefix("menikmat", "nikmat", "me",  remove_complex_prefix_rule15);
+  return test_remove_complex_prefix("menikmat", "nikmat", "me", FULLY_STEMMED, remove_complex_prefix_rule15);
 }
 
 char *test_remove_complex_prefix_rule15b() 
 {
-  return test_remove_complex_prefix("menulis", "tulis", "me",  remove_complex_prefix_rule15);
+  return test_remove_complex_prefix("menulis", "tulis", "me", FULLY_STEMMED, remove_complex_prefix_rule15);
 }
 
 char *test_remove_complex_prefix_rule16_g() 
 {
-  return test_remove_complex_prefix("mengguna", "guna", "meng",  remove_complex_prefix_rule16);
+  return test_remove_complex_prefix("mengguna", "guna", "meng", FULLY_STEMMED, remove_complex_prefix_rule16);
 }
 
 char *test_remove_complex_prefix_rule16_h() 
 {
-  return test_remove_complex_prefix("menghambat", "hambat", "meng",  remove_complex_prefix_rule16);
+  return test_remove_complex_prefix("menghambat", "hambat", "meng", FULLY_STEMMED, remove_complex_prefix_rule16);
 }
 
 char *test_remove_complex_prefix_rule16_q() 
 {
-  return test_remove_complex_prefix("mengqasar", "qasar", "meng",  remove_complex_prefix_rule16);
+  return test_remove_complex_prefix("mengqasar", "qasar", "meng", FULLY_STEMMED, remove_complex_prefix_rule16);
 }
 
 char *test_remove_complex_prefix_rule16_k() 
 {
-  return test_remove_complex_prefix("mengkritik", "kritik", "meng",  remove_complex_prefix_rule16);
+  return test_remove_complex_prefix("mengkritik", "kritik", "meng", FULLY_STEMMED, remove_complex_prefix_rule16);
 }
 
 char *test_remove_complex_prefix_rule17a() 
 {
-  return test_remove_complex_prefix("mengerat", "erat", "meng",  remove_complex_prefix_rule17);
+  return test_remove_complex_prefix("mengerat", "erat", "meng", FULLY_STEMMED, remove_complex_prefix_rule17);
 }
 
 char *test_remove_complex_prefix_rule17b() 
 {
-  return test_remove_complex_prefix("mengecil", "kecil", "meng",  remove_complex_prefix_rule17);
+  return test_remove_complex_prefix("mengecil", "kecil", "meng", FULLY_STEMMED, remove_complex_prefix_rule17);
 }
 
 char *test_remove_complex_prefix_rule17c() 
 {
-  return test_remove_complex_prefix("mengecat", "cat", "menge",  remove_complex_prefix_rule17);
+  return test_remove_complex_prefix("mengecat", "cat", "menge", FULLY_STEMMED, remove_complex_prefix_rule17);
 }
 
 char *test_remove_complex_prefix_rule17d() 
 {
-  return test_remove_complex_prefix("mengiang", "ngiang", "me",  remove_complex_prefix_rule17);
+  return test_remove_complex_prefix("mengiang", "ngiang", "me", FULLY_STEMMED, remove_complex_prefix_rule17);
 }
 
 char *test_remove_complex_prefix_rule18a() 
 {
-  return test_remove_complex_prefix("menyala", "nyala", "me",  remove_complex_prefix_rule18);
+  return test_remove_complex_prefix("menyala", "nyala", "me", FULLY_STEMMED, remove_complex_prefix_rule18);
 }
 
 char *test_remove_complex_prefix_rule18b() 
 {
-  return test_remove_complex_prefix("menyapu", "sapu", "meny",  remove_complex_prefix_rule18);
+  return test_remove_complex_prefix("menyapu", "sapu", "meny", FULLY_STEMMED, remove_complex_prefix_rule18);
 }
 
 char *test_remove_complex_prefix_rule19_1() 
 {
-  return test_remove_complex_prefix("memproteksi", "proteksi", "mem",  remove_complex_prefix_rule19);
+  return test_remove_complex_prefix("memproteksi", "proteksi", "mem", FULLY_STEMMED, remove_complex_prefix_rule19);
 }
 
 char *test_remove_complex_prefix_rule19_2() 
 {
-  return test_remove_complex_prefix("mempatroli", "patroli", "mem",  remove_complex_prefix_rule19);
+  return test_remove_complex_prefix("mempatroli", "patroli", "mem", FULLY_STEMMED, remove_complex_prefix_rule19);
 }
 
 char *test_remove_complex_prefix_rule20_1() 
 {
-  return test_remove_complex_prefix("pewarna", "warna", "pe",  remove_complex_prefix_rule20);
+  return test_remove_complex_prefix("pewarna", "warna", "pe", FULLY_STEMMED, remove_complex_prefix_rule20);
 }
 
 char *test_remove_complex_prefix_rule20_2() 
 {
-  return test_remove_complex_prefix("peyoga", "yoga", "pe",  remove_complex_prefix_rule20);
+  return test_remove_complex_prefix("peyoga", "yoga", "pe", FULLY_STEMMED, remove_complex_prefix_rule20);
 }
 
-char *test_remove_prefixes_when_cannot_stem_to_word_in_dict()
+char *test_remove_prefixes_when_partially_stemmed()
 {
   char *stemmed_word;
 
@@ -512,14 +360,19 @@ char *all_tests()
   mu_run_test(test_remove_complex_prefix_rule2_excludes_er);
   mu_run_test(test_remove_complex_prefix_rule2_returns_stemmed_word_although_not_in_dict);
   mu_run_test(test_remove_complex_prefix_rule3_only_includes_er);
+  mu_run_test(test_remove_complex_prefix_rule3_only_includes_er_not_stemmed);
   mu_run_test(test_remove_complex_prefix_rule4);
+  mu_run_test(test_remove_complex_prefix_rule4_not_stemmed);
   mu_run_test(test_remove_complex_prefix_rule5);
+  mu_run_test(test_remove_complex_prefix_rule5_not_stemmed);
   mu_run_test(test_remove_complex_prefix_rule6a);
+  mu_run_test(test_remove_complex_prefix_rule6a_not_stemmed);
   mu_run_test(test_remove_complex_prefix_rule6b);
+  mu_run_test(test_remove_complex_prefix_rule6b_not_stemmed);
   mu_run_test(test_remove_complex_prefix_rule7);
   mu_run_test(test_remove_complex_prefix_rule8);
   mu_run_test(test_remove_complex_prefix_rule8_excludes_er);
-  mu_run_test(test_remove_complex_prefix_rule8_still_stems_when_not_in_dict);
+  mu_run_test(test_remove_complex_prefix_rule8_when_partially_stemmed);
   mu_run_test(test_remove_complex_prefix_rule9);
   mu_run_test(test_remove_complex_prefix_rule10_l);
   mu_run_test(test_remove_complex_prefix_rule10_r);
@@ -554,7 +407,7 @@ char *all_tests()
   mu_run_test(test_remove_complex_prefix_rule19_2);
   mu_run_test(test_remove_complex_prefix_rule20_1);
   mu_run_test(test_remove_complex_prefix_rule20_2);
-  mu_run_test(test_remove_prefixes_when_cannot_stem_to_word_in_dict);
+  mu_run_test(test_remove_prefixes_when_partially_stemmed);
   mu_run_test(test_remove_prefixes_runs_3_times);
   return NULL;
 }

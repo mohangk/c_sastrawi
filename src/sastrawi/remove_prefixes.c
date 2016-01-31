@@ -118,8 +118,12 @@ int remove_complex_prefix_rule2(char *word, char **stemmed_word, char **removed_
 
   int split_rc = split_word3("(^ber)([^aeiou][a-z](\\w*))", word, removed_part, stemmed_word, "er");
 
-  if(split_rc == 1 && dictionary_contains(*stemmed_word)) {
-      rc = 1;
+  if(split_rc == 1) {
+      rc = PARTIALLY_STEMMED;
+
+      if(dictionary_contains(*stemmed_word)) {
+        rc = FULLY_STEMMED;
+      }
   }
 
   return rc;
@@ -132,8 +136,12 @@ int remove_complex_prefix_rule3(char *word, char **stemmed_word, char **removed_
   int split_rc = prefix_split_word("(^ber)([^aeiou][a-z]er\\w*)", word, removed_part, stemmed_word);
 
 
-  if(split_rc == 1 && dictionary_contains(*stemmed_word)) {
-      rc = 1;
+  if(split_rc == 1) {
+      rc = PARTIALLY_STEMMED;
+
+      if(dictionary_contains(*stemmed_word)) {
+        rc = FULLY_STEMMED;
+      }
   }
 
   return rc;
@@ -200,13 +208,18 @@ int remove_complex_prefix_rule7(char *word, char **stemmed_word, char **removed_
 
 int remove_complex_prefix_rule8(char *word, char **stemmed_word, char **removed_part)
 {
-  int rc = 0;
+  int rc = NOT_STEMMED;
 
   int split_rc = split_word3("(^ter)([^aeiour](\\w*))", word, removed_part, stemmed_word, "er");
 
-  if(split_rc == 1 && dictionary_contains(*stemmed_word)) {
-    rc = 1;
+  if(split_rc == 1) {
+      rc = PARTIALLY_STEMMED;
+
+      if(dictionary_contains(*stemmed_word)) {
+        rc = FULLY_STEMMED;
+      }
   }
+
 
   return rc;
 }
