@@ -35,6 +35,7 @@ const PREFIX_REMOVER prefix_removers[prefix_remover_count] = {
   remove_complex_prefix_rule20
 };
 
+int assign_if_root_word(char **, char *, char **, char *);
 
 int remove_prefixes(char *original_word, char **stemmed_word)
 {
