@@ -8,6 +8,7 @@
 #include "remove_suffixes.h"
 #include "remove_prefixes.h"
 #include "stem_singular.h"
+#include "precedence_adjustment.h"
 #include "../dbg.h"
 
 
