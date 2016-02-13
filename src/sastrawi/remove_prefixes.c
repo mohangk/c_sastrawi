@@ -9,7 +9,7 @@
 #include "remove_prefixes.h"
 #include "../dbg.h"
 
-const int prefix_remover_count = 21;
+#define prefix_remover_count 21
 
 const PREFIX_REMOVER prefix_removers[prefix_remover_count] = {
   remove_plain_prefix,
