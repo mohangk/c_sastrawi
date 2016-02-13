@@ -52,7 +52,7 @@ char *test_stem_plural_word_when_both_words_are_root_words_and_the_same()
 {
   char *word = "malaikat-malaikat";
   char *stemmed_word = NULL;
-  int rc = stem_plural_word(word, &stemmed_word);
+  stem_plural_word(word, &stemmed_word);
   mu_assert(strcmp("malaikat", stemmed_word) == 0, "it stems to malaikat");
   free(stemmed_word);
 
@@ -72,7 +72,7 @@ char *test_stem_plural_word_when_one_word_has_suffixes()
 {
   char *word = "malaikat-malaikatnya";
   char *stemmed_word = NULL;
-  int rc = stem_plural_word(word, &stemmed_word);
+  stem_plural_word(word, &stemmed_word);
   mu_assert(strcmp("malaikat", stemmed_word) == 0, "it stems to malaikat");
   free(stemmed_word);
 
