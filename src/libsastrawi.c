@@ -8,7 +8,17 @@
 #include "sastrawi/stem_plural.h"
 #include "sastrawi/stem_singular.h"
 
-void print_my_name() 
+sastrawi_err sastrawi_stemmer_new(sastrawi_stemmer **ppStemmer)
 {
-  printf("mohan");
+  void *dummy = malloc(16);
+  if (!dummy) {
+    return SASTRAWI_E_MEMORY;
+  }
+  *ppStemmer = ((sastrawi_stemmer *)dummy);
+  return SASTRAWI_E_OK;
+}
+sastrawi_err sastrawi_stemmer_free(sastrawi_stemmer *pStemmer)
+{
+  free(pStemmer);
+  return SASTRAWI_E_OK;
 }

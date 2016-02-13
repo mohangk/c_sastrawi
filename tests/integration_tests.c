@@ -6,9 +6,9 @@ char *test_new_and_free_stemmer()
 {
   sastrawi_stemmer *stem;
   sastrawi_err rc = sastrawi_stemmer_new(&stem);
-  mu_assert(rc == 0, "can create stemmer");
+  mu_assert(!SASTRAWI_FAILED(rc), "can create stemmer");
   rc = sastrawi_stemmer_free(stem);
-  mu_assert(rc == 0, "can free stemmer");
+  mu_assert(!SASTRAWI_FAILED(rc), "can free stemmer");
   return NULL;
 }
 
