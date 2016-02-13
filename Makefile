@@ -1,4 +1,4 @@
-CFLAGS=-Wall -g -O2 -Wextra -Isrc -I/usr/local/include -DNDEBUG $(OPTFLAGS)
+CFLAGS=-std=c99 -Wall -g -O2 -Wextra -Isrc -I/usr/local/include -DNDEBUG $(OPTFLAGS)
 LDFLAGS=-lpcre2-8  -L/usr/local/lib $(OPTLIBS)
 PREFIX?=/usr/local
 
