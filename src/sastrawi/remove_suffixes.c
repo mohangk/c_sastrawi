@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include "text_util.h"
 #include "remove_suffixes.h"
+#include "dictionary.h"
 #include "../dbg.h"
 
 int remove_suffixes(char *word, char **stemmed_word)
