@@ -1,12 +1,18 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include "regex/preg.h"
 #include "sastrawi/stem_plural.h"
 #include "sastrawi/stem_singular.h"
 #include "sastrawi/dictionary.h"
 
-void print_my_name();
+
+typedef struct sastrawi_stemmer sastrawi_stemmer;
+typedef int32_t sastrawi_err;
+
+sastrawi_err sastrawi_stemmer_new(sastrawi_stemmer **);
+sastrawi_err sastrawi_stemmer_free(sastrawi_stemmer *);
 
 typedef struct affix_removal AFFIX_REMOVAL;
 struct affix_removal {
