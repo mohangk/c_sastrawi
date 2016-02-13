@@ -14,6 +14,7 @@
 
 const AFFIX_REMOVER prefix_suffix_removers[2] = {remove_prefixes, remove_suffixes};
 const AFFIX_REMOVER suffix_prefix_removers[2] = {remove_suffixes, remove_prefixes};
+int apply_affix_removers(char *, char **, const AFFIX_REMOVER[]);
 
 int stem_singular_word(char *original_word, char **stemmed_word)
 {
@@ -46,7 +47,7 @@ int stem_singular_word(char *original_word, char **stemmed_word)
 }
 
 
-int apply_affix_removers(char *original_word, char **stemmed_word, AFFIX_REMOVER affix_removers[]) {
+int apply_affix_removers(char *original_word, char **stemmed_word, const AFFIX_REMOVER affix_removers[]) {
 
   char *word = strndup(original_word, strlen(original_word));
   int remover_rc = 0;
