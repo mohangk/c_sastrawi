@@ -53,6 +53,11 @@ char *test_remove_complex_prefix_rule1_a()
   return test_remove_complex_prefix("beria", "ia", "ber", FULLY_STEMMED, remove_complex_prefix_rule1);
 }
 
+char *test_remove_complex_prefix_rule1_a_partially_stemmed() 
+{
+  return test_remove_complex_prefix("berakhirlah", "akhirlah", "ber", PARTIALLY_STEMMED, remove_complex_prefix_rule1);
+}
+
 char *test_remove_complex_prefix_rule1_b() 
 {
 
@@ -70,7 +75,7 @@ char *test_remove_complex_prefix_rule2_excludes_er()
 
 }
 
-char *test_remove_complex_prefix_rule2_returns_stemmed_word_although_not_in_dict() 
+char *test_remove_complex_prefix_rule2_partially_stemmed() 
 {
   return test_remove_complex_prefix("berlarian", "larian", "ber", PARTIALLY_STEMMED, remove_complex_prefix_rule2);
 }
@@ -78,6 +83,11 @@ char *test_remove_complex_prefix_rule2_returns_stemmed_word_although_not_in_dict
 char *test_remove_complex_prefix_rule3_only_includes_er() 
 {
   return test_remove_complex_prefix("berdaerah", "daerah", "ber", FULLY_STEMMED, remove_complex_prefix_rule3);
+}
+
+char *test_remove_complex_prefix_rule3_only_includes_er_partially_stemmed() 
+{
+  return test_remove_complex_prefix("berdaerahlah", "daerahlah", "ber", PARTIALLY_STEMMED, remove_complex_prefix_rule3);
 }
 
 char *test_remove_complex_prefix_rule3_only_includes_er_not_stemmed()
@@ -91,6 +101,11 @@ char *test_remove_complex_prefix_rule4()
   return test_remove_complex_prefix("belajar", "ajar", "bel", FULLY_STEMMED,remove_complex_prefix_rule4);
 }
 
+char *test_remove_complex_prefix_rule4_partially_stemmed() 
+{
+  return test_remove_complex_prefix("belajarlah", "ajarlah", "bel", PARTIALLY_STEMMED,remove_complex_prefix_rule4);
+}
+
 char *test_remove_complex_prefix_rule4_not_stemmed() 
 {
   return test_remove_complex_prefix("bertabur", "bertabur", "", NOT_STEMMED, remove_complex_prefix_rule4);
@@ -101,6 +116,11 @@ char *test_remove_complex_prefix_rule5()
   return test_remove_complex_prefix("bekerja", "kerja", "be", FULLY_STEMMED, remove_complex_prefix_rule5);
 }
 
+char *test_remove_complex_prefix_rule5_partially_stemmed() 
+{
+  return test_remove_complex_prefix("bekerjalah", "kerjalah", "be", PARTIALLY_STEMMED, remove_complex_prefix_rule5);
+}
+
 char *test_remove_complex_prefix_rule5_not_stemmed() 
 {
   return test_remove_complex_prefix("berlari", "berlari", "", NOT_STEMMED, remove_complex_prefix_rule5);
@@ -109,6 +129,11 @@ char *test_remove_complex_prefix_rule5_not_stemmed()
 char *test_remove_complex_prefix_rule6a() 
 {
   return test_remove_complex_prefix("terancam", "ancam", "ter", FULLY_STEMMED, remove_complex_prefix_rule6);
+}
+
+char *test_remove_complex_prefix_rule6a_partially_stemmed() 
+{
+  return test_remove_complex_prefix("terancamlah", "ancamlah", "ter", PARTIALLY_STEMMED, remove_complex_prefix_rule6);
 }
 
 char *test_remove_complex_prefix_rule6a_not_stemmed() 
@@ -131,12 +156,18 @@ char *test_remove_complex_prefix_rule7()
   return test_remove_complex_prefix("terperuk", "peruk", "ter", FULLY_STEMMED, remove_complex_prefix_rule7);
 }
 
+
+char *test_remove_complex_prefix_rule7_partially_stemmed() 
+{
+  return test_remove_complex_prefix("terperuklah", "peruklah", "ter", PARTIALLY_STEMMED, remove_complex_prefix_rule7);
+}
+
 char *test_remove_complex_prefix_rule8() 
 {
   return test_remove_complex_prefix("tertangkap", "tangkap", "ter", FULLY_STEMMED, remove_complex_prefix_rule8);
 }
 
-char *test_remove_complex_prefix_rule8_when_partially_stemmed() 
+char *test_remove_complex_prefix_rule8_partially_stemmed() 
 {
   return test_remove_complex_prefix("tertangkaplah", "tangkaplah", "ter", PARTIALLY_STEMMED, remove_complex_prefix_rule8);
 }
@@ -149,6 +180,11 @@ char *test_remove_complex_prefix_rule8_excludes_er()
 char *test_remove_complex_prefix_rule9() 
 {
   return test_remove_complex_prefix("teterbang", "terbang", "te", FULLY_STEMMED, remove_complex_prefix_rule9);
+}
+
+char *test_remove_complex_prefix_rule9_partially_stemmed() 
+{
+  return test_remove_complex_prefix("teterbangan", "terbangan", "te", PARTIALLY_STEMMED, remove_complex_prefix_rule9);
 }
 
 char *test_remove_complex_prefix_rule10_l() 
@@ -356,24 +392,31 @@ char *all_tests()
   mu_run_test(test_remove_plain_prefix_se);
   mu_run_test(test_remove_complex_prefix_rule1_a);
   mu_run_test(test_remove_complex_prefix_rule1_b);
+  mu_run_test(test_remove_complex_prefix_rule1_a_partially_stemmed);
   mu_run_test(test_remove_complex_prefix_rule2);
   mu_run_test(test_remove_complex_prefix_rule2_excludes_er);
-  mu_run_test(test_remove_complex_prefix_rule2_returns_stemmed_word_although_not_in_dict);
+  mu_run_test(test_remove_complex_prefix_rule2_partially_stemmed);
   mu_run_test(test_remove_complex_prefix_rule3_only_includes_er);
+  mu_run_test(test_remove_complex_prefix_rule3_only_includes_er_partially_stemmed);
   mu_run_test(test_remove_complex_prefix_rule3_only_includes_er_not_stemmed);
   mu_run_test(test_remove_complex_prefix_rule4);
+  mu_run_test(test_remove_complex_prefix_rule4_partially_stemmed);
   mu_run_test(test_remove_complex_prefix_rule4_not_stemmed);
   mu_run_test(test_remove_complex_prefix_rule5);
+  mu_run_test(test_remove_complex_prefix_rule5_partially_stemmed);
   mu_run_test(test_remove_complex_prefix_rule5_not_stemmed);
   mu_run_test(test_remove_complex_prefix_rule6a);
+  mu_run_test(test_remove_complex_prefix_rule6a_partially_stemmed);
   mu_run_test(test_remove_complex_prefix_rule6a_not_stemmed);
   mu_run_test(test_remove_complex_prefix_rule6b);
   mu_run_test(test_remove_complex_prefix_rule6b_not_stemmed);
   mu_run_test(test_remove_complex_prefix_rule7);
+  mu_run_test(test_remove_complex_prefix_rule7_partially_stemmed);
   mu_run_test(test_remove_complex_prefix_rule8);
   mu_run_test(test_remove_complex_prefix_rule8_excludes_er);
-  mu_run_test(test_remove_complex_prefix_rule8_when_partially_stemmed);
+  mu_run_test(test_remove_complex_prefix_rule8_partially_stemmed);
   mu_run_test(test_remove_complex_prefix_rule9);
+  mu_run_test(test_remove_complex_prefix_rule9_partially_stemmed);
   mu_run_test(test_remove_complex_prefix_rule10_l);
   mu_run_test(test_remove_complex_prefix_rule10_r);
   mu_run_test(test_remove_complex_prefix_rule10_w);
