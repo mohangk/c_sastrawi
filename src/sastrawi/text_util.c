@@ -1,3 +1,5 @@
+#define _POSIX_C_SOURCE 200809L
+// for strndup
 #include <string.h>
 #include "../regex/preg.h"
 #include "dbg.h"

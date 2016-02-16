@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include "text_util.h"
 #include "remove_suffixes.h"
+#include "dictionary.h"
 #include "../dbg.h"
 
 int remove_suffixes(char *word, char **stemmed_word)
@@ -54,11 +55,10 @@ int remove_derivational_suffix(char *word, char **stemmed_word, char **removed_p
 
 int remove_suffix(char *suffixes, char *word, char **stemmed_word, char **removed_part)
 {
-  char **matches = NULL;
   int rc;
   char *pattern = NULL;
 
-  int pattern_rc = asprintf(&pattern, "(\\w+?)-?(%s)$", suffixes);
+  asprintf(&pattern, "(\\w+?)-?(%s)$", suffixes);
 
   rc = suffix_split_word(pattern, word, stemmed_word, removed_part);
 

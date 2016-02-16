@@ -9,7 +9,7 @@
 #include "remove_prefixes.h"
 #include "../dbg.h"
 
-const int prefix_remover_count = 21;
+#define prefix_remover_count 21
 
 const PREFIX_REMOVER prefix_removers[prefix_remover_count] = {
   remove_plain_prefix,
@@ -35,6 +35,7 @@ const PREFIX_REMOVER prefix_removers[prefix_remover_count] = {
   remove_complex_prefix_rule20
 };
 
+int assign_if_root_word(char **, char *, char **, char *);
 
 int remove_prefixes(char *original_word, char **stemmed_word)
 {
@@ -247,7 +248,6 @@ int remove_complex_prefix_rule8(char *word, char **stemmed_word, char **removed_
 int remove_complex_prefix_rule9(char *word, char **stemmed_word, char **removed_part)
 {
   int rc = NOT_STEMMED;
-  char *partial_stemmed_word;
 
   int split_rc = prefix_split_word("(^te)([^aeiour]er[^aeiou]\\w*)", word, removed_part, stemmed_word);
 

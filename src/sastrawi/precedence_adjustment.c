@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "precedence_adjustment.h"
 #include "../dbg.h"
 
 

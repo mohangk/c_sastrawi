@@ -5,7 +5,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "libsastrawi.h"
+#include "sastrawi/remove_suffixes.h"
+#include "sastrawi/dictionary.h"
 #include "dbg.h"
 
 char *test_remove_inflectional_particle_with_dash() 
