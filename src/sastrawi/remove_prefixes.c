@@ -248,7 +248,6 @@ int remove_complex_prefix_rule8(char *word, char **stemmed_word, char **removed_
 int remove_complex_prefix_rule9(char *word, char **stemmed_word, char **removed_part)
 {
   int rc = NOT_STEMMED;
-  char *partial_stemmed_word;
 
   int split_rc = prefix_split_word("(^te)([^aeiour]er[^aeiou]\\w*)", word, removed_part, stemmed_word);
 
