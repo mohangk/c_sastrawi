@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include "text_util.h"
 #include "remove_suffixes.h"
+#include "remove_prefixes.h"
 #include "dictionary.h"
 #include "../dbg.h"
 
@@ -31,7 +32,7 @@ int remove_suffixes(char *word, char **stemmed_word)
   free(suffix_remove2);
 
   if(dictionary_contains(*stemmed_word)) {
-    rc = 1;
+    rc = FULLY_STEMMED;
   }
 
   return rc;

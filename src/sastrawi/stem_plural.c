@@ -6,6 +6,7 @@
 #include <string.h>
 #include "stem_plural.h"
 #include "stem_singular.h"
+#include "remove_prefixes.h"
 #include "../regex/preg.h"
 #include "../dbg.h"
 
@@ -77,23 +78,25 @@ int stem_plural_word(char *word, char **stemmed_word)
   char *root_word0 = NULL;
   char *root_word1 = NULL;
 
-  int rc = plural_parts(word, &word_parts);
+  int plural_rc = plural_parts(word, &word_parts);
+  int rc = NOT_STEMMED;
 
   stem_singular_word(word_parts[0], &root_word0);
   stem_singular_word(word_parts[1], &root_word1);
 
 
-  debug("word parts %s => %s, %s => %s", word_parts[0], root_word0, word_parts[1], root_word1);
+  //log_err("word parts %s => %s, %s => %s", word_parts[0], root_word0, word_parts[1], root_word1);
 
   if(strcmp(root_word0, root_word1) == 0) {
     (*stemmed_word) = strndup(word_parts[0], strlen(word_parts[0]));
+    rc = FULLY_STEMMED;
   } else {
     (*stemmed_word) = strndup(word, strlen(word));
   }
 
-  free_matches(rc, &word_parts);
+  free_matches(plural_rc, &word_parts);
   free(root_word0);
   free(root_word1);
 
-  return 1;
+  return rc;
 }

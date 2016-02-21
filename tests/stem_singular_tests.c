@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "libsastrawi.h"
+#include "sastrawi/remove_prefixes.h"
 #include "dbg.h"
 
 char *test_stem_singular_word_for(char *word, char *expected_stem_word) 
@@ -13,7 +14,7 @@ char *test_stem_singular_word_for(char *word, char *expected_stem_word)
   char *stemmed_word = NULL;
   int rc = stem_singular_word(word, &stemmed_word);
   debug("stem word: %s, expected: %s, actual: %s", word, expected_stem_word, stemmed_word);
-  mu_assert(rc == 1, "failed to stem");
+  mu_assert(rc == FULLY_STEMMED, "failed to stem");
   mu_assert(strcmp(expected_stem_word, stemmed_word) == 0, "failed to stem correctly");
   free(stemmed_word);
 
@@ -22,7 +23,15 @@ char *test_stem_singular_word_for(char *word, char *expected_stem_word)
 
 char *test_stem_singular_word_does_not_need_stemming() 
 {
-  return test_stem_singular_word_for("bola", "bola");
+  char *stemmed_word;
+  char *word = "bola";
+  char *expected_stem_word = "bola";
+  int rc = stem_singular_word(word, &stemmed_word);
+  debug("stem word: %s, expected: %s, actual: %s, expexted_rc %d, actual_rc %d", word, expected_stem_word, stemmed_word, NOT_STEMMED, rc);
+  mu_assert(rc == FULLY_STEMMED, "word that does not need stemming is returned as FULLY_STEMMED");
+  mu_assert(strcmp(expected_stem_word, stemmed_word) == 0, "should not change the word");
+  free(stemmed_word);
+  return NULL;
 }
 
 char *test_stem_singular_word_returns_original_word_when_cannot_stem()
@@ -33,7 +42,7 @@ char *test_stem_singular_word_returns_original_word_when_cannot_stem()
   char *expected_stem_word = "beblahblahan";
   int rc = stem_singular_word(word, &stemmed_word);
   debug("stem word: %s, expected: %s, actual: %s", word, expected_stem_word, stemmed_word);
-  mu_assert(rc == 0, "did not fail to stem");
+  mu_assert(rc == NOT_STEMMED, "did not fail to stem");
   mu_assert(strcmp(expected_stem_word, stemmed_word) == 0, "should not change the word");
   free(stemmed_word);
   return NULL;
@@ -44,9 +53,14 @@ char *test_stem_singular_word_removes_plain_prefixes()
   return test_stem_singular_word_for("kerajinannya", "rajin");
 }
 
-char *test_stem_singular_word_removes_suffixes() 
+char *test_stem_singular_word_removes_suffixes1() 
 {
   return test_stem_singular_word_for("bajumukah", "baju");
+}
+
+char *test_stem_singular_word_removes_suffixes2() 
+{
+  return test_stem_singular_word_for("malaikatnya", "malaikat");
 }
 
 char *test_stem_singular_word_removes_complex_prefixes_1() 
@@ -170,7 +184,8 @@ char *all_tests()
 
   mu_run_test(test_stem_singular_word_does_not_need_stemming);
   mu_run_test(test_stem_singular_word_returns_original_word_when_cannot_stem);
-  mu_run_test(test_stem_singular_word_removes_suffixes);
+  mu_run_test(test_stem_singular_word_removes_suffixes1);
+  mu_run_test(test_stem_singular_word_removes_suffixes2);
 
   mu_run_test(test_stem_singular_word_removes_plain_prefixes);
   mu_run_test(test_stem_singular_word_removes_complex_prefixes_1);

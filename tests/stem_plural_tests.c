@@ -72,7 +72,10 @@ char *test_stem_plural_word_when_one_word_has_suffixes()
 {
   char *word = "malaikat-malaikatnya";
   char *stemmed_word = NULL;
+  char *expected_stemmed_word = "malaikat";
   stem_plural_word(word, &stemmed_word);
+
+  debug("stem word: %s, expected: %s, actual: %s", word, expected_stemmed_word, stemmed_word);
   mu_assert(strcmp("malaikat", stemmed_word) == 0, "it stems to malaikat");
   free(stemmed_word);
 

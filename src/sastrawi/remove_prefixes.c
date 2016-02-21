@@ -402,7 +402,7 @@ int remove_complex_prefix_rule17(char *word, char **stemmed_word, char **removed
       asprintf(&alternative_stemmed_word, "k%s", *stemmed_word);
       alt_rc = assign_if_root_word(stemmed_word, alternative_stemmed_word, removed_part, "meng");
 
-      if(alt_rc == 1) {
+      if(alt_rc == FULLY_STEMMED) {
         rc = FULLY_STEMMED;
       }
       free(alternative_stemmed_word);
@@ -411,7 +411,7 @@ int remove_complex_prefix_rule17(char *word, char **stemmed_word, char **removed
     if(rc != FULLY_STEMMED) {
       asprintf(&alternative_stemmed_word, "%s", *stemmed_word+1);
       alt_rc = assign_if_root_word(stemmed_word, alternative_stemmed_word, removed_part, "menge");
-      if(alt_rc == 1) {
+      if(alt_rc == FULLY_STEMMED) {
         rc = FULLY_STEMMED;
       }
       free(alternative_stemmed_word);
@@ -420,7 +420,7 @@ int remove_complex_prefix_rule17(char *word, char **stemmed_word, char **removed
     if(rc != FULLY_STEMMED) {
       asprintf(&alternative_stemmed_word, "ng%s", *stemmed_word);
       alt_rc = assign_if_root_word(stemmed_word, alternative_stemmed_word, removed_part, "me");
-      if(alt_rc == 1) {
+      if(alt_rc == FULLY_STEMMED) {
         rc = FULLY_STEMMED;
       }
       free(alternative_stemmed_word);
