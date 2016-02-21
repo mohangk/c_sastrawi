@@ -39,18 +39,27 @@ int assign_if_root_word(char **, char *, char **, char *);
 
 int remove_prefixes(char *original_word, char **stemmed_word)
 {
-  int rc = NOT_STEMMED;
   char *removed_part = NULL;
-
-  char *word = strndup(original_word, strlen(original_word));
+  char *word = strdup(original_word);
   char *post_remove = NULL;
 
+  //log_err("pref remover word %s", word);
+
+  int overall_rc = NOT_STEMMED;
   for(int attempts = 0; attempts < 3; attempts++) {
+
+    int iteration_rc = NOT_STEMMED;
     for(int i =0; i < prefix_remover_count; i++) {
 
       free(post_remove);
       free(removed_part);
-      rc = (*prefix_removers[i])(word, &post_remove, &removed_part);
+
+      int rc = (*prefix_removers[i])(word, &post_remove, &removed_part);
+      //log_err(">> in pref remover: %d, rc: %d", i, rc);
+
+      if(iteration_rc < rc) {
+        iteration_rc = rc;
+      }
 
       if(rc == FULLY_STEMMED) {
         break;
@@ -60,7 +69,14 @@ int remove_prefixes(char *original_word, char **stemmed_word)
       }
     }
 
-    if(rc == FULLY_STEMMED) {
+    //log_err("> out pref remover: %d, iteration_rc: %d - word: %s", attempts, iteration_rc, word);
+
+    if(overall_rc < iteration_rc) {
+      overall_rc = iteration_rc;
+    }
+
+    if(iteration_rc == FULLY_STEMMED || iteration_rc == NOT_STEMMED) {
+      //log_err("BREAK ON %d",iteration_rc);
       break;
     }
   }
@@ -72,7 +88,7 @@ int remove_prefixes(char *original_word, char **stemmed_word)
   free(removed_part);
   free(word);
 
-  return rc;
+  return overall_rc;
 }
 
 int remove_plain_prefix(char *word, char **stemmed_word, char **removed_part)

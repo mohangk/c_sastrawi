@@ -517,7 +517,7 @@ char *all_tests()
   mu_run_test(test_remove_complex_prefix_rule20_1);
   mu_run_test(test_remove_complex_prefix_rule20_2);
   mu_run_test(test_remove_complex_prefix_rule20_partially_stemmed);
-  //mu_run_test(test_remove_prefixes_when_partially_stemmed);
+  mu_run_test(test_remove_prefixes_when_partially_stemmed);
   mu_run_test(test_remove_prefixes_runs_3_times);
   return NULL;
 }
