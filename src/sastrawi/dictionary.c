@@ -68,7 +68,7 @@ int dictionary_add(char *word)
     dict_word = malloc(sizeof(struct dict_entry));
     check_mem(dict_word);
 
-    dict_word->word = strndup(word, strlen(word));
+    dict_word->word = strdup(word);
     HASH_ADD_KEYPTR(hh, dict, dict_word->word, strlen(dict_word->word), dict_word);
   }
   return 1;
