@@ -21,7 +21,7 @@ int stem_singular_word(char *original_word, char **stemmed_word)
 
   //step 1: word already in dictionary
   if(dictionary_contains(original_word)) {
-    (*stemmed_word) = strndup(original_word, strlen(original_word));
+    (*stemmed_word) = strdup(original_word);
     return FULLY_STEMMED;
   }
 
@@ -37,10 +37,10 @@ int stem_singular_word(char *original_word, char **stemmed_word)
   }
 
   if(remover_rc == FULLY_STEMMED) {
-    *stemmed_word = strndup(post_remove, strlen(post_remove));
+    *stemmed_word = strdup(post_remove);
     free(post_remove);
   } else {
-    *stemmed_word = strndup(original_word, strlen(original_word));
+    *stemmed_word = strdup(original_word);
   }
 
   return remover_rc;
@@ -49,7 +49,7 @@ int stem_singular_word(char *original_word, char **stemmed_word)
 
 int apply_affix_removers(char *original_word, char **stemmed_word, const AFFIX_REMOVER affix_removers[]) {
 
-  char *word = strndup(original_word, strlen(original_word));
+  char *word = strdup(original_word);
   int remover_rc = NOT_STEMMED;
 
   for(int i = 0; i<2; i++) {
@@ -58,7 +58,7 @@ int apply_affix_removers(char *original_word, char **stemmed_word, const AFFIX_R
       break;
     } else {
       free(word);
-      word = strndup(*stemmed_word, strlen(*stemmed_word));
+      word = strdup(*stemmed_word);
       free(*stemmed_word);
     }
   }

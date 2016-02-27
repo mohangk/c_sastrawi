@@ -65,7 +65,7 @@ int remove_prefixes(char *original_word, char **stemmed_word)
         break;
       } else {
         free(word);
-        word = strndup(post_remove, strlen(post_remove));
+        word = strdup(post_remove);
       }
     }
 
@@ -81,7 +81,7 @@ int remove_prefixes(char *original_word, char **stemmed_word)
     }
   }
 
-  *stemmed_word = strndup(post_remove, strlen(post_remove));
+  *stemmed_word = strdup(post_remove);
 
   //cleanup
   free(post_remove);
@@ -503,10 +503,10 @@ int assign_if_root_word(char **stemmed_word, char *alternative_stemmed_word, cha
 
   if(dictionary_contains(alternative_stemmed_word)) {
     free(*removed_part);
-    *removed_part = strndup(alternative_removed_part, strlen(alternative_removed_part));
+    *removed_part = strdup(alternative_removed_part);
 
     free(*stemmed_word);
-    *stemmed_word = strndup(alternative_stemmed_word, strlen(alternative_stemmed_word));
+    *stemmed_word = strdup(alternative_stemmed_word);
     rc = FULLY_STEMMED;
   }
 

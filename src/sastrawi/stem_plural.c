@@ -48,11 +48,11 @@ int plural_parts(char *word, char **parts[])
       rc = asprintf(&second_part, "%s-%s",matches[2], matches[3]);
       check_debug(rc != -1, "Cannot allocate memory");
     } else {
-      second_part = strndup(matches[2], strlen(matches[2]));
+      second_part = strdup(matches[2]);
     }
 
     *parts = malloc(2 * sizeof(char*));
-    (*parts)[0] = strndup(matches[1], strlen(matches[1]));
+    (*parts)[0] = strdup(matches[1]);
     (*parts)[1] = second_part;
 
     parts_count = 2;
@@ -60,7 +60,7 @@ int plural_parts(char *word, char **parts[])
     free_matches(matches_count, &matches);
   } else {
     *parts = malloc(1 * sizeof(char*));
-    (*parts)[0] = strndup(word, strlen(word));
+    (*parts)[0] = strdup(word);
     parts_count = 1;
   }
 
@@ -88,10 +88,10 @@ int stem_plural_word(char *word, char **stemmed_word)
   //log_err("word parts %s => %s, %s => %s", word_parts[0], root_word0, word_parts[1], root_word1);
 
   if(strcmp(root_word0, root_word1) == 0) {
-    (*stemmed_word) = strndup(word_parts[0], strlen(word_parts[0]));
+    (*stemmed_word) = strdup(word_parts[0]);
     rc = FULLY_STEMMED;
   } else {
-    (*stemmed_word) = strndup(word, strlen(word));
+    (*stemmed_word) = strdup(word);
   }
 
   free_matches(plural_rc, &word_parts);
