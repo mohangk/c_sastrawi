@@ -1,8 +1,12 @@
-#define _XOPEN_SOURCE 500
-/* _XOPEN_SOURCE for strdup */
+#ifdef __linux
+  #define _XOPEN_SOURCE 500
+  /* _XOPEN_SOURCE for strdup */
+#endif
+
 #include <string.h>
 #include "../regex/preg.h"
 #include "dbg.h"
+
 int prefix_split_word(char *pattern, char *word, char **first_part, char **second_part)
 {
   char **matches = NULL;

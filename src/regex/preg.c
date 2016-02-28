@@ -1,5 +1,7 @@
-#define _XOPEN_SOURCE 500
-// for strdup
+#ifdef __linux
+  #define _XOPEN_SOURCE 500
+  /* _XOPEN_SOURCE for strdup */
+#endif
 #include <stdio.h>
 #include <string.h>
 #define PCRE2_STATIC
