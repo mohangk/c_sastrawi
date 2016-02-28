@@ -121,55 +121,6 @@ error:
   exit(1);
 }
 
-char *preg_replace(char *re, char *replacement, char *subject) {
-  int rc;
-
-  pcre2_code *compiled_re = get_compiled_re(re);
-
-  PCRE2_SPTR pcre2_subject = (PCRE2_SPTR)subject;
-  PCRE2_SIZE subject_length = strlen((char *)subject);
-
-  PCRE2_SPTR pcre2_replacement = (PCRE2_SPTR)replacement;
-  PCRE2_SIZE replacement_length = strlen((char *)replacement);
-
-  PCRE2_SIZE output_length = 3 * subject_length / 2;
-  char *output = malloc(3 * subject_length / 2);
-
-retry:
-  rc = pcre2_substitute(
-    compiled_re,
-    pcre2_subject,
-    subject_length,
-    0,
-    PCRE2_SUBSTITUTE_GLOBAL | PCRE2_SUBSTITUTE_OVERFLOW_LENGTH,
-    NULL,
-    NULL,
-    pcre2_replacement,
-    replacement_length,
-    (PCRE2_UCHAR *)output,
-    &output_length
-    );
-
-
-  if (rc < 0) {
-
-    switch(rc) {
-      case PCRE2_ERROR_NOMEMORY:
-        free(output);
-        output = malloc(output_length);
-        goto retry;
-      case PCRE2_ERROR_BADREPLACEMENT:
-        printf("Invalid replacement string %s\n", replacement); break;
-      default:
-       printf("Unknown error %d \n", rc); break;
-    }
-
-    exit(1);
-  }
-
-  return output;
-}
-
 void free_matches(int matches_count, char **matches[])
 {
   for (int i = 0; i < matches_count; i++)
