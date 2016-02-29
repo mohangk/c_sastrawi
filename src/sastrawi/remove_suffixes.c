@@ -1,6 +1,4 @@
-#ifdef __linux
-  #define _GNU_SOURCE
-#endif
+#include "features.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include "text_util.h"

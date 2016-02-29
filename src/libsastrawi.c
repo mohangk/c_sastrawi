@@ -1,6 +1,4 @@
-#ifdef __linux
-  #define _GNU_SOURCE 
-#endif
+#include "sastrawi/features.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
