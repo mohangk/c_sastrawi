@@ -1,12 +1,7 @@
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include "regex/preg.h"
-#include "sastrawi/stem_plural.h"
-#include "sastrawi/stem_singular.h"
-#include "sastrawi/dictionary.h"
+#ifndef SASTRAWI_LIBSASTRAWI_H_INCLUDED
+#define SASTRAWI_LIBSASTRAWI_H_INCLUDED
 
+#include <stdint.h>
 
 typedef struct sastrawi_stemmer sastrawi_stemmer;
 typedef int32_t sastrawi_err;
@@ -26,3 +21,5 @@ struct affix_removal {
   char *removed_part;
   char *original_word;
 };
+
+#endif

@@ -1,18 +1,20 @@
-#ifdef __linux
-  #define _GNU_SOURCE 
-#endif
+#include "sastrawi/features.h"
 #include "minunit.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "libsastrawi.h"
 #include "sastrawi/remove_prefixes.h"
+#include "sastrawi/stem_singular.h"
+#include "sastrawi/dictionary.h"
 #include "dbg.h"
+
+sastrawi_stemmer *stemmer;
 
 char *test_stem_singular_word_for(char *word, char *expected_stem_word) 
 {
   char *stemmed_word = NULL;
-  int rc = stem_singular_word(word, &stemmed_word);
+  int rc = stem_singular_word(stemmer, word, &stemmed_word);
   debug("stem word: %s, expected: %s, actual: %s", word, expected_stem_word, stemmed_word);
   mu_assert(rc == FULLY_STEMMED, "failed to stem");
   mu_assert(strcmp(expected_stem_word, stemmed_word) == 0, "failed to stem correctly");
@@ -26,7 +28,7 @@ char *test_stem_singular_word_does_not_need_stemming()
   char *stemmed_word;
   char *word = "bola";
   char *expected_stem_word = "bola";
-  int rc = stem_singular_word(word, &stemmed_word);
+  int rc = stem_singular_word(stemmer, word, &stemmed_word);
   debug("stem word: %s, expected: %s, actual: %s, expexted_rc %d, actual_rc %d", word, expected_stem_word, stemmed_word, NOT_STEMMED, rc);
   mu_assert(rc == FULLY_STEMMED, "word that does not need stemming is returned as FULLY_STEMMED");
   mu_assert(strcmp(expected_stem_word, stemmed_word) == 0, "should not change the word");
@@ -40,7 +42,7 @@ char *test_stem_singular_word_returns_original_word_when_cannot_stem()
   char *stemmed_word;
   char *word = "beblahblahan";
   char *expected_stem_word = "beblahblahan";
-  int rc = stem_singular_word(word, &stemmed_word);
+  int rc = stem_singular_word(stemmer, word, &stemmed_word);
   debug("stem word: %s, expected: %s, actual: %s", word, expected_stem_word, stemmed_word);
   mu_assert(rc == NOT_STEMMED, "did not fail to stem");
   mu_assert(strcmp(expected_stem_word, stemmed_word) == 0, "should not change the word");
@@ -178,9 +180,12 @@ char *all_tests()
 {
   mu_suite_start();
 
+  sastrawi_stemmer_new(&stemmer);
+
   char *path = dictionary_fullpath("data/kata-dasar.txt");
   dictionary_load(path);
   free(path);
+
 
   mu_run_test(test_stem_singular_word_does_not_need_stemming);
   mu_run_test(test_stem_singular_word_returns_original_word_when_cannot_stem);

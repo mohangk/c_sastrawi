@@ -1,14 +1,15 @@
-#define _XOPEN_SOURCE 500
-/* _XOPEN_SOURCE for strdup */
+#include "features.h"
 #include <string.h>
+#include "sastrawi_internal.h"
 #include "../regex/preg.h"
+#include "text_util.h"
 #include "dbg.h"
-int prefix_split_word(char *pattern, char *word, char **first_part, char **second_part)
+int prefix_split_word(sastrawi_stemmer *stemmer, char *pattern, char *word, char **first_part, char **second_part)
 {
   char **matches = NULL;
   int rc = 0;
 
-  int match_count = preg_match(pattern, word, &matches);
+  int match_count = preg_match(&stemmer->regex_cache, pattern, word, &matches);
 
   if(match_count == 3) {
     (*first_part) = strdup(matches[1]);
@@ -23,12 +24,12 @@ int prefix_split_word(char *pattern, char *word, char **first_part, char **secon
   return rc;
 }
 
-int suffix_split_word(char *pattern, char *word, char **first_part, char **second_part)
+int suffix_split_word(sastrawi_stemmer *stemmer, char *pattern, char *word, char **first_part, char **second_part)
 {
   char **matches = NULL;
   int rc = 0;
 
-  int match_count = preg_match(pattern, word, &matches);
+  int match_count = preg_match(&stemmer->regex_cache, pattern, word, &matches);
 
   if(match_count == 3) {
     (*first_part) = strdup(matches[1]);
@@ -45,12 +46,12 @@ int suffix_split_word(char *pattern, char *word, char **first_part, char **secon
 
 
 //the third_path_match is a sad excuse for not being able to write a better regex - need to figure out a better way
-int split_word3(char *pattern, char *word, char **first_part, char **second_part, char *third_part_match)
+int split_word3(sastrawi_stemmer *stemmer, char *pattern, char *word, char **first_part, char **second_part, char *third_part_match)
 {
   char **matches = NULL;
   int rc = 0;
 
-  int match_count = preg_match(pattern, word, &matches);
+  int match_count = preg_match(&stemmer->regex_cache, pattern, word, &matches);
 
   if(match_count == 4 && (strstr(matches[3], third_part_match) == NULL)) {
     (*first_part) = strdup(matches[1]);

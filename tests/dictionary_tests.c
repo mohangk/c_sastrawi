@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "libsastrawi.h"
+#include "sastrawi/dictionary.h"
 #include "dbg.h"
 #include "dictionary_tests.h"
 

@@ -2,19 +2,20 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "sastrawi_internal.h"
 #include "stem_plural.h"
 #include "stem_singular.h"
 #include "remove_prefixes.h"
 #include "../regex/preg.h"
 #include "../dbg.h"
 
-int is_plural(char *word)
+int is_plural(sastrawi_stemmer *stemmer, char *word)
 {
   char **matches;
 
   int matches_count, dash_count;
     
-  matches_count = preg_match("^(.*)-(ku|mu|nya)$", word, &matches);
+  matches_count = preg_match(&stemmer->regex_cache, "^(.*)-(ku|mu|nya)$", word, &matches);
 
   if(matches_count > 0) {
     dash_count = strchr(matches[1], '-') != NULL;
@@ -27,15 +28,15 @@ int is_plural(char *word)
 
 }
 
-int plural_parts(char *word, char **parts[])
+int plural_parts(sastrawi_stemmer *stemmer, char *word, char **parts[])
 {
   char **matches;
   int matches_count, parts_count, rc;
 
-  matches_count = preg_match("^(.*)-(.*)-(ku|mu|nya)$", word, &matches);
+  matches_count = preg_match(&stemmer->regex_cache, "^(.*)-(.*)-(ku|mu|nya)$", word, &matches);
 
   if(matches_count < 0) {
-    matches_count = preg_match("^(.*)-(.*)$", word, &matches);
+    matches_count = preg_match(&stemmer->regex_cache, "^(.*)-(.*)$", word, &matches);
   }
 
   if(matches_count>0) {
@@ -69,18 +70,18 @@ error:
 }
 
 
-int stem_plural_word(char *word, char **stemmed_word)
+int stem_plural_word(sastrawi_stemmer *stemmer, char *word, char **stemmed_word)
 {
 
   char **word_parts = NULL;
   char *root_word0 = NULL;
   char *root_word1 = NULL;
 
-  int plural_rc = plural_parts(word, &word_parts);
+  int plural_rc = plural_parts(stemmer, word, &word_parts);
   int rc = NOT_STEMMED;
 
-  stem_singular_word(word_parts[0], &root_word0);
-  stem_singular_word(word_parts[1], &root_word1);
+  stem_singular_word(stemmer, word_parts[0], &root_word0);
+  stem_singular_word(stemmer, word_parts[1], &root_word1);
 
 
   //log_err("word parts %s => %s, %s => %s", word_parts[0], root_word0, word_parts[1], root_word1);

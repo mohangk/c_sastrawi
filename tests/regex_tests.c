@@ -5,7 +5,8 @@
 
 char *test_regex_substitute_large() 
 {
-  char *replace = preg_replace("1", "12345678901234567890", "1");
+  void *c = NULL;
+  char *replace = preg_replace(&c, "1", "12345678901234567890", "1");
   mu_assert(strcmp(replace, "12345678901234567890") == 0, "can replace with large string");
   free(replace);
   return NULL;

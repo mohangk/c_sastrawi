@@ -1,5 +1,4 @@
-#define _XOPEN_SOURCE 500
-// for strdup
+#include "../sastrawi/features.h"
 #include <stdio.h>
 #include <string.h>
 #define PCRE2_STATIC
@@ -20,9 +19,7 @@ struct re_cache {
   UT_hash_handle hh;
 };
 
-struct re_cache *active_re_cache;
-
-pcre2_code *compile(char *pattern) {
+static pcre2_code *compile(char *pattern) {
 
   PCRE2_SPTR pcre2_pattern = (PCRE2_SPTR)pattern;
 
@@ -51,10 +48,10 @@ pcre2_code *compile(char *pattern) {
   return re;
 }
 
-pcre2_code *get_compiled_re(char *re)
+static pcre2_code *get_compiled_re(struct re_cache **cache, char *re)
 {
   struct re_cache *re_cache_item = NULL;
-  HASH_FIND_STR(active_re_cache, re, re_cache_item);
+  HASH_FIND_STR(*cache, re, re_cache_item);
   if(re_cache_item == NULL) {
 
     re_cache_item = malloc(sizeof(struct re_cache));
@@ -62,7 +59,7 @@ pcre2_code *get_compiled_re(char *re)
 
     re_cache_item->re = strdup(re);
     re_cache_item->compiled_re = compile(re_cache_item->re);
-    HASH_ADD_KEYPTR(hh, active_re_cache, re_cache_item->re, strlen(re_cache_item->re), re_cache_item);
+    HASH_ADD_KEYPTR(hh, *cache, re_cache_item->re, strlen(re_cache_item->re), re_cache_item);
   } 
 
   return re_cache_item->compiled_re;
@@ -73,12 +70,12 @@ error:
 }
 
 
-int preg_match(char *pattern, char *subject, char **matches[]) {
+int preg_match(void **cache, char *pattern, char *subject, char **matches[]) {
 
   int rc;
   PCRE2_SIZE *ovector;
 
-  pcre2_code *compiled_re = get_compiled_re(pattern);
+  pcre2_code *compiled_re = get_compiled_re((struct re_cache **)cache, pattern);
 
   PCRE2_SPTR pcre2_subject = (PCRE2_SPTR)subject;
   size_t subject_length = strlen((char *)subject);
@@ -121,10 +118,10 @@ error:
   exit(1);
 }
 
-char *preg_replace(char *re, char *replacement, char *subject) {
+char *preg_replace(void **cache, char *re, char *replacement, char *subject) {
   int rc;
 
-  pcre2_code *compiled_re = get_compiled_re(re);
+  pcre2_code *compiled_re = get_compiled_re((struct re_cache **)cache, re);
 
   PCRE2_SPTR pcre2_subject = (PCRE2_SPTR)subject;
   PCRE2_SIZE subject_length = strlen((char *)subject);

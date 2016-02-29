@@ -6,15 +6,18 @@
 #include <stdlib.h>
 #include <string.h>
 #include "libsastrawi.h"
+#include "sastrawi/dictionary.h"
 #include "sastrawi/remove_prefixes.h"
 #include "dbg.h"
+
+sastrawi_stemmer *stemmer;
 
 char *test_remove_complex_prefix(char *stemable_word, char *expected_stemmed_word, char *expected_removed_part, int expected_response_code, PREFIX_REMOVER fn)
 {  
   char *stemmed_word = NULL;
   char *removed_part = NULL;
 
-  int rc = fn(stemable_word, &stemmed_word, &removed_part);
+  int rc = fn(stemmer, stemable_word, &stemmed_word, &removed_part);
   debug("word: %s, expected_response_code: %d, actual_response_code: %d, expected stemmed word: %s, actual stemmed word: %s, expected removed part: %s, actual removed part: %s", stemable_word, expected_response_code, rc, expected_stemmed_word, stemmed_word, expected_removed_part, removed_part);
   mu_assert(rc == expected_response_code, "failed while asserting expected_response_code");
   mu_assert(strcmp(expected_stemmed_word, stemmed_word) == 0, "failed while asserting stemmed word");
@@ -412,7 +415,7 @@ char *test_remove_prefixes_when_partially_stemmed()
 {
   char *stemmed_word;
 
-  int rc = remove_prefixes("mewarnai", &stemmed_word);
+  int rc = remove_prefixes(stemmer, "mewarnai", &stemmed_word);
 
   debug("word: mewarnai, expected stemmed word: warnai, actual stemmed word: %s", stemmed_word);
   mu_assert(rc == PARTIALLY_STEMMED, "it should be PARTIALLY_STEMMED");
@@ -426,7 +429,7 @@ char *test_remove_prefixes_runs_3_times()
   char *stemmed_word;
 
   // diberberlari is a fake work, but we need it as a test, can't think of a valid word
-  int rc = remove_prefixes("diberberlari", &stemmed_word);
+  int rc = remove_prefixes(stemmer, "diberberlari", &stemmed_word);
   debug("word: diberberlari, expected stemmed word: lari, actual stemmed word: %s", stemmed_word);
   mu_assert(rc == FULLY_STEMMED, "it is fully stemmed");
   mu_assert(strcmp("lari", stemmed_word) == 0, "failed while asserting stemmed word");
@@ -437,6 +440,8 @@ char *test_remove_prefixes_runs_3_times()
 char *all_tests()
 {
   mu_suite_start();
+
+  sastrawi_stemmer_new(&stemmer);
 
   char *path = dictionary_fullpath("data/kata-dasar.txt");
   dictionary_load(path);
