@@ -29,7 +29,7 @@ build:
 	@mkdir -p bin
 
 .PHONY: tests
-tests: LDLIBS += $(TARGET) tests/test_helper.o
+tests: LDLIBS += $(TARGET)
 tests: $(TESTS)
 	$(TESTS)
 	sh ./tests/runtests.sh
