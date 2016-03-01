@@ -1,6 +1,5 @@
 - Add test case for mengira - should get kira, currently ira
 - mengeri => ngeri not keri
 - memproteksi, mempatroli - proteksi, patroli not protek, patrol
-- Check remove_prefixes_rule6 for cases where it stems but its not in the dict
 - When no remove_prefixes match, stem_singular returns an empty string, it should return the original string
 - remove_suffixes should return 1 if its in dict
