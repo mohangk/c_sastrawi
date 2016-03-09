@@ -1,11 +1,10 @@
-#ifdef __linux
-  #define _GNU_SOURCE 
-#endif
+#include "sastrawi/features.h"
 #include "minunit.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "libsastrawi.h"
+#include "sastrawi/dictionary.h"
 #include "dbg.h"
 #include "dictionary_tests.h"
 

@@ -1,14 +1,25 @@
-#ifdef __linux
-  #define _GNU_SOURCE 
-#endif
+#include "sastrawi/features.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "sastrawi/sastrawi_internal.h"
 #include "libsastrawi.h"
-#include "sastrawi/stem_plural.h"
-#include "sastrawi/stem_singular.h"
 
-void print_my_name() 
+sastrawi_err sastrawi_stemmer_new(sastrawi_stemmer **ppStemmer)
 {
-  printf("mohan");
+  sastrawi_stemmer *pStemmer = malloc(sizeof(struct sastrawi_stemmer));
+  if (!pStemmer) {
+    *ppStemmer = NULL;
+    return SASTRAWI_E_MEMORY;
+  }
+
+  pStemmer->regex_cache = NULL;
+
+  *ppStemmer = pStemmer;
+  return SASTRAWI_E_OK;
+}
+sastrawi_err sastrawi_stemmer_free(sastrawi_stemmer *pStemmer)
+{
+  free(pStemmer);
+  return SASTRAWI_E_OK;
 }

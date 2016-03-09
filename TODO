@@ -1,5 +1,3 @@
-- should check if strdup on FreeBSD/Darwin will add null to non-null terminated string
-
 - Add test case for mengira - should get kira, currently ira
 - mengeri => ngeri not keri
 - memproteksi, mempatroli - proteksi, patroli not protek, patrol
