@@ -17,7 +17,6 @@ sastrawi_err sastrawi_stemmer_free(sastrawi_stemmer *);
 
 typedef struct affix_removal AFFIX_REMOVAL;
 struct affix_removal {
-  enum {DP, DS, PP, P} type;
   char *removed_part;
   char *original_word;
 };

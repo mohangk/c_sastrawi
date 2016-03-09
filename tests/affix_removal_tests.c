@@ -15,7 +15,6 @@ char *test_affix_removal()
   AFFIX_REMOVAL affix_removals[3];
 
   affix_removals[0].removed_part = "kan";
-  affix_removals[0].type = DP;
   affix_removals[0].original_word = "belikan";
 
 

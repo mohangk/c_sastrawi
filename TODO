@@ -2,4 +2,8 @@
 - mengeri => ngeri not keri
 - memproteksi, mempatroli - proteksi, patroli not protek, patrol
 - When no remove_prefixes match, stem_singular returns an empty string, it should return the original string
-- remove_suffixes should return 1 if its in dict
+- remove_suffixes
+  - needs to return PARTIALLY_STEMMED, FULLY_STEMMED etc
+  - make it similary to remove_prefixes
+- move PARTIALLY_STEMMED etc. into sastrawi_internal.h
+- check on memory leakage in the removals data structures

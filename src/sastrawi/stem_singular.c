@@ -51,8 +51,11 @@ int apply_affix_removers(sastrawi_stemmer *stemmer, char *original_word, char **
   char *word = strdup(original_word);
   int remover_rc = NOT_STEMMED;
 
+  AFFIX_REMOVAL *removals;
+  int removal_count;
+
   for(int i = 0; i<2; i++) {
-    remover_rc = affix_removers[i](stemmer, word, stemmed_word);
+    remover_rc = affix_removers[i](stemmer, word, stemmed_word, &removal_count, &removals);
     if(remover_rc == FULLY_STEMMED) {
       break;
     } else {

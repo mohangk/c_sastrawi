@@ -5,6 +5,7 @@
 #include "dictionary.h"
 #include "sastrawi_internal.h"
 #include "text_util.h"
+#include "../libsastrawi.h"
 #include "prefix_removers.h"
 #include "remove_prefixes.h"
 
@@ -37,15 +38,18 @@ const PREFIX_REMOVER prefix_removers[prefix_remover_count] = {
 };
 
 
-int remove_prefixes(sastrawi_stemmer *stemmer, char *original_word, char **stemmed_word)
+int remove_prefixes(sastrawi_stemmer *stemmer, char *original_word, char **stemmed_word, int *removal_count, AFFIX_REMOVAL **removals)
 {
   char *removed_part = NULL;
   char *word = strdup(original_word);
   char *post_remove = NULL;
 
-  //log_err("pref remover word %s", word);
 
   int overall_rc = NOT_STEMMED;
+
+  *removal_count = 0;
+  *removals = malloc(sizeof(AFFIX_REMOVAL) * 3);
+
   for(int attempts = 0; attempts < 3; attempts++) {
 
     int iteration_rc = NOT_STEMMED;
@@ -56,6 +60,13 @@ int remove_prefixes(sastrawi_stemmer *stemmer, char *original_word, char **stemm
 
       int rc = (*prefix_removers[i])(stemmer, word, &post_remove, &removed_part);
       //log_err(">> in pref remover: %d, rc: %d", i, rc);
+
+      // if it was either partially_stemmed or fully stemmed, increas the removal count
+      if(rc >= PARTIALLY_STEMMED) {
+        (*removals)[*removal_count].original_word = strdup(word);
+        (*removals)[*removal_count].removed_part = strdup(removed_part);
+        (*removal_count)++;
+      }
 
       if(iteration_rc < rc) {
         iteration_rc = rc;
