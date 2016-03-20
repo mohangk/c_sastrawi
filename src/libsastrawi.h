@@ -19,6 +19,7 @@ typedef struct affix_removal AFFIX_REMOVAL;
 struct affix_removal {
   char *removed_part;
   char *original_word;
+  char *result;
 };
 
 #endif

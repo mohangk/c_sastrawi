@@ -27,6 +27,7 @@ int remove_suffixes(sastrawi_stemmer *stemmer, char *word, char **stemmed_word, 
   if(suffix_remover_rc == 1) {
     (*removals)[*removal_count].original_word = strdup(word);
     (*removals)[*removal_count].removed_part = strdup(removed_parts);
+    (*removals)[*removal_count].result = strdup(suffix_remove1);
     (*removal_count)++;
   }
   free(removed_parts);
@@ -36,6 +37,7 @@ int remove_suffixes(sastrawi_stemmer *stemmer, char *word, char **stemmed_word, 
   if(suffix_remover_rc == 1) {
     (*removals)[*removal_count].original_word = strdup(suffix_remove1);
     (*removals)[*removal_count].removed_part = strdup(removed_parts);
+    (*removals)[*removal_count].result = strdup(suffix_remove2);
     (*removal_count)++;
   }
   free(removed_parts);
@@ -45,6 +47,7 @@ int remove_suffixes(sastrawi_stemmer *stemmer, char *word, char **stemmed_word, 
   if(suffix_remover_rc == 1) {
     (*removals)[*removal_count].original_word = strdup(suffix_remove1);
     (*removals)[*removal_count].removed_part = strdup(removed_parts);
+    (*removals)[*removal_count].result = strdup(*stemmed_word);
     (*removal_count)++;
   }
   free(removed_parts);

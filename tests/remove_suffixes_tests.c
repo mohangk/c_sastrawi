@@ -27,13 +27,19 @@ char *test_remove_suffixes_when_fully_stemmed()
   mu_assert(strcmp("baju", stemmed_word) == 0, "it stems to baju");
   mu_assert(removal_count == 2, "two suffixes removed");
 
-  debug("Removal 1 expected => original_word: bajumukah, removed_part: kah | actual => original_word: %s, removed_part: %s", removals[0].original_word, removals[0].removed_part);
+  debug("Removal 1 expected => original_word: bajumukah, removed_part: kah, result: bajumu |" 
+                   "actual => original_word: %s, removed_part: %s, result: %s", 
+                   removals[0].original_word, removals[0].removed_part, removals[0].result);
   mu_assert(strcmp(removals[0].original_word, "bajumukah") == 0, "returns the original word");
   mu_assert(strcmp(removals[0].removed_part, "kah") == 0, "returns the removed portion");
+  mu_assert(strcmp(removals[0].result, "bajumu") == 0, "returns the result of the stemming");
 
-  debug("Removal 2 expected => original_word: bajumu, removed_part: mu | actual => original_word: %s, removed_part: %s", removals[1].original_word, removals[1].removed_part);
+  debug("Removal 2 expected => original_word: bajumu, removed_part: mu, result: baju |" 
+                   "actual => original_word: %s, removed_part: %s, results: %s", 
+                   removals[1].original_word, removals[1].removed_part, removals[1].result);
   mu_assert(strcmp(removals[1].original_word, "bajumu") == 0, "returns the original word");
   mu_assert(strcmp(removals[1].removed_part, "mu") == 0, "returns the removed portion");
+  mu_assert(strcmp(removals[1].result, "baju") == 0, "returns the result of the stemming");
   free(stemmed_word);
 
   return NULL;

@@ -65,6 +65,7 @@ int remove_prefixes(sastrawi_stemmer *stemmer, char *original_word, char **stemm
       if(rc >= PARTIALLY_STEMMED) {
         (*removals)[*removal_count].original_word = strdup(word);
         (*removals)[*removal_count].removed_part = strdup(removed_part);
+        (*removals)[*removal_count].result = strdup(post_remove);
         (*removal_count)++;
       }
 
