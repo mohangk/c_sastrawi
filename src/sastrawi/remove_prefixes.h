@@ -7,4 +7,5 @@
 #define FULLY_STEMMED 2
 
 int remove_prefixes(sastrawi_stemmer *, char *word, char **stemmed_word, int *removal_count, AFFIX_REMOVAL **removals);
+int suffix_returning_loop(sastrawi_stemmer *, char *, char **);
 #endif

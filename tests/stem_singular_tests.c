@@ -176,6 +176,63 @@ char *test_stem_singular_word_uses_precedence_adjustment_2()
 }
 
 
+char *test_stem_singular_word_uses_suffix_returning_loop()
+{
+  return test_stem_singular_word_for("bersembunyi","sembunyi");
+}
+
+char *test_suffix_returning_loop_when_cannot_stem() 
+{
+  char *post_remove;
+  int rc = suffix_returning_loop(stemmer, "unstemmable", &post_remove);
+  mu_assert(rc == NOT_STEMMED, "should return NOT_STEMMED");
+
+  return NULL;
+}
+
+
+/* char *test_suffix_returning_loop_when_no_suffixes_removed()  */
+/* {} */
+
+char *test_suffix_returning_loop_when_original_word_berdesakan() 
+{
+  char *stemmed_word;
+  char *word = "berdesakan";
+  int rc = suffix_returning_loop(stemmer, word, &stemmed_word);
+
+  debug("stem word: %s, expected: desak, actual: %s", word, stemmed_word);
+  mu_assert(rc == FULLY_STEMMED, "should be FULLY_STEMMED");
+  mu_assert(strcmp(stemmed_word, "desak") == 0, "stems to desak");
+
+  return NULL;
+}
+
+char *test_suffix_returning_loop_when_original_word_bermakan() 
+{
+  char *stemmed_word;
+  char *word = "bermakan";
+  int rc = suffix_returning_loop(stemmer, word, &stemmed_word);
+
+  debug("stem word: %s, expected: makan, actual: %s", word, stemmed_word);
+  mu_assert(rc == FULLY_STEMMED, "should be FULLY_STEMMED");
+  mu_assert(strcmp(stemmed_word, "makan") == 0, "stems to makan");
+
+  return NULL;
+}
+
+char *test_suffix_returning_loop_when_original_word_bersembunyi() 
+{
+  char *stemmed_word;
+  char *word = "bersembunyi";
+  int rc = suffix_returning_loop(stemmer, word, &stemmed_word);
+
+  debug("stem word: %s, expected: sembunyi, actual: %s", word, stemmed_word);
+  mu_assert(rc == FULLY_STEMMED, "should be FULLY_STEMMED");
+  mu_assert(strcmp(stemmed_word, "sembunyi") == 0, "stems to sembunyi");
+
+  return NULL;
+}
+
 char *all_tests()
 {
   mu_suite_start();
@@ -215,6 +272,13 @@ char *all_tests()
   mu_run_test(test_stem_singular_word_removes_complex_prefixes_20);
   mu_run_test(test_stem_singular_word_uses_precedence_adjustment);
   mu_run_test(test_stem_singular_word_uses_precedence_adjustment_2);
+
+  mu_run_test(test_suffix_returning_loop_when_cannot_stem);
+  mu_run_test(test_suffix_returning_loop_when_original_word_berdesakan);
+  mu_run_test(test_suffix_returning_loop_when_original_word_bermakan);
+  mu_run_test(test_suffix_returning_loop_when_original_word_bersembunyi);
+
+  mu_run_test(test_stem_singular_word_uses_suffix_returning_loop);
   return NULL;
 }
 
