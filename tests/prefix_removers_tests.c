@@ -426,6 +426,16 @@ char *test_remove_complex_prefix_rule21_not_stemmed()
   return test_remove_complex_prefix("perjudikan", "perjudikan", "", NOT_STEMMED, remove_complex_prefix_rule21);
 }
 
+char *test_remove_complex_prefix_rule23_fully_stemmed() 
+{
+  return test_remove_complex_prefix("pertahan", "tahan", "per", FULLY_STEMMED, remove_complex_prefix_rule23);
+}
+
+char *test_remove_complex_prefix_rule23_not_stemmed() 
+{
+  return test_remove_complex_prefix("perdaerah", "perdaerah", "", NOT_STEMMED, remove_complex_prefix_rule23);
+}
+
 char *all_tests()
 {
   mu_suite_start();
@@ -514,6 +524,8 @@ char *all_tests()
   mu_run_test(test_remove_complex_prefix_rule21a_partially_stemmed);
   mu_run_test(test_remove_complex_prefix_rule21b_fully_stemmed);
   mu_run_test(test_remove_complex_prefix_rule21_not_stemmed);
+  mu_run_test(test_remove_complex_prefix_rule23_fully_stemmed);
+  mu_run_test(test_remove_complex_prefix_rule23_not_stemmed);
   return NULL;
 }
 
