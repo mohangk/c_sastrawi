@@ -12,7 +12,7 @@
 #include "../dbg.h"
 
 //Why can't the following be moved to prefix_removers.h ?
-#define prefix_remover_count 24
+#define prefix_remover_count 25
 const PREFIX_REMOVER prefix_removers[prefix_remover_count] = {
   remove_plain_prefix,
   remove_complex_prefix_rule1,
@@ -37,7 +37,8 @@ const PREFIX_REMOVER prefix_removers[prefix_remover_count] = {
   remove_complex_prefix_rule20,
   remove_complex_prefix_rule21,
   remove_complex_prefix_rule23,
-  remove_complex_prefix_rule24
+  remove_complex_prefix_rule24,
+  remove_complex_prefix_rule25
 };
 
 

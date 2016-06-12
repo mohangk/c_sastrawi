@@ -477,6 +477,22 @@ int remove_complex_prefix_rule24(sastrawi_stemmer *stemmer, char *word, char **s
   return rc;
 }
 
+int remove_complex_prefix_rule25(sastrawi_stemmer *stemmer, char *word, char **stemmed_word, char **removed_part)
+{
+  int rc = NOT_STEMMED;
+
+  int split_rc = prefix_split_word(stemmer, "(^pem)([fbv]\\w*)", word, removed_part, stemmed_word);
+
+  if(split_rc == 1) { 
+    rc = PARTIALLY_STEMMED;
+    if(dictionary_contains(*stemmed_word)) {
+      rc = FULLY_STEMMED;
+    }
+  }
+
+  return rc;
+}
+
 int assign_if_root_word(char **stemmed_word, char *alternative_stemmed_word, char **removed_part, char *alternative_removed_part) {
   int rc = NOT_STEMMED;
 
