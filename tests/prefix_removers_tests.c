@@ -466,6 +466,21 @@ char *test_remove_complex_prefix_rule26b_fully_stemmed()
   return test_remove_complex_prefix("pemilih", "pilih", "pe", FULLY_STEMMED, remove_complex_prefix_rule26);
 }
 
+char *test_remove_complex_prefix_rule27_fully_stemmed_c() 
+{
+  return test_remove_complex_prefix("pencari", "cari", "pen", FULLY_STEMMED, remove_complex_prefix_rule27);
+}
+
+char *test_remove_complex_prefix_rule27_fully_stemmed_d() 
+{
+  return test_remove_complex_prefix("pendaki", "daki", "pen", FULLY_STEMMED, remove_complex_prefix_rule27);
+}
+
+char *test_remove_complex_prefix_rule27_fully_stemmed_j() 
+{
+  return test_remove_complex_prefix("penjual", "jual", "pen", FULLY_STEMMED, remove_complex_prefix_rule27);
+}
+
 char *all_tests()
 {
   mu_suite_start();
@@ -562,6 +577,9 @@ char *all_tests()
   mu_run_test(test_remove_complex_prefix_rule25_fully_stemmed_v);
   mu_run_test(test_remove_complex_prefix_rule26a_fully_stemmed);
   mu_run_test(test_remove_complex_prefix_rule26b_fully_stemmed);
+  mu_run_test(test_remove_complex_prefix_rule27_fully_stemmed_c);
+  mu_run_test(test_remove_complex_prefix_rule27_fully_stemmed_j);
+  mu_run_test(test_remove_complex_prefix_rule27_fully_stemmed_d);
   return NULL;
 }
 
