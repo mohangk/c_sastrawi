@@ -516,6 +516,11 @@ char *test_remove_complex_prefix_rule30b_fully_stemmed()
   return test_remove_complex_prefix("pengetat", "ketat", "peng", FULLY_STEMMED, remove_complex_prefix_rule30);
 }
 
+char *test_remove_complex_prefix_rule30c_fully_stemmed() 
+{
+  return test_remove_complex_prefix("pengebor", "bor", "penge", FULLY_STEMMED, remove_complex_prefix_rule30);
+}
+
 char *all_tests()
 {
   mu_suite_start();
@@ -622,6 +627,7 @@ char *all_tests()
   mu_run_test(test_remove_complex_prefix_rule29_fully_stemmed_q);
   mu_run_test(test_remove_complex_prefix_rule30a_fully_stemmed);
   mu_run_test(test_remove_complex_prefix_rule30b_fully_stemmed);
+  mu_run_test(test_remove_complex_prefix_rule30c_fully_stemmed);
   return NULL;
 }
 

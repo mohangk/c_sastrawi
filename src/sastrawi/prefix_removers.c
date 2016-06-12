@@ -573,6 +573,8 @@ int remove_complex_prefix_rule29(sastrawi_stemmer *stemmer, char *word, char **s
 int remove_complex_prefix_rule30(sastrawi_stemmer *stemmer, char *word, char **stemmed_word, char **removed_part)
 {
   int rc = NOT_STEMMED;
+  int alt_rc = NOT_STEMMED;
+  char *alternative_stemmed_word;
 
   int split_rc = prefix_split_word(stemmer, "(^peng)([aeiou]\\w*)", word, removed_part, stemmed_word);
 
@@ -580,10 +582,20 @@ int remove_complex_prefix_rule30(sastrawi_stemmer *stemmer, char *word, char **s
     rc = PARTIALLY_STEMMED;
     if(dictionary_contains(*stemmed_word)) {
       rc = FULLY_STEMMED;
-    } else {
-      char *alternative_stemmed_word;
+    } 
+
+    if(rc != FULLY_STEMMED) {
       asprintf(&alternative_stemmed_word, "k%s", *stemmed_word);
-      int alt_rc = assign_if_root_word(stemmed_word, alternative_stemmed_word, removed_part, "peng");
+      alt_rc = assign_if_root_word(stemmed_word, alternative_stemmed_word, removed_part, "peng");
+      if(alt_rc == FULLY_STEMMED) {
+        rc = FULLY_STEMMED;
+      }
+      free(alternative_stemmed_word);
+    }
+
+    if(rc != FULLY_STEMMED) {
+      asprintf(&alternative_stemmed_word, "%s", *stemmed_word+1);
+      alt_rc = assign_if_root_word(stemmed_word, alternative_stemmed_word, removed_part, "penge");
       if(alt_rc == FULLY_STEMMED) {
         rc = FULLY_STEMMED;
       }
