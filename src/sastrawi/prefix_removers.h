@@ -25,6 +25,7 @@ int remove_complex_prefix_rule17(sastrawi_stemmer *, char *, char **, char**);
 int remove_complex_prefix_rule18(sastrawi_stemmer *, char *, char **, char**);
 int remove_complex_prefix_rule19(sastrawi_stemmer *, char *, char **, char**);
 int remove_complex_prefix_rule20(sastrawi_stemmer *, char *, char **, char**);
+int remove_complex_prefix_rule21(sastrawi_stemmer *, char *, char **, char**);
 
 
 
