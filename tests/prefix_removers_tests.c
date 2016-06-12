@@ -456,6 +456,16 @@ char *test_remove_complex_prefix_rule25_fully_stemmed_v()
   return test_remove_complex_prefix("pemvaksinan", "vaksinan", "pem", PARTIALLY_STEMMED, remove_complex_prefix_rule25);
 }
 
+char *test_remove_complex_prefix_rule26a_fully_stemmed() 
+{
+  return test_remove_complex_prefix("pemilik", "milik", "pe", FULLY_STEMMED, remove_complex_prefix_rule26);
+}
+
+char *test_remove_complex_prefix_rule26b_fully_stemmed() 
+{
+  return test_remove_complex_prefix("pemilih", "pilih", "pe", FULLY_STEMMED, remove_complex_prefix_rule26);
+}
+
 char *all_tests()
 {
   mu_suite_start();
@@ -550,6 +560,8 @@ char *all_tests()
   mu_run_test(test_remove_complex_prefix_rule25_fully_stemmed_b);
   mu_run_test(test_remove_complex_prefix_rule25_fully_stemmed_f);
   mu_run_test(test_remove_complex_prefix_rule25_fully_stemmed_v);
+  mu_run_test(test_remove_complex_prefix_rule26a_fully_stemmed);
+  mu_run_test(test_remove_complex_prefix_rule26b_fully_stemmed);
   return NULL;
 }
 
