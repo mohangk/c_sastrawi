@@ -73,7 +73,7 @@ int remove_complex_prefix_rule3(sastrawi_stemmer *stemmer, char *word, char **st
 {
   int rc = NOT_STEMMED;
 
-  int split_rc = prefix_split_word(stemmer, "(^ber)([^aeiou][a-z]er\\w*)", word, removed_part, stemmed_word);
+  int split_rc = prefix_split_word(stemmer, "(^ber)([^aeiour][a-z]er[aeiou]\\w*)", word, removed_part, stemmed_word);
 
 
   if(split_rc == 1) {
@@ -447,6 +447,24 @@ int remove_complex_prefix_rule23(sastrawi_stemmer *stemmer, char *word, char **s
   int rc = NOT_STEMMED;
 
   int split_rc = split_word3(stemmer, "(^per)([^aeiou][a-z](\\w*))", word, removed_part, stemmed_word, "er");
+
+  if(split_rc == 1) {
+      rc = PARTIALLY_STEMMED;
+
+      if(dictionary_contains(*stemmed_word)) {
+        rc = FULLY_STEMMED;
+      }
+  }
+
+  return rc;
+}
+
+int remove_complex_prefix_rule24(sastrawi_stemmer *stemmer, char *word, char **stemmed_word, char **removed_part)
+{
+  int rc = NOT_STEMMED;
+
+  int split_rc = prefix_split_word(stemmer, "(^per)([^aeiour][a-z]er[aeiou]\\w*)", word, removed_part, stemmed_word);
+
 
   if(split_rc == 1) {
       rc = PARTIALLY_STEMMED;
