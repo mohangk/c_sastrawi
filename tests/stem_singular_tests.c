@@ -205,6 +205,11 @@ char *test_stem_singular_word_removes_complex_prefixes_28()
   return test_stem_singular_word_for("penulis", "tulis");
 }
 
+char *test_stem_singular_word_removes_complex_prefixes_29() 
+{
+  return test_stem_singular_word_for("pengganti", "ganti");
+}
+
 char *test_stem_singular_word_uses_precedence_adjustment()
 {
   return test_stem_singular_word_for("memakai","pakai");
@@ -318,6 +323,7 @@ char *all_tests()
   mu_run_test(test_stem_singular_word_removes_complex_prefixes_26);
   mu_run_test(test_stem_singular_word_removes_complex_prefixes_27);
   mu_run_test(test_stem_singular_word_removes_complex_prefixes_28);
+  mu_run_test(test_stem_singular_word_removes_complex_prefixes_29);
   mu_run_test(test_stem_singular_word_uses_precedence_adjustment);
   mu_run_test(test_stem_singular_word_uses_precedence_adjustment_2);
 
