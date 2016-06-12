@@ -531,6 +531,30 @@ int remove_complex_prefix_rule27(sastrawi_stemmer *stemmer, char *word, char **s
   return rc;
 }
 
+
+int remove_complex_prefix_rule28(sastrawi_stemmer *stemmer, char *word, char **stemmed_word, char **removed_part)
+{
+  int rc = NOT_STEMMED;
+
+  int split_rc = prefix_split_word(stemmer, "(^pe)(n[aeiou]\\w*)", word, removed_part, stemmed_word);
+
+  if(split_rc == 1 ) {
+    rc = PARTIALLY_STEMMED;
+    if(dictionary_contains(*stemmed_word)) {
+      rc = FULLY_STEMMED;
+    } else {
+      char *alternative_stemmed_word;
+      asprintf(&alternative_stemmed_word, "t%s", *stemmed_word+1);
+      int alt_rc = assign_if_root_word(stemmed_word, alternative_stemmed_word, removed_part, "pe");
+      if(alt_rc == FULLY_STEMMED) {
+        rc = FULLY_STEMMED;
+      }
+      free(alternative_stemmed_word);
+    }
+  }
+  return rc;
+}
+
 int assign_if_root_word(char **stemmed_word, char *alternative_stemmed_word, char **removed_part, char *alternative_removed_part) {
   int rc = NOT_STEMMED;
 
